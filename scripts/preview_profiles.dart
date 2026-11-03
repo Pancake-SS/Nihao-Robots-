@@ -13,6 +13,9 @@ import 'package:ni_hao_robot/features/profiles/profile_providers.dart';
 import 'package:ni_hao_robot/shared/robot_art.dart';
 
 import '../test/profile_test_repository.dart';
+import '../test/foundation_test_repository.dart';
+
+import 'package:ni_hao_robot/features/onboarding/foundation_repository.dart';
 
 void main() {
   testWidgets('render profile entry for visual inspection', (tester) async {
@@ -42,6 +45,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          foundationRepositoryProvider.overrideWithValue(
+            TestFoundationRepository(),
+          ),
           profileRepositoryProvider.overrideWithValue(TestProfileRepository()),
         ],
         child: RepaintBoundary(key: key, child: const NiHaoRobotApp()),
@@ -85,6 +91,24 @@ void main() {
     await tester.tap(find.text('Continue'));
     await tester.pumpAndSettle();
     await capture('profile-ready');
+    await tester.tap(find.text('Replay Tutorial'));
+    await tester.pumpAndSettle();
+    await capture('home-tour');
+    await tester.tap(find.text('Close tutorial'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('destination-1')));
+    await tester.pumpAndSettle();
+    await capture('vocabulary');
+    await tester.tap(find.byKey(const ValueKey('destination-0')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Start introduction'));
+    await tester.pumpAndSettle();
+    for (var i = 0; i < 6; i++) {
+      await tester.ensureVisible(find.text('Next'));
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+    }
+    await capture('foundation-pinyin');
     expect(tester.takeException(), isNull);
   });
 }

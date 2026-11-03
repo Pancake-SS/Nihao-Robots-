@@ -78,15 +78,18 @@ Slide 19 and slides 20–25 repeatedly use a tall robot in the storyboard. The l
 
 ## Usage contract
 
-### Bundled welcome scaffold copies
+### Bundled application copies
 
-These three files are referenced by `pubspec.yaml` and `lib/shared/robot_art.dart`. They are byte-for-byte copies of distinct characters; originals remain in place. Profile entry, selection and profile-ready screens were rendered with Flutter's widget renderer and inspected; native Windows rendering remains pending.
+These six files are referenced by `pubspec.yaml` and `lib/shared/robot_art.dart`. They are byte-for-byte original copies; the two orb variants are the same character for different surfaces. All three Vocabulary cards use distinct robots. Profile entry, selection, Home, Vocabulary, the Home tour and a foundation page were rendered with Flutter's widget renderer and inspected; native Windows rendering remains pending.
 
 | Bundled path | Source ID | Actual scaffold surface | SHA-256 |
 |---|---|---|---|
 | `assets/mascots/welcome_waving_light.png` | asset-05 | White welcome card | `41fcddac8bc2725a7cc93bfe8a0840de14716e99bbb595154e7d980441352005` |
 | `assets/mascots/welcome_orb_dark.png` | asset-13 | Navy companion card | `83a6f46bd0475921c1983bcdda2aea226f72edb63968656367758f1795fad090` |
-| `assets/mascots/profile_tracked_light.png` | asset-01 | White profile-ready card | `5ab746e7d70a97890bcb896be129f7f98cbf643ac395977652971b00da713604` |
+| `assets/mascots/profile_tracked_light.png` | asset-01 | White Home introduction card | `5ab746e7d70a97890bcb896be129f7f98cbf643ac395977652971b00da713604` |
+| `assets/mascots/vocabulary_goggles_light.png` | asset-06 | White Vocabulary Master card | `c1f961e93a5b59fb2c912da1eaeac40565d4a5b526141d6498bafbfd8cde7b22` |
+| `assets/mascots/foundation_orb_light.png` | asset-09 | White introduction greeting and Vocabulary Practice cards, on separate screens | `2c1e4e1f22138edb0aafaaf8b62cb92dea854319ab903b5767f7482a138237f5` |
+| `assets/mascots/vocabulary_hover_light.png` | asset-10 | White Vocabulary Learn card | `4bcf9c34b6a8d5fc3751afa0ac8d3d0f56406ce01c4dcf2282bcbd7607418c88` |
 
 ### Preservation rules
 
@@ -116,5 +119,7 @@ Executed on 2026-11-03:
 - Alpha totals: PASS; transparent + partial-alpha + opaque pixels equal 1254 × 1254 for every file.
 - Duplicate-byte check: PASS; 20 distinct hashes. Corresponding theme variants remain separate originals.
 - In-app contrast, responsive sizing, and screen composition: NOT RUN; no executable Flutter environment was available for this audit.
+
+2026-11-04 continuation check: all 20 originals retain their inventory hashes; all six bundled files match an original exactly. Newly bundled asset-06, asset-09 and asset-10 were inspected individually before use. Desktop Home/Vocabulary/tour/foundation renders were reviewed; native Windows verification remains pending.
 
 No required robot file is missing. Transparent black-outline variants are not supplied; this is a known presentation constraint, not a blocker for white illustration panels.

@@ -32,19 +32,34 @@ class AppPreferences extends Table {
   List<String> get customConstraints => ['CHECK (id = 1)'];
 }
 
-@DriftDatabase(tables: [Profiles, AppPreferences])
+class FoundationProgress extends Table {
+  IntColumn get profileId => integer().references(Profiles, #id)();
+  IntColumn get step => integer()();
+  BoolColumn get completed => boolean()();
+
+  @override
+  Set<Column> get primaryKey => {profileId};
+
+  @override
+  List<String> get customConstraints => ['CHECK (step BETWEEN 0 AND 8)'];
+}
+
+@DriftDatabase(tables: [Profiles, AppPreferences, FoundationProgress])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (migrator) => migrator.createAll(),
     onUpgrade: (migrator, from, to) async {
-      // Future schema versions must supply an explicit, tested migration.
-      throw StateError('No migration from schema $from to $to.');
+      if (from != 1 || to != 2) {
+        throw StateError('No migration from schema $from to $to.');
+      }
+      // Additive migration: existing profiles and selection are never rewritten.
+      await migrator.createTable(foundationProgress);
     },
     beforeOpen: (_) async {
       await customStatement('PRAGMA foreign_keys = ON');

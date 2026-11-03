@@ -4,7 +4,10 @@ import 'package:flutter/widgets.dart';
 enum RobotArtwork {
   wavingOnPaper('assets/mascots/welcome_waving_light.png'),
   orbOnNavy('assets/mascots/welcome_orb_dark.png'),
-  trackedOnPaper('assets/mascots/profile_tracked_light.png');
+  trackedOnPaper('assets/mascots/profile_tracked_light.png'),
+  gogglesOnPaper('assets/mascots/vocabulary_goggles_light.png'),
+  orbOnPaper('assets/mascots/foundation_orb_light.png'),
+  hoverOnPaper('assets/mascots/vocabulary_hover_light.png');
 
   const RobotArtwork(this.assetPath);
 

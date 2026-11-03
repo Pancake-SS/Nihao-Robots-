@@ -48,14 +48,16 @@ Use navy text on pastel surfaces and white text on navy. Pastels are fills, not 
 
 ## Components and truthfulness
 
-Build shared theme, card, button, field, loading/error/empty states as needed by each slice. The initial scaffold only implements theme and a welcome composition. A reusable mascot widget is justified by its two surface variants.
+Build shared theme, card, button, field, loading/error/empty states as needed by each slice. Current shared components include the theme, original mascot renderer, learning card and contextual spotlight tour.
 
-Future profile picker: Create Local Profile / Choose Profile / Continue, no passwords. Home statistics come only from persisted profile progress. Milestones label word counts, never a proven fluency percentage. Vocabulary has Learn, Review/Practice, Mastery. Top-level Practice and Speaking say “Coming later — design pending.” Grammar uses real records and prerequisites. No guessed Immersion UI.
+The profile picker implements Create Local Profile / Choose Profile / Continue, no passwords. Future Home statistics must come only from persisted learning progress; current Home explains that metrics are not yet available. Milestones label word counts, never a proven fluency percentage. Vocabulary has Learn, Practice and Master landing cards with honest pending-activity labels. Top-level Practice and Speaking say “Coming later — design pending.” Future Grammar uses real records and prerequisites. No guessed Immersion UI.
 
 Tutorial overlays must spotlight real controls, keep Back/Next/Close reachable, support keyboard focus and replay, and include Vocabulary and Grammar. Missing audio shows a clear unavailable state and offers a suitable non-audio activity; never pretend a sound played.
 
-## Current profile-slice boundary
+## Current implementation boundary
 
 The welcome composition now hosts working local profile creation/selection backed by Riverpod and Drift. The introduction was shortened to keep the form and save action visible at 1440 × 900. Buttons have a 48-pixel minimum visual height. Profile cards and the Pinyin switch have a Material surface so selection/ink feedback remains visible.
 
-The profile-ready page shows persisted learning preferences and uses the distinct tracked robot; it explicitly states that lessons are coming next. No counters, lesson data, password authentication or learning CTA are fabricated. Large-text/narrow-window creation and profile navigation are covered by widget tests. Three desktop widget renders were reviewed with local system fonts; native Windows launch remains a separate verification gate.
+Home shows persisted learning preferences and a working introduction action with the tracked robot. The nine-page introduction uses a plain header/back route without the navigation sidebar. Vocabulary has three distinct original robots. Wide screens have a navy sidebar; narrow screens/large text use a wrapping navigation area in the scrollable page. Home, Vocabulary and Grammar tours spotlight live targets with Back/Next/Close and keyboard support. No fake learning counters or exercises are present.
+
+All introduction pages and tours are tested at 360 × 640 with 200% text; keyboard Enter/Escape are covered. Desktop Home, Vocabulary, tour and Pinyin compositions were visually reviewed with system fonts. Native Windows launch remains a separate verification gate.

@@ -27,6 +27,8 @@ Audit date: 2026-11-03 (Asia/Kuala_Lumpur). Source: `reference/Copy of MCPKI_FYP
 
 ## Per-slide record
 
+Implementation update, 2026-11-04: slides 2–6 now inform the five-page purpose introduction, followed by four Foundation pages with per-profile save/resume/replay. Home navigation and milestone explanations (7), live contextual tours (8–14), Vocabulary's three landing cards/tutorial (15) and a pending-content Grammar landing/tutorial (26) exist. Word metrics, weekly/streak data, vocabulary activities and grammar lessons remain deferred; no placeholder values or exercises were shipped. The audit records below preserve the original source reconciliation rather than claiming all storyboard requirements are complete. Native Windows verification is still pending.
+
 
 ### Slide 01 — Opening / local profile entry
 

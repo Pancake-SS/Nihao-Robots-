@@ -1,15 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/open_database.dart';
+import '../../data/database_provider.dart';
 import 'profile.dart';
 import 'sqlite_profile_repository.dart';
 
 final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
-  final database = openAppDatabase();
-  ref.onDispose(() => unawaited(database.close()));
-  return SqliteProfileRepository(database);
+  return SqliteProfileRepository(ref.watch(appDatabaseProvider));
 });
 
 final profilesProvider =

@@ -7,6 +7,9 @@ import 'package:ni_hao_robot/app/app.dart';
 import 'package:ni_hao_robot/features/profiles/profile_providers.dart';
 
 import 'profile_test_repository.dart';
+import 'foundation_test_repository.dart';
+
+import 'package:ni_hao_robot/features/onboarding/foundation_repository.dart';
 
 Future<void> mount(
   WidgetTester tester,
@@ -14,7 +17,12 @@ Future<void> mount(
 ) async {
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [profileRepositoryProvider.overrideWithValue(repository)],
+      overrides: [
+        profileRepositoryProvider.overrideWithValue(repository),
+        foundationRepositoryProvider.overrideWithValue(
+          TestFoundationRepository(),
+        ),
+      ],
       child: const NiHaoRobotApp(),
     ),
   );

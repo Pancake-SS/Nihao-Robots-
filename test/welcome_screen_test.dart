@@ -9,6 +9,9 @@ import 'package:ni_hao_robot/features/profiles/profile_providers.dart';
 import 'package:ni_hao_robot/features/profiles/profile.dart';
 
 import 'profile_test_repository.dart';
+import 'foundation_test_repository.dart';
+
+import 'package:ni_hao_robot/features/onboarding/foundation_repository.dart';
 
 Widget withProfiles(Widget child) => ProviderScope(
   overrides: [
@@ -36,7 +39,12 @@ void main() {
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [profileRepositoryProvider.overrideWithValue(repository)],
+          overrides: [
+            profileRepositoryProvider.overrideWithValue(repository),
+            foundationRepositoryProvider.overrideWithValue(
+              TestFoundationRepository(),
+            ),
+          ],
           child: const NiHaoRobotApp(),
         ),
       );

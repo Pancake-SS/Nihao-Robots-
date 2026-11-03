@@ -31,7 +31,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build_windows.ps1
 
 The helper copies only `lib`, `assets`, `windows`, `pubspec.yaml`, `pubspec.lock` and `.metadata` to a new `%TEMP%\nihao-windows-...` directory, resolves packages there and builds a debug executable. It prints the executable path on success. It does not copy learner data, the reference deck, source robot inventory, `.git`, `.venv` or editor settings. The source snapshot is retained for inspection; subsequent edits require a new build. Use `-Configuration release` for a release build only after native smoke tests pass.
 
-The implemented flow is Create Local Profile → Choose → Continue → Switch Profile. Level, goal, daily minutes, Pinyin preference and the last selection persist in SQLite. Lessons, quizzes, tutorials and learning progress remain pending. No web server is needed.
+The implemented flow is Create Local Profile → Choose → Continue → Home → Introduction → Save/Resume/Replay. Home, Vocabulary and Grammar have contextual tours; Practice/Speaking remain design-pending. Profile settings, last selection and per-profile introduction state persist in SQLite. Vocabulary/grammar lessons, quizzes, audio and learning metrics remain pending. No web server is needed.
 
 ## Dependencies, code generation and data preservation
 
@@ -41,11 +41,11 @@ Riverpod/Drift are resolved and tested; see `docs/DEPENDENCIES.md` and `pubspec.
 $env:PUB_CACHE = Join-Path $env:TEMP 'nihao-tools\pub-cache'
 $dartTool = Join-Path $env:TEMP 'nihao-tools\flutter\bin\dart.bat'
 & $dartTool run build_runner build
-& $dartTool run drift_dev schema dump lib\data\app_database.dart docs\schema\drift_schema_v1.json
+& $dartTool run drift_dev schema dump lib\data\app_database.dart docs\schema\drift_schema_v2.json
 & $dartTool format lib test scripts\preview_profiles.dart
 ```
 
-Schema v1 is the initial baseline. For later versions, use a new versioned export filename and implement/test migration; never overwrite the v1 history to disguise a schema change. The database is `ni_hao_robot.sqlite` under the OS app-support directory. Windows company/product metadata influences that directory: changing it requires a data-path migration. Unknown upgrades fail rather than dropping tables. Keep any real database intact; never use test reset logic on learner storage.
+Schema v1 is the retained baseline; v2 adds introduction state through a tested additive migration. For later versions, use a new export filename and implement/test migration; never overwrite historical schemas. Read [migration and backup recovery](MIGRATIONS.md) before updating a real installation. The database is `ni_hao_robot.sqlite` under the OS app-support directory. Windows company/product metadata influences that directory: changing it requires a data-path migration. Unknown upgrades fail rather than dropping tables. Keep real databases intact; never use test reset logic on learner storage.
 
 Profile acceptance tests cover independent same-name profiles, invalid inputs, write rollback, persistent selection, temporary SQLite file reopening, and a UI-created profile continued after database/widget restart. Full native process testing is still a separate gate. Optional visual review: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\flutter.ps1 test --no-pub scripts\preview_profiles.dart`; PNGs go to `%TEMP%\nihao-profile-previews`.
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/database_provider.dart';
+
 import 'profile_form.dart';
 import 'profile_home_screen.dart';
 import 'profile_providers.dart';
@@ -62,6 +64,7 @@ class _ProfilePanelState extends ConsumerState<ProfilePanel> {
               const SizedBox(height: 12),
               OutlinedButton(
                 onPressed: () {
+                  ref.invalidate(appDatabaseProvider);
                   ref.invalidate(profileRepositoryProvider);
                   ref.invalidate(profilesProvider);
                 },

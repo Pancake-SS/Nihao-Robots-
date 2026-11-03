@@ -35,3 +35,13 @@ The original PPTX, Markdown specifications and robot images remain untouched. Ke
 - Native Windows checks need Visual Studio C++ and plugin symlink support. Widget tests and SQLite tests run separately with the resolved packages. Do not switch to web to conceal missing native tooling.
 
 For recovery, keep the learner database intact and roll back code only when schema-compatible. Before future migrations, close the app and make a recoverable database backup; test restoration and migration on a copy. No real learner database was modified during this slice; test databases were temporary.
+
+## 2026-11-04: Home, Vocabulary and foundation continuation
+
+- Continue the approved next slice in Flutter while Windows native prerequisites remain missing. Home now hosts an optional first-use introduction entry, preserving access to profile switching. Five short purpose pages lead to Hanzi, Pinyin, tones and a greeting/parting exchange; Save and leave allows a later return. This reconciles slides 2–6 with the Master Plan's tiny foundation requirement.
+- Schema v2 adds only per-profile introduction state and shares the existing database connection across repositories. v1 profiles/settings remain untouched. Migration/restart/backup restoration and rollback-on-write-error are tested. No real learner database was opened. `MIGRATIONS.md` records recovery; both schema snapshots are retained.
+- Completion is an acknowledgement, not vocabulary or mastery evidence; replay never erases completion. Saved page order is stable for revision 1. Pinyin preference applies except where the page explicitly teaches Pinyin/tone marks.
+- Home milestones explain thresholds but have no invented learned-word list, streak or weekly values. Their detailed metrics/tour steps will arrive with real lesson records. Vocabulary Learn/Practice/Master are honest landing cards, not fake action buttons. Grammar has a modest pending-content card and replayable tour. Primary Practice/Speaking retain the exact design-pending status; no new AI/voice UI.
+- Tours spotlight and scroll to actual live controls/cards, with keyboard-operated Back/Next/Close and replay. Activities omit the sidebar. Narrow layouts wrap controls and scroll at 200% text scale.
+- Added three byte-identical light-background originals: hover, orb and goggles. Different Vocabulary cards use different characters; source files and alpha were preserved.
+- Introduction facts checked against Open University teaching references; no curriculum/audio imported. Native-teacher review, recordings and the five-example lesson pack remain later release gates. See `FOUNDATION_CONTENT.md`.

@@ -660,11 +660,274 @@ class AppPreferencesCompanion extends UpdateCompanion<AppPreference> {
   }
 }
 
+class $FoundationProgressTable extends FoundationProgress
+    with TableInfo<$FoundationProgressTable, FoundationProgressData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FoundationProgressTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<int> profileId = GeneratedColumn<int>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES profiles (id)',
+    ),
+  );
+  static const VerificationMeta _stepMeta = const VerificationMeta('step');
+  @override
+  late final GeneratedColumn<int> step = GeneratedColumn<int>(
+    'step',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _completedMeta = const VerificationMeta(
+    'completed',
+  );
+  @override
+  late final GeneratedColumn<bool> completed = GeneratedColumn<bool>(
+    'completed',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("completed" IN (0, 1))',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [profileId, step, completed];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'foundation_progress';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FoundationProgressData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    }
+    if (data.containsKey('step')) {
+      context.handle(
+        _stepMeta,
+        step.isAcceptableOrUnknown(data['step']!, _stepMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stepMeta);
+    }
+    if (data.containsKey('completed')) {
+      context.handle(
+        _completedMeta,
+        completed.isAcceptableOrUnknown(data['completed']!, _completedMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_completedMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {profileId};
+  @override
+  FoundationProgressData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FoundationProgressData(
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      step: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}step'],
+      )!,
+      completed: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}completed'],
+      )!,
+    );
+  }
+
+  @override
+  $FoundationProgressTable createAlias(String alias) {
+    return $FoundationProgressTable(attachedDatabase, alias);
+  }
+}
+
+class FoundationProgressData extends DataClass
+    implements Insertable<FoundationProgressData> {
+  final int profileId;
+  final int step;
+  final bool completed;
+  const FoundationProgressData({
+    required this.profileId,
+    required this.step,
+    required this.completed,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['profile_id'] = Variable<int>(profileId);
+    map['step'] = Variable<int>(step);
+    map['completed'] = Variable<bool>(completed);
+    return map;
+  }
+
+  FoundationProgressCompanion toCompanion(bool nullToAbsent) {
+    return FoundationProgressCompanion(
+      profileId: Value(profileId),
+      step: Value(step),
+      completed: Value(completed),
+    );
+  }
+
+  factory FoundationProgressData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FoundationProgressData(
+      profileId: serializer.fromJson<int>(json['profileId']),
+      step: serializer.fromJson<int>(json['step']),
+      completed: serializer.fromJson<bool>(json['completed']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'profileId': serializer.toJson<int>(profileId),
+      'step': serializer.toJson<int>(step),
+      'completed': serializer.toJson<bool>(completed),
+    };
+  }
+
+  FoundationProgressData copyWith({
+    int? profileId,
+    int? step,
+    bool? completed,
+  }) => FoundationProgressData(
+    profileId: profileId ?? this.profileId,
+    step: step ?? this.step,
+    completed: completed ?? this.completed,
+  );
+  FoundationProgressData copyWithCompanion(FoundationProgressCompanion data) {
+    return FoundationProgressData(
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      step: data.step.present ? data.step.value : this.step,
+      completed: data.completed.present ? data.completed.value : this.completed,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FoundationProgressData(')
+          ..write('profileId: $profileId, ')
+          ..write('step: $step, ')
+          ..write('completed: $completed')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(profileId, step, completed);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FoundationProgressData &&
+          other.profileId == this.profileId &&
+          other.step == this.step &&
+          other.completed == this.completed);
+}
+
+class FoundationProgressCompanion
+    extends UpdateCompanion<FoundationProgressData> {
+  final Value<int> profileId;
+  final Value<int> step;
+  final Value<bool> completed;
+  const FoundationProgressCompanion({
+    this.profileId = const Value.absent(),
+    this.step = const Value.absent(),
+    this.completed = const Value.absent(),
+  });
+  FoundationProgressCompanion.insert({
+    this.profileId = const Value.absent(),
+    required int step,
+    required bool completed,
+  }) : step = Value(step),
+       completed = Value(completed);
+  static Insertable<FoundationProgressData> custom({
+    Expression<int>? profileId,
+    Expression<int>? step,
+    Expression<bool>? completed,
+  }) {
+    return RawValuesInsertable({
+      if (profileId != null) 'profile_id': profileId,
+      if (step != null) 'step': step,
+      if (completed != null) 'completed': completed,
+    });
+  }
+
+  FoundationProgressCompanion copyWith({
+    Value<int>? profileId,
+    Value<int>? step,
+    Value<bool>? completed,
+  }) {
+    return FoundationProgressCompanion(
+      profileId: profileId ?? this.profileId,
+      step: step ?? this.step,
+      completed: completed ?? this.completed,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (profileId.present) {
+      map['profile_id'] = Variable<int>(profileId.value);
+    }
+    if (step.present) {
+      map['step'] = Variable<int>(step.value);
+    }
+    if (completed.present) {
+      map['completed'] = Variable<bool>(completed.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FoundationProgressCompanion(')
+          ..write('profileId: $profileId, ')
+          ..write('step: $step, ')
+          ..write('completed: $completed')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $ProfilesTable profiles = $ProfilesTable(this);
   late final $AppPreferencesTable appPreferences = $AppPreferencesTable(this);
+  late final $FoundationProgressTable foundationProgress =
+      $FoundationProgressTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -672,6 +935,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     profiles,
     appPreferences,
+    foundationProgress,
   ];
 }
 
@@ -711,6 +975,30 @@ final class $$ProfilesTableReferences
     ).filter((f) => f.selectedProfileId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_appPreferencesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $FoundationProgressTable,
+    List<FoundationProgressData>
+  >
+  _foundationProgressRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.foundationProgress,
+        aliasName: 'profiles__id__foundation_progress__profile_id',
+      );
+
+  $$FoundationProgressTableProcessedTableManager get foundationProgressRefs {
+    final manager = $$FoundationProgressTableTableManager(
+      $_db,
+      $_db.foundationProgress,
+    ).filter((f) => f.profileId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _foundationProgressRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -777,6 +1065,31 @@ class $$ProfilesTableFilterComposer
           }) => $$AppPreferencesTableFilterComposer(
             $db: $db,
             $table: $db.appPreferences,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> foundationProgressRefs(
+    Expression<bool> Function($$FoundationProgressTableFilterComposer f) f,
+  ) {
+    final $$FoundationProgressTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.foundationProgress,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$FoundationProgressTableFilterComposer(
+            $db: $db,
+            $table: $db.foundationProgress,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -890,6 +1203,32 @@ class $$ProfilesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> foundationProgressRefs<T extends Object>(
+    Expression<T> Function($$FoundationProgressTableAnnotationComposer a) f,
+  ) {
+    final $$FoundationProgressTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.foundationProgress,
+          getReferencedColumn: (t) => t.profileId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$FoundationProgressTableAnnotationComposer(
+                $db: $db,
+                $table: $db.foundationProgress,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$ProfilesTableTableManager
@@ -905,7 +1244,10 @@ class $$ProfilesTableTableManager
           $$ProfilesTableUpdateCompanionBuilder,
           (ProfileRow, $$ProfilesTableReferences),
           ProfileRow,
-          PrefetchHooks Function({bool appPreferencesRefs})
+          PrefetchHooks Function({
+            bool appPreferencesRefs,
+            bool foundationProgressRefs,
+          })
         > {
   $$ProfilesTableTableManager(_$AppDatabase db, $ProfilesTable table)
     : super(
@@ -962,38 +1304,61 @@ class $$ProfilesTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({appPreferencesRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (appPreferencesRefs) db.appPreferences,
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (appPreferencesRefs)
-                    await $_getPrefetchedDataByColumns<
-                      ProfileRow,
-                      $ProfilesTable,
-                      AppPreference,
-                      $AppPreferencesTable
-                    >(
-                      currentTable: table,
-                      referencedTable: $$ProfilesTableReferences
-                          ._appPreferencesRefsTable(db),
-                      managerFromTypedResult: (p0) => $$ProfilesTableReferences(
-                        db,
-                        table,
-                        p0,
-                      ).appPreferencesRefs,
-                      currentColumn: 'id',
-                      referencedColumn: 'selected_profile_id',
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({appPreferencesRefs = false, foundationProgressRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (appPreferencesRefs) db.appPreferences,
+                    if (foundationProgressRefs) db.foundationProgress,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (appPreferencesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          ProfileRow,
+                          $ProfilesTable,
+                          AppPreference,
+                          $AppPreferencesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ProfilesTableReferences
+                              ._appPreferencesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProfilesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).appPreferencesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'selected_profile_id',
+                          typedResults: items,
+                        ),
+                      if (foundationProgressRefs)
+                        await $_getPrefetchedDataByColumns<
+                          ProfileRow,
+                          $ProfilesTable,
+                          FoundationProgressData,
+                          $FoundationProgressTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ProfilesTableReferences
+                              ._foundationProgressRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProfilesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).foundationProgressRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'profile_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -1010,7 +1375,10 @@ typedef $$ProfilesTableProcessedTableManager =
       $$ProfilesTableUpdateCompanionBuilder,
       (ProfileRow, $$ProfilesTableReferences),
       ProfileRow,
-      PrefetchHooks Function({bool appPreferencesRefs})
+      PrefetchHooks Function({
+        bool appPreferencesRefs,
+        bool foundationProgressRefs,
+      })
     >;
 typedef $$AppPreferencesTableCreateCompanionBuilder =
     AppPreferencesCompanion Function({
@@ -1270,6 +1638,293 @@ typedef $$AppPreferencesTableProcessedTableManager =
       AppPreference,
       PrefetchHooks Function({bool selectedProfileId})
     >;
+typedef $$FoundationProgressTableCreateCompanionBuilder =
+    FoundationProgressCompanion Function({
+      Value<int> profileId,
+      required int step,
+      required bool completed,
+    });
+typedef $$FoundationProgressTableUpdateCompanionBuilder =
+    FoundationProgressCompanion Function({
+      Value<int> profileId,
+      Value<int> step,
+      Value<bool> completed,
+    });
+
+final class $$FoundationProgressTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $FoundationProgressTable,
+          FoundationProgressData
+        > {
+  $$FoundationProgressTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ProfilesTable _profileIdTable(_$AppDatabase db) =>
+      db.profiles.createAlias('foundation_progress__profile_id__profiles__id');
+
+  $$ProfilesTableProcessedTableManager get profileId {
+    final $_column = $_itemColumn<int>('profile_id')!;
+
+    final manager = $$ProfilesTableTableManager(
+      $_db,
+      $_db.profiles,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_profileIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$FoundationProgressTableFilterComposer
+    extends Composer<_$AppDatabase, $FoundationProgressTable> {
+  $$FoundationProgressTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get step => $composableBuilder(
+    column: $table.step,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get completed => $composableBuilder(
+    column: $table.completed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ProfilesTableFilterComposer get profileId {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FoundationProgressTableOrderingComposer
+    extends Composer<_$AppDatabase, $FoundationProgressTable> {
+  $$FoundationProgressTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get step => $composableBuilder(
+    column: $table.step,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get completed => $composableBuilder(
+    column: $table.completed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ProfilesTableOrderingComposer get profileId {
+    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableOrderingComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FoundationProgressTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FoundationProgressTable> {
+  $$FoundationProgressTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get step =>
+      $composableBuilder(column: $table.step, builder: (column) => column);
+
+  GeneratedColumn<bool> get completed =>
+      $composableBuilder(column: $table.completed, builder: (column) => column);
+
+  $$ProfilesTableAnnotationComposer get profileId {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$FoundationProgressTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FoundationProgressTable,
+          FoundationProgressData,
+          $$FoundationProgressTableFilterComposer,
+          $$FoundationProgressTableOrderingComposer,
+          $$FoundationProgressTableAnnotationComposer,
+          $$FoundationProgressTableCreateCompanionBuilder,
+          $$FoundationProgressTableUpdateCompanionBuilder,
+          (FoundationProgressData, $$FoundationProgressTableReferences),
+          FoundationProgressData,
+          PrefetchHooks Function({bool profileId})
+        > {
+  $$FoundationProgressTableTableManager(
+    _$AppDatabase db,
+    $FoundationProgressTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FoundationProgressTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FoundationProgressTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FoundationProgressTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> profileId = const Value.absent(),
+                Value<int> step = const Value.absent(),
+                Value<bool> completed = const Value.absent(),
+              }) => FoundationProgressCompanion(
+                profileId: profileId,
+                step: step,
+                completed: completed,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> profileId = const Value.absent(),
+                required int step,
+                required bool completed,
+              }) => FoundationProgressCompanion.insert(
+                profileId: profileId,
+                step: step,
+                completed: completed,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$FoundationProgressTable, FoundationProgressData>(
+                    table,
+                  ),
+                  $$FoundationProgressTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({profileId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (profileId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.profileId,
+                        referencedTable: $$FoundationProgressTableReferences
+                            ._profileIdTable(db),
+                        referencedColumn: $$FoundationProgressTableReferences
+                            ._profileIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$FoundationProgressTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FoundationProgressTable,
+      FoundationProgressData,
+      $$FoundationProgressTableFilterComposer,
+      $$FoundationProgressTableOrderingComposer,
+      $$FoundationProgressTableAnnotationComposer,
+      $$FoundationProgressTableCreateCompanionBuilder,
+      $$FoundationProgressTableUpdateCompanionBuilder,
+      (FoundationProgressData, $$FoundationProgressTableReferences),
+      FoundationProgressData,
+      PrefetchHooks Function({bool profileId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1278,4 +1933,6 @@ class $AppDatabaseManager {
       $$ProfilesTableTableManager(_db, _db.profiles);
   $$AppPreferencesTableTableManager get appPreferences =>
       $$AppPreferencesTableTableManager(_db, _db.appPreferences);
+  $$FoundationProgressTableTableManager get foundationProgress =>
+      $$FoundationProgressTableTableManager(_db, _db.foundationProgress);
 }
