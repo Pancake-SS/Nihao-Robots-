@@ -1,0 +1,21 @@
+name: ni_hao_robot
+description: A local-first Mandarin learning companion. Initial source scaffold.
+publish_to: none
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/mascots/welcome_waving_light.png
+    - assets/mascots/welcome_orb_dark.png

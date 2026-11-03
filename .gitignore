@@ -1,0 +1,26 @@
+# Local tools and generated output
+.venv/
+__pycache__/
+*.pyc
+.dart_tool/
+.flutter-plugins-dependencies
+build/
+coverage/
+windows/flutter/ephemeral/
+*.iml
+.idea/
+
+# Personal data / secrets must never enter source control
+.env
+.env.*
+!.env.example
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+
+# Original storyboard contains illustrative sign-in credentials.
+# Keep this source locally; do not distribute it in the app or commit it.
+reference/*.pptx
+~$*.docx

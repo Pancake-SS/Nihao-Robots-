@@ -1,0 +1,222 @@
+﻿[
+    {
+        "id":  "asset-01",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 05_06_20 PM-1.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  1143845,
+        "sha256":  "5ab746e7d70a97890bcb896be129f7f98cbf643ac395977652971b00da713604",
+        "transparentPixels":  0,
+        "partialAlphaPixels":  0,
+        "opaquePixels":  1572516
+    },
+    {
+        "id":  "asset-02",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 05_06_20 PM-2.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  1050230,
+        "sha256":  "d74bd014f3e7859096f5c19288dfb40550862f8c32a9f4b6fb0789e634f0f09c",
+        "transparentPixels":  0,
+        "partialAlphaPixels":  0,
+        "opaquePixels":  1572516
+    },
+    {
+        "id":  "asset-03",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 05_06_21 PM-3.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  1201811,
+        "sha256":  "86636f459f5c890b23b6dd43dd60cb2a1af0c7a539a574e6eaf914445382625e",
+        "transparentPixels":  0,
+        "partialAlphaPixels":  0,
+        "opaquePixels":  1572516
+    },
+    {
+        "id":  "asset-04",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 05_06_22 PM-4.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  1155557,
+        "sha256":  "a802d4f82012a0d52943b70f1c6470ab5b2af0afc38cd4228758805a5b87ee03",
+        "transparentPixels":  0,
+        "partialAlphaPixels":  0,
+        "opaquePixels":  1572516
+    },
+    {
+        "id":  "asset-05",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 05_06_23 PM-5.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  1141068,
+        "sha256":  "41fcddac8bc2725a7cc93bfe8a0840de14716e99bbb595154e7d980441352005",
+        "transparentPixels":  0,
+        "partialAlphaPixels":  0,
+        "opaquePixels":  1572516
+    },
+    {
+        "id":  "asset-06",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 05_06_24 PM-6.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  1222430,
+        "sha256":  "c1f961e93a5b59fb2c912da1eaeac40565d4a5b526141d6498bafbfd8cde7b22",
+        "transparentPixels":  0,
+        "partialAlphaPixels":  0,
+        "opaquePixels":  1572516
+    },
+    {
+        "id":  "asset-07",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 05_06_25 PM-7.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  1131122,
+        "sha256":  "4569fe8be293b18e92e9ee959099d3504a81d023a21a826cbb96b17d8a16b9c3",
+        "transparentPixels":  0,
+        "partialAlphaPixels":  0,
+        "opaquePixels":  1572516
+    },
+    {
+        "id":  "asset-08",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 05_06_26 PM-8.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  1128956,
+        "sha256":  "9552ce834fb71dc272d38ad108476233a6d20218697137b5ddc92788dd8e5a9f",
+        "transparentPixels":  0,
+        "partialAlphaPixels":  0,
+        "opaquePixels":  1572516
+    },
+    {
+        "id":  "asset-09",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 05_06_27 PM-9.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  1106711,
+        "sha256":  "2c1e4e1f22138edb0aafaaf8b62cb92dea854319ab903b5767f7482a138237f5",
+        "transparentPixels":  0,
+        "partialAlphaPixels":  0,
+        "opaquePixels":  1572516
+    },
+    {
+        "id":  "asset-10",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 05_06_28 PM-10.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  1073605,
+        "sha256":  "4bcf9c34b6a8d5fc3751afa0ac8d3d0f56406ce01c4dcf2282bcbd7607418c88",
+        "transparentPixels":  0,
+        "partialAlphaPixels":  0,
+        "opaquePixels":  1572516
+    },
+    {
+        "id":  "asset-11",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 06_17_48 PM-1.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  322683,
+        "sha256":  "fb3ba5cf0466cd9717cbff171db6af70423a53231b59bb0dfe7557dadf3218db",
+        "transparentPixels":  1366239,
+        "partialAlphaPixels":  200044,
+        "opaquePixels":  6233
+    },
+    {
+        "id":  "asset-12",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 06_17_49 PM-2.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  269113,
+        "sha256":  "aa29b24f5f0bbc50135e1a5571940cc5f5b308397d5ea94d4f64cd9562926b8f",
+        "transparentPixels":  1400256,
+        "partialAlphaPixels":  167231,
+        "opaquePixels":  5029
+    },
+    {
+        "id":  "asset-13",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 06_17_51 PM-3.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  261062,
+        "sha256":  "83a6f46bd0475921c1983bcdda2aea226f72edb63968656367758f1795fad090",
+        "transparentPixels":  1426940,
+        "partialAlphaPixels":  141372,
+        "opaquePixels":  4204
+    },
+    {
+        "id":  "asset-14",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 06_17_52 PM-4.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  278708,
+        "sha256":  "f13a8862f894dca29d96490b53a6220743c595992e6edcddce12122857b904f6",
+        "transparentPixels":  1341423,
+        "partialAlphaPixels":  225644,
+        "opaquePixels":  5449
+    },
+    {
+        "id":  "asset-15",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 06_17_53 PM-5.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  485270,
+        "sha256":  "016213e9517a31c0817557220fdf5c4cf48eb049f9d233acc064b8d911d2b15d",
+        "transparentPixels":  1266802,
+        "partialAlphaPixels":  295032,
+        "opaquePixels":  10682
+    },
+    {
+        "id":  "asset-16",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 06_17_54 PM-6.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  354569,
+        "sha256":  "18f03f64ed71fc5f6ed7fe7e8cb467f95c9ffdeffc83203ef9a74cfa8cfbabf8",
+        "transparentPixels":  1347207,
+        "partialAlphaPixels":  218541,
+        "opaquePixels":  6768
+    },
+    {
+        "id":  "asset-17",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 06_17_55 PM-7.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  485115,
+        "sha256":  "2caaa74f4de071693462afa3c2295bed414149e27317bed7d7998c5943a68e0d",
+        "transparentPixels":  1280218,
+        "partialAlphaPixels":  286003,
+        "opaquePixels":  6295
+    },
+    {
+        "id":  "asset-18",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 06_17_56 PM-8.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  322361,
+        "sha256":  "efe0fc3892d0725f98b8269d5a8992f1cea582de652cf899afa4255c37ed2562",
+        "transparentPixels":  1322464,
+        "partialAlphaPixels":  243112,
+        "opaquePixels":  6940
+    },
+    {
+        "id":  "asset-19",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 06_17_58 PM-9.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  543501,
+        "sha256":  "ba2b68dd71f8d165fcd152bfecf1ae590f1049086752444aa127abbb87ddec25",
+        "transparentPixels":  1251627,
+        "partialAlphaPixels":  315139,
+        "opaquePixels":  5750
+    },
+    {
+        "id":  "asset-20",
+        "path":  "Robot images/ChatGPT Image Oct 16, 2026, 06_17_59 PM-10.png",
+        "width":  1254,
+        "height":  1254,
+        "bytes":  193300,
+        "sha256":  "a45a75620161e5bca5c194c8e3b2271874ff7741aec4a0ed3067f43af20a7756",
+        "transparentPixels":  1482455,
+        "partialAlphaPixels":  88217,
+        "opaquePixels":  1844
+    }
+]
