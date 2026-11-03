@@ -3,7 +3,8 @@ import 'package:flutter/widgets.dart';
 /// Supplied originals only. Background and character choices are explicit.
 enum RobotArtwork {
   wavingOnPaper('assets/mascots/welcome_waving_light.png'),
-  orbOnNavy('assets/mascots/welcome_orb_dark.png');
+  orbOnNavy('assets/mascots/welcome_orb_dark.png'),
+  trackedOnPaper('assets/mascots/profile_tracked_light.png');
 
   const RobotArtwork(this.assetPath);
 

@@ -1,39 +1,89 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ni_hao_robot/app/app.dart';
 import 'package:ni_hao_robot/app/theme.dart';
 import 'package:ni_hao_robot/features/onboarding/welcome_screen.dart';
 import 'package:ni_hao_robot/shared/robot_art.dart';
+import 'package:ni_hao_robot/features/profiles/profile_providers.dart';
+import 'package:ni_hao_robot/features/profiles/profile.dart';
+
+import 'profile_test_repository.dart';
+
+Widget withProfiles(Widget child) => ProviderScope(
+  overrides: [
+    profileRepositoryProvider.overrideWithValue(TestProfileRepository()),
+  ],
+  child: child,
+);
 
 void main() {
-  testWidgets('welcome labels future learning honestly and uses distinct originals', (tester) async {
-    await tester.pumpWidget(const NiHaoRobotApp());
-    await tester.pumpAndSettle();
+  testWidgets(
+    'long profile names remain usable at narrow width and 200% text',
+    (tester) async {
+      final repository = TestProfileRepository();
+      await repository.create(
+        const ProfileDraft(
+          name: 'A long name for our Mandarin learner',
+          level: LearnerLevel.experienced,
+        ),
+      );
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [profileRepositoryProvider.overrideWithValue(repository)],
+          child: const NiHaoRobotApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Continue'));
+      await tester.tap(find.text('Continue'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Welcome, A long name'), findsOneWidget);
+      await tester.ensureVisible(find.text('Switch profile'));
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'welcome labels future learning honestly and uses distinct originals',
+    (tester) async {
+      await tester.pumpWidget(withProfiles(const NiHaoRobotApp()));
+      await tester.pumpAndSettle();
 
-    expect(find.text('NI HAO ROBOT!'), findsOneWidget);
-    expect(find.text('Coming soon: local learner profiles and your first lesson.'), findsOneWidget);
-    final robots = tester.widgetList<RobotArt>(find.byType(RobotArt));
-    expect(robots.map((robot) => robot.artwork).toSet(), {
-      RobotArtwork.wavingOnPaper,
-      RobotArtwork.orbOnNavy,
-    });
-    expect(tester.takeException(), isNull);
-  });
+      expect(find.text('NI HAO ROBOT!'), findsOneWidget);
+      expect(find.text('Create local profile'), findsOneWidget);
+      final robots = tester.widgetList<RobotArt>(find.byType(RobotArt));
+      expect(robots.map((robot) => robot.artwork).toSet(), {
+        RobotArtwork.wavingOnPaper,
+        RobotArtwork.orbOnNavy,
+      });
+      expect(tester.takeException(), isNull);
+    },
+  );
 
-  testWidgets('small window and large text scroll without overflow', (tester) async {
+  testWidgets('small window and large text scroll without overflow', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(360, 640);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(
-      MaterialApp(
-        theme: buildTheme(),
-        home: MediaQuery(
-          data: const MediaQueryData(
-            size: Size(360, 640),
-            textScaler: TextScaler.linear(2),
+      withProfiles(
+        MaterialApp(
+          theme: buildTheme(),
+          home: MediaQuery(
+            data: const MediaQueryData(
+              size: Size(360, 640),
+              textScaler: TextScaler.linear(2),
+            ),
+            child: const WelcomeScreen(),
           ),
-          child: const WelcomeScreen(),
         ),
       ),
     );
@@ -50,7 +100,7 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
-      await tester.pumpWidget(const NiHaoRobotApp());
+      await tester.pumpWidget(withProfiles(const NiHaoRobotApp()));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       expect(find.byType(RobotArt), findsNWidgets(2));

@@ -54,6 +54,8 @@ Future profile picker: Create Local Profile / Choose Profile / Continue, no pass
 
 Tutorial overlays must spotlight real controls, keep Back/Next/Close reachable, support keyboard focus and replay, and include Vocabulary and Grammar. Missing audio shows a clear unavailable state and offers a suitable non-audio activity; never pretend a sound played.
 
-## Initial scaffold boundary
+## Current profile-slice boundary
 
-The welcome composition is a source-only bootstrap, not a completed profile or learning flow. No counters, lesson data, authentication, database or working learning CTA are fabricated. Riverpod and Drift are reserved for the next testable slice after Flutter tooling is available.
+The welcome composition now hosts working local profile creation/selection backed by Riverpod and Drift. The introduction was shortened to keep the form and save action visible at 1440 × 900. Buttons have a 48-pixel minimum visual height. Profile cards and the Pinyin switch have a Material surface so selection/ink feedback remains visible.
+
+The profile-ready page shows persisted learning preferences and uses the distinct tracked robot; it explicitly states that lessons are coming next. No counters, lesson data, password authentication or learning CTA are fabricated. Large-text/narrow-window creation and profile navigation are covered by widget tests. Three desktop widget renders were reviewed with local system fonts; native Windows launch remains a separate verification gate.

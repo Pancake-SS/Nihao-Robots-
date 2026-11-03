@@ -21,4 +21,17 @@ Authority: latest user prompt, then Master Plan, Coding Standards, actual PPT no
 
 ## Recovery and change discipline
 
-The original PPTX, Markdown specifications and robot images remain untouched. Keep existing dated project-memory decisions. Word is a generated mirror; canonical Markdown is the recovery source. Database creation is deferred; future schema changes require tested migration and recovery before use. No cloud, paid API, AI, analytics or runtime network dependency is introduced.
+The original PPTX, Markdown specifications and robot images remain untouched. Keep existing dated project-memory decisions. Word is a generated mirror; canonical Markdown is the recovery source. Database creation was deferred at bootstrap; schema v1 is introduced below. Future schema changes require tested migration and recovery before use. No cloud, paid API, AI, analytics or runtime network dependency is introduced.
+
+## 2026-11-03–04: first local-profile slice
+
+- Installed official stable Flutter 3.47.9 / Dart 3.13.7 in `%TEMP%/nihao-tools/flutter`, with a separate task-local Pub cache. No global PATH change. `scripts/flutter.ps1` can use this SDK, an SDK on PATH, or `NIHAO_FLUTTER_ROOT`.
+- Added and locked Riverpod/Drift dependencies; generated Drift code with build_runner and Windows runner with Flutter. This implements the approved architecture and introduces the first database; there was no prior learner schema to migrate.
+- Schema v1 stores profiles and the last-selected profile ID, protected by foreign keys and fixed-value constraints. Creation and selection are transactional; returned state is read before commit. No delete/reset fallback exists. Unknown schema upgrades fail explicitly. Baseline schema is exported in `docs/schema/drift_schema_v1.json`.
+- Profile names support Unicode, reject hidden/control and malformed characters, and have bounded length. Display names need not be unique: stable integer IDs keep same-name profiles distinct, and the picker shows the profile number. Name is a display label, never authentication or a database key.
+- Each profile owns its level, purpose, daily-minute target and Pinyin preference. Time is injected into the repository and stored as UTC. Learning progress/events are deliberately deferred until the lesson slice; no empty progress schema or fake counters were added.
+- Database location uses the OS application-support directory and `ni_hao_robot.sqlite`. Windows company/product metadata is fixed before any real learner database is created: company `Ni Hao Robot`, product `ni_hao_robot`. Changing these later requires explicit data-path migration; never silently create a fresh database elsewhere.
+- Error retry is explicit, preserving drafts and saved data. Initial tests caught invisible Material feedback and a retry invalidation issue; both were fixed and regression-tested. Repeated submissions are disabled while saving.
+- Native Windows checks need Visual Studio C++ and plugin symlink support. Widget tests and SQLite tests run separately with the resolved packages. Do not switch to web to conceal missing native tooling.
+
+For recovery, keep the learner database intact and roll back code only when schema-compatible. Before future migrations, close the app and make a recoverable database backup; test restoration and migration on a copy. No real learner database was modified during this slice; test databases were temporary.

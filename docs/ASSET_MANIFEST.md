@@ -80,12 +80,13 @@ Slide 19 and slides 20–25 repeatedly use a tall robot in the storyboard. The l
 
 ### Bundled welcome scaffold copies
 
-These two files are now referenced by `pubspec.yaml` and `lib/shared/robot_art.dart`. They are byte-for-byte copies of two distinct characters; originals remain in place. Runtime layout is still unverified because Flutter is unavailable.
+These three files are referenced by `pubspec.yaml` and `lib/shared/robot_art.dart`. They are byte-for-byte copies of distinct characters; originals remain in place. Profile entry, selection and profile-ready screens were rendered with Flutter's widget renderer and inspected; native Windows rendering remains pending.
 
 | Bundled path | Source ID | Actual scaffold surface | SHA-256 |
 |---|---|---|---|
 | `assets/mascots/welcome_waving_light.png` | asset-05 | White welcome card | `41fcddac8bc2725a7cc93bfe8a0840de14716e99bbb595154e7d980441352005` |
 | `assets/mascots/welcome_orb_dark.png` | asset-13 | Navy companion card | `83a6f46bd0475921c1983bcdda2aea226f72edb63968656367758f1795fad090` |
+| `assets/mascots/profile_tracked_light.png` | asset-01 | White profile-ready card | `5ab746e7d70a97890bcb896be129f7f98cbf643ac395977652971b00da713604` |
 
 ### Preservation rules
 

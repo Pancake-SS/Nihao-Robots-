@@ -22,9 +22,26 @@ ThemeData buildTheme() {
     ),
     fontFamily: 'Segoe UI',
     fontFamilyFallback: const ['Microsoft YaHei', 'Noto Sans SC', 'sans-serif'],
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(minimumSize: const Size(64, 48)),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(minimumSize: const Size(64, 48)),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(minimumSize: const Size(64, 48)),
+    ),
     textTheme: const TextTheme(
-      headlineLarge: TextStyle(fontSize: 36, height: 1.22, fontWeight: FontWeight.w700),
-      headlineSmall: TextStyle(fontSize: 24, height: 1.33, fontWeight: FontWeight.w600),
+      headlineLarge: TextStyle(
+        fontSize: 36,
+        height: 1.22,
+        fontWeight: FontWeight.w700,
+      ),
+      headlineSmall: TextStyle(
+        fontSize: 24,
+        height: 1.33,
+        fontWeight: FontWeight.w600,
+      ),
       bodyLarge: TextStyle(fontSize: 16, height: 1.5),
       bodyMedium: TextStyle(fontSize: 14, height: 1.43),
     ).apply(bodyColor: AppColors.navy, displayColor: AppColors.navy),
