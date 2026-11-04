@@ -75,7 +75,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
         TourStop(
           _vocabulary[1],
           'Vocabulary practice',
-          'This is the planned vocabulary review stack. It is separate from the future Practice area in the main menu.',
+          'Open reviews shows this profile’s saved early reviews and due times. It is separate from the future Practice area in the main menu.',
         ),
         TourStop(
           _vocabulary[2],
@@ -159,6 +159,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
       progressKey: _progress,
     ),
     1 => VocabularyLanding(
+      profileId: widget.profile.id,
       targets: _vocabulary,
       showPinyin: widget.profile.showPinyin,
     ),

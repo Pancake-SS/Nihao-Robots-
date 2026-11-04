@@ -22,7 +22,7 @@ void main() {
       expect(() => VocabularyPack.parse(input), throwsFormatException);
     }
     for (final changes in [
-      {'schemaVersion': 2},
+      {'schemaVersion': 99},
       {'schemaVersion': 1.0},
       {'revision': 0},
       {'revision': '1'},

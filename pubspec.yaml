@@ -25,6 +25,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/content/starter_greeting_v1.json
     - assets/mascots/welcome_waving_light.png
     - assets/mascots/welcome_orb_dark.png
     - assets/mascots/profile_tracked_light.png

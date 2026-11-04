@@ -1,7 +1,6 @@
 // Development-only Flutter widget render; writes PNGs to OS temp, not app assets.
 // Run with: flutter test scripts/preview_profiles.dart
 import 'dart:io';
-import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -10,19 +9,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ni_hao_robot/app/app.dart';
-import 'package:ni_hao_robot/features/profiles/profile_providers.dart';
+import 'package:drift/native.dart';
+import 'package:ni_hao_robot/data/app_database.dart';
+import 'package:ni_hao_robot/data/database_provider.dart';
+import 'package:ni_hao_robot/features/profiles/sqlite_profile_repository.dart';
+import 'package:ni_hao_robot/features/review/learning_providers.dart';
 import 'package:ni_hao_robot/shared/robot_art.dart';
-
-import '../test/profile_test_repository.dart';
-import '../test/content_pack_fixture.dart';
-
-import 'package:ni_hao_robot/features/vocabulary/content_pack.dart';
-import 'package:ni_hao_robot/features/vocabulary/vocabulary_repository.dart';
-import 'package:ni_hao_robot/features/vocabulary/word_introduction_screen.dart';
-
-import '../test/foundation_test_repository.dart';
-
-import 'package:ni_hao_robot/features/onboarding/foundation_repository.dart';
 
 void main() {
   testWidgets('render profile entry for visual inspection', (tester) async {
@@ -45,6 +37,13 @@ void main() {
       await icons.load();
     });
     final key = GlobalKey();
+    final database = AppDatabase(NativeDatabase.memory());
+    var clock = DateTime.utc(2026, 11, 4, 12);
+    await SqliteProfileRepository(database).load();
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await database.close();
+    });
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(1440, 900);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -52,10 +51,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          foundationRepositoryProvider.overrideWithValue(
-            TestFoundationRepository(),
-          ),
-          profileRepositoryProvider.overrideWithValue(TestProfileRepository()),
+          appDatabaseProvider.overrideWithValue(database),
+          learningClockProvider.overrideWithValue(() => clock),
         ],
         child: RepaintBoundary(key: key, child: const NiHaoRobotApp()),
       ),
@@ -108,29 +105,38 @@ void main() {
     await capture('vocabulary');
     await tester.tap(find.text('Browse words'));
     await tester.pumpAndSettle();
-    await capture('catalogue-empty');
+    await capture('catalogue-pilot');
+    await tester.tap(find.text('Explore word'));
+    await tester.pumpAndSettle();
+    await capture('pilot-lesson');
+    await tester.ensureVisible(find.text('Continue to Quiz'));
+    await tester.pumpAndSettle();
+    await capture('pilot-lesson-bottom');
+    await tester.tap(find.text('Continue to Quiz'));
+    await tester.pumpAndSettle();
+    await capture('pilot-quiz');
+    await tester.tap(find.byKey(const ValueKey('answer-hello')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Next question'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('answer-hello')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Save answers'));
+    await tester.pumpAndSettle();
+    await capture('pilot-result');
+    await tester.ensureVisible(find.text('Done'));
+    await tester.tap(find.text('Done'));
+    await tester.pumpAndSettle();
     await tester.pageBack();
     await tester.pumpAndSettle();
-    final fixturePack = VocabularyPack.parse(jsonEncode(fixture()));
-    tester
-        .state<NavigatorState>(find.byType(Navigator))
-        .push(
-          MaterialPageRoute<void>(
-            builder: (_) => WordIntroductionScreen(
-              word: CatalogueWord(
-                fixturePack.id,
-                fixturePack.revision,
-                fixturePack.entries.single,
-              ),
-              showPinyin: true,
-            ),
-          ),
-        );
+    await tester.pageBack();
     await tester.pumpAndSettle();
-    await capture('word-introduction-test-fixture');
-    await tester.ensureVisible(find.text('Content source and review'));
+    await tester.tap(find.text('Open reviews'));
     await tester.pumpAndSettle();
-    await capture('word-introduction-test-fixture-bottom');
+    await capture('pilot-review-upcoming');
+    clock = clock.add(const Duration(minutes: 5));
+    await tester.pump(const Duration(seconds: 1));
+    await capture('pilot-review-due');
     await tester.pageBack();
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('destination-0')));

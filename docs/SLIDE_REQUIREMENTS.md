@@ -2,6 +2,12 @@
 
 Audit date: 2026-11-03 (Asia/Kuala_Lumpur). Source: `reference/Copy of MCPKI_FYP_Starred_Slides_Updated.pptx.pptx`.
 
+## Pilot implementation update — 2026-11-04
+
+Slide 19 now has a real five-example greeting lesson and Continue to Quiz route. Slide 20's meaning recognition is implemented with four choices, deterministic grading and saved feedback. A second meaning → Hanzi question uses the shared choice UI; it does **not** implement slide 22's Pinyin → Hanzi task. Slides 21–25's remaining exercise families are pending. The pilot is explicitly source-checked with independent teacher review pending; see `STARTER_GREETING_REVIEW.md`.
+
+Slide 17 is partially implemented as a per-profile due-review list with real counts, due dates, failure/relearning and preserved attempts. Selected/random/endless batches, search/manual movement and a readable history UI remain pending. Slide 18's Master and graduation are not implemented; the five-minute/one-day pilot policy awards no mastery. Main Practice/Speaking remain design-pending. Subpages use a calm back-header layout with no sidebar or repeated robot; the six existing original artwork copies are unchanged.
+
 ## Evidence and audit scope
 
 - Read both complete source specifications, the master implementation prompt and `reference/POWERPOINT_SPEAKER_NOTES.md`; the convenience extraction was checked against the real deck rather than trusted by itself.

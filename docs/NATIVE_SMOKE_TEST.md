@@ -1,6 +1,6 @@
 # Native Windows smoke test
 
-Prepared 2026-11-04 for checkpoint `19afc03`. Status: NOT RUN. Flutter widget tests are not a substitute for this checklist.
+Updated 2026-11-04 for the schema-v3 greeting pilot. Status: NOT RUN. Flutter widget tests are not a substitute for this checklist.
 
 ## Prerequisites and launch
 
@@ -29,7 +29,13 @@ Use clearly named disposable profiles, keeping any existing profiles intact. The
 | Complete A's introduction, replay, then leave early | Completion remains recorded; no word or mastery credit appears | NOT RUN |
 | With A, inspect character page, Pinyin page and tone page | Optional Pinyin is hidden; teaching examples remain visible; audio is explicitly unavailable | NOT RUN |
 | Replay Home, Vocabulary and Grammar tutorials | Live targets highlighted; Back, Next, Done and Close work; Enter/Escape work | NOT RUN |
-| Open Vocabulary | Three distinct original robots; pending activities honestly labeled | NOT RUN |
+| Open Vocabulary | Three distinct original robots; Browse words and Open reviews work; Master is pending | NOT RUN |
+| Browse words; explore 你好 | Exactly five examples, visible pilot/teacher-review notice, profile Pinyin preference, audio unavailable | NOT RUN |
+| Continue to Quiz; answer both questions; save | One saved result, explanatory feedback and a five-minute due date; no mastery | NOT RUN |
+| Open reviews before and at the due time | Not due yet initially; Review now becomes available at due time | NOT RUN |
+| Submit an incorrect due review, close the entire app, relaunch offline | Relearning and its five-minute due date persist; profile selection remains intact | NOT RUN |
+| Complete a correct due review | Next review is one day later; successful delayed-review count increases once | NOT RUN |
+| Switch to B and open reviews | A's word does not appear in B's list | NOT RUN |
 | Open primary Practice and Speaking | Both say Coming later — design pending | NOT RUN |
 | Resize to approximately 1440×900, 900×700 and 360×640 | Scroll/navigation remain usable; no clipped controls or overflow | NOT RUN |
 | Increase Windows text scaling to 200%, then restore its prior value | Introduction and tutorial actions remain reachable | NOT RUN |

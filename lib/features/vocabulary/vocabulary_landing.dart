@@ -3,15 +3,18 @@ import 'package:flutter/material.dart';
 import '../../shared/learning_card.dart';
 import '../../shared/robot_art.dart';
 import 'vocabulary_catalogue_screen.dart';
+import '../review/review_screen.dart';
 
 class VocabularyLanding extends StatelessWidget {
   const VocabularyLanding({
     required this.targets,
     required this.showPinyin,
+    required this.profileId,
     super.key,
   });
   final List<GlobalKey> targets;
   final bool showPinyin;
+  final int profileId;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -23,7 +26,7 @@ class VocabularyLanding extends StatelessWidget {
       ),
       const SizedBox(height: 12),
       const Text(
-        'Learn a word in context, revisit it over time, and build independent recall. Vocabulary activities are being prepared.',
+        'Explore a pilot lesson, try two recognition checks, and return when your review is due.',
       ),
       const SizedBox(height: 24),
       LayoutBuilder(
@@ -37,11 +40,13 @@ class VocabularyLanding extends StatelessWidget {
               title: 'Learn',
               artwork: RobotArtwork.hoverOnPaper,
               description: 'Meet new words through characters, meaning and checked examples.',
-              status: 'Word lessons coming next',
+              status: 'Source-checked pilot lesson',
               action: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
-                  builder: (_) =>
-                      VocabularyCatalogueScreen(showPinyin: showPinyin),
+                  builder: (_) => VocabularyCatalogueScreen(
+                    showPinyin: showPinyin,
+                    profileId: profileId,
+                  ),
                 ),
               ),
             ),
@@ -50,7 +55,13 @@ class VocabularyLanding extends StatelessWidget {
               title: 'Practice',
               artwork: RobotArtwork.orbOnPaper,
               description: 'Return to vocabulary through scheduled reviews and varied recall.',
-              status: 'Review activities coming next',
+              status: 'Your saved early reviews',
+              actionLabel: 'Open reviews',
+              action: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => ReviewScreen(profileId: profileId),
+                ),
+              ),
             ),
             _StackCard(
               key: targets[2],
@@ -91,6 +102,7 @@ class _StackCard extends StatelessWidget {
     required this.description,
     required this.status,
     this.action,
+    this.actionLabel = 'Browse words',
     super.key,
   });
   final String title;
@@ -98,6 +110,7 @@ class _StackCard extends StatelessWidget {
   final String description;
   final String status;
   final VoidCallback? action;
+  final String actionLabel;
 
   @override
   Widget build(BuildContext context) => LearningCard(
@@ -113,7 +126,7 @@ class _StackCard extends StatelessWidget {
         Text(status, style: const TextStyle(fontWeight: FontWeight.w600)),
         if (action != null) ...[
           const SizedBox(height: 16),
-          FilledButton(onPressed: action, child: const Text('Browse words')),
+          FilledButton(onPressed: action, child: Text(actionLabel)),
         ],
       ],
     ),

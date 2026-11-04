@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 
 import '../../shared/learning_card.dart';
+import '../review/word_quiz_entry.dart';
 import 'vocabulary_repository.dart';
 
 class WordIntroductionScreen extends StatelessWidget {
   const WordIntroductionScreen({
     required this.word,
     required this.showPinyin,
+    required this.profileId,
     super.key,
   });
   final CatalogueWord word;
   final bool showPinyin;
+  final int profileId;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +46,12 @@ class WordIntroductionScreen extends StatelessWidget {
                         ),
                       const SizedBox(height: 12),
                       Text(entry.meaning),
+                      if (entry.reviewStatus == 'source-checked-pilot') ...[
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Pilot lesson · source-checked; independent teacher review pending.',
+                        ),
+                      ],
                       const SizedBox(height: 20),
                       const Text('Audio unavailable for this word.'),
                     ],
@@ -78,8 +87,15 @@ class WordIntroductionScreen extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: 24),
+                if (entry.questions.isNotEmpty)
+                  WordQuizEntry(profileId: profileId, wordId: entry.id)
+                else
+                  const Text(
+                    'Quiz activities are not available for this word yet.',
+                  ),
+                const SizedBox(height: 12),
                 const Text(
-                  'Quiz activities are coming next. Reading this page does not record a learned word or mastery.',
+                  'Reading this page does not record a learned word or mastery.',
                 ),
                 const SizedBox(height: 16),
                 ExpansionTile(

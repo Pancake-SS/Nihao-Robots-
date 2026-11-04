@@ -118,7 +118,7 @@ class HomeContent extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               const Text(
-                'Vocabulary lessons and reviews are coming next. Word totals, streaks and weekly activity will appear when learning records are available.',
+                'Try the pilot lesson in Vocabulary, then open Vocabulary Practice for your saved review schedule. Dashboard word totals, streaks and weekly activity are still being prepared.',
               ),
               const SizedBox(height: 16),
               Wrap(
@@ -138,7 +138,7 @@ class HomeContent extends ConsumerWidget {
                       child: Text(
                         '500, 1,000, 2,000 and 5,000 words are product milestones, not fluency scores. '
                         'Future details will show the actual words behind your progress. '
-                        'No vocabulary learning records are available in this version. '
+                        'Current early-review records are available in Vocabulary Practice. '
                         'Reading the introduction does not count as learning or mastering a word.',
                       ),
                     ),

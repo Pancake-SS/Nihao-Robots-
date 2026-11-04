@@ -42,7 +42,7 @@ Future<void> _mount(
       overrides: [vocabularyRepositoryProvider.overrideWithValue(repository)],
       child: MaterialApp(
         theme: buildTheme(),
-        home: VocabularyCatalogueScreen(showPinyin: pinyin),
+        home: VocabularyCatalogueScreen(showPinyin: pinyin, profileId: 1),
       ),
     ),
   );

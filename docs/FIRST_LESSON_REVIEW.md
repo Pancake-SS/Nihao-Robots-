@@ -1,6 +1,16 @@
 # First vocabulary lesson — review brief
 
-Prepared 2026-11-04. Status: parser, catalogue and word-introduction UI implemented; no approved lesson pack or runtime curriculum bundled.
+Updated 2026-11-04. Current status: one explicitly source-checked pilot is bundled, with five examples, two recognition questions and persistent early reviews. Independent teacher approval is still pending. The original preparation brief and earlier implementation checkpoints below are retained as history; current evidence is in [the pilot review record](STARTER_GREETING_REVIEW.md).
+
+## Current pilot and schema-2 contract
+
+The production allowlist now includes `assets/content/starter_greeting_v1.json`, pack `starter.greetings`, revision 1. It is not labeled `approved`: schema 2 accepts the distinct `source-checked-pilot` status and the lesson displays the outstanding teacher-review requirement. No draft status is accepted. Audio remains explicitly null. The source record covers examples, supporting vocabulary, quiz options and feedback.
+
+Schema 2 extends the v1 word record with required `questions`: exactly two, one `meaning` and one `hanzi`. Each question requires `id`, `kind`, `prompt`, `options`, `correctOptionId` and `explanation`. Each option requires `id` and `text`; there must be four distinct IDs/texts, exactly one referenced correct option and no repeated question ID/kind. Unknown fields and unbounded/invalid text fail. Schema 1 remains compatible for reading and has no quiz action.
+
+Continue to Quiz is now functional for the pilot. The repository grades canonical content, records the question snapshot and selected answers, and saves a due state atomically. Reading alone earns nothing. Initial success and all failures schedule five minutes; successful due reviews schedule one day. Configurable injected durations support deterministic tests; this is not FSRS or a mastery policy. Attempt history survives content removal and SQLite restart. The full suite passes 61 tests, including content validation, rollback, duplicate/stale attempts, due boundaries, lost-save acknowledgements and profile isolation. Native Windows process testing remains pending.
+
+## Original preparation brief and earlier checkpoints
 
 ## Smallest useful scope
 

@@ -43,9 +43,9 @@ class BundledVocabularyRepository implements VocabularyRepository {
 }
 
 final vocabularyRepositoryProvider = Provider<VocabularyRepository>(
-  (ref) =>
-      // Keep empty until actual pack text, provenance and review are checked.
-      BundledVocabularyRepository(rootBundle, const []),
+  (ref) => BundledVocabularyRepository(rootBundle, const [
+    'assets/content/starter_greeting_v1.json',
+  ]),
 );
 
 final vocabularyCatalogueProvider = FutureProvider<List<CatalogueWord>>(

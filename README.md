@@ -2,11 +2,11 @@
 
 A Windows-first, local-first Mandarin learning companion built toward Flutter + Dart, Riverpod and Drift/SQLite. Simplified Chinese, tone-marked Pinyin, English guidance, and the user's original robots.
 
-**Current status:** offline profiles, Home/Vocabulary navigation, replayable contextual tours and a nine-step introduction are implemented. Each profile retains its introduction position and completion after restart. Vocabulary/grammar lessons, quizzes, audio and review scheduling remain pending; no learning statistics are fabricated. Native Windows launch still requires machine toolchain setup. See [setup and exact commands](docs/SETUP.md).
+**Current status:** offline profiles, Home/Vocabulary navigation, contextual tours, a nine-step introduction and a first Learn → Quiz → scheduled Review pilot are implemented. The greeting lesson has five examples and two recognition questions; each profile's attempts and schedule survive restart. Audio, grammar lessons, adaptive scheduling and mastery remain pending. Native Windows launch still requires machine toolchain setup. See [setup and exact commands](docs/SETUP.md).
 
 ## Source reconciliation
 
-Vocabulary's **Browse words** now opens a catalogue with loading/error/empty states. The five-example word view is implemented and tested with synthetic fixtures; actual lesson content still requires review, so the bundled catalogue is empty. Quiz scoring and progress writes are the next implementation stage after content review.
+Vocabulary → **Browse words** → **Explore word** → **Continue to Quiz** opens the bundled 你好 pilot. Vocabulary → **Open reviews** shows saved due dates. Initial checks and failed reviews schedule five minutes; successful due reviews schedule one day. This is a limited recognition policy, not FSRS or mastery. The lesson is explicitly source-checked with independent teacher review pending; see its [review record and references](docs/STARTER_GREETING_REVIEW.md).
 
 - Read the full Master Plan and Coding Standards under `reference/`, the implementation brief, and existing project memory.
 - Rendered/inspected all 27 original PPT slides; extracted actual notes with `python-pptx` and inspected OOXML comment parts/relationships. No true PowerPoint comments exist. Generic note template footers are separated from requirements.
@@ -22,11 +22,13 @@ lib/
   data/                 # Drift schema, generated queries and native connection
   features/onboarding/  # Welcome, introduction content, persistence and activity
   features/dashboard/   # Home and honest milestone explanations
-  features/vocabulary/  # Landing cards; learning activities pending
+  features/vocabulary/  # Validated catalogue and five-example lessons
+  features/review/      # Quiz, transactional attempts and early review schedule
   features/profiles/    # Validation, repository, Riverpod state and profile UI
   shared/               # Original robot display, cards and contextual tours
 test/                   # Domain, SQLite, widget and UI/database-restart checks
 assets/mascots/          # Six byte-identical bundle copies
+assets/content/          # One explicitly labeled source-checked pilot
 Robot images/           # All 20 unchanged source PNGs
 reference/              # Original specifications and storyboard
 scripts/                # Source audits, journal sync, runner bootstrap
@@ -36,12 +38,12 @@ pubspec.yaml            # Flutter/Riverpod/Drift and native storage helpers
 pubspec.lock            # Actual resolved dependency versions
 ```
 
-Schema v2 adds only per-profile introduction state; both schema snapshots are retained under `docs/schema/`. Migration and backup recovery are tested; see [migration notes](docs/MIGRATIONS.md). There is no cloud service, mandatory account or runtime network request in the implemented flows. Introduction fact checks and release limits are recorded in [content notes](docs/FOUNDATION_CONTENT.md).
+Schema v3 adds per-profile vocabulary progress and attempt history; snapshots v1/v2/v3 are retained under `docs/schema/`. Additive migration, backup recovery, failed-write rollback and duplicate submissions are tested; see [migration notes](docs/MIGRATIONS.md). There is no cloud service, mandatory account or runtime network request in the implemented flows. Introduction fact checks are recorded in [content notes](docs/FOUNDATION_CONTENT.md). Current verification: 61 Flutter tests pass, static analysis passes, and 49 Dart files pass formatting. Desktop widget renders were inspected; native-process verification is still pending.
 
 ## Prioritized roadmap
 
 1. **A1 — Native Windows verification:** complete the Windows machine prerequisites and smoke-test the implemented profile flow in a native build. Profile persistence and responsive UI are already covered by the Flutter test harness.
-2. **A2 — First learning journey:** the shell, introduction and tours are complete. Next: a tiny checked content pack and one Learn → Quiz → scheduled Review journey, with restart persistence and injected-clock tests. No invented counters or mastery.
+2. **A2 — Extend the working pilot:** obtain independent teacher review, add a readable attempt-history view, and select/test adaptive scheduling before expanding the content bank. The first journey already covers restart, profile isolation and exact due boundaries; no mastery is awarded.
 3. **B — Complete vocabulary and starter grammar:** three stacks, diverse exercises, custom drafts/duplicate warnings, truthful mastery and real distinct prerequisite-based grammar. Add curated imports/audio only after rights and content review.
 4. **Later:** primary Practice/Speaking, Immersion UI, optional AI/cloud/voice after design decisions. No current implementation claimed.
 

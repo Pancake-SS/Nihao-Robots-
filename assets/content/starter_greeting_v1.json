@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 2,
+  "id": "starter.greetings",
+  "revision": 1,
+  "words": [
+    {
+      "id": "starter.greeting.nihao.1",
+      "hanzi": "你好",
+      "pinyin": "nǐ hǎo",
+      "meaning": "Hello — a greeting to one person. The written Pinyin shows the underlying tones; when spoken together, the first syllable has a rising tone.",
+      "examples": [
+        {"hanzi": "你好！", "pinyin": "Nǐ hǎo!", "meaning": "Hello! Use this when greeting someone."},
+        {"hanzi": "你好，我叫小明。", "pinyin": "Nǐ hǎo, wǒ jiào Xiǎomíng.", "meaning": "Hello, my name is Xiaoming. 我叫 introduces your name."},
+        {"hanzi": "你好，很高兴认识你。", "pinyin": "Nǐ hǎo, hěn gāoxìng rènshi nǐ.", "meaning": "Hello, nice to meet you. 很高兴认识你 expresses pleasure at meeting someone."},
+        {"hanzi": "你好，请进。", "pinyin": "Nǐ hǎo, qǐng jìn.", "meaning": "Hello, please come in. Use 请进 to invite someone inside."},
+        {"hanzi": "你好，请坐。", "pinyin": "Nǐ hǎo, qǐng zuò.", "meaning": "Hello, please sit down. Use 请坐 to offer someone a seat."}
+      ],
+      "source": "Original pilot wording using conventional expressions. Fact checks: Open University Greetings and tone changes; Michigan State University Elementary Chinese I, Lesson 1; trainchinese 请进，请坐 dictionary entry. Exact references and review decisions: docs/STARTER_GREETING_REVIEW.md.",
+      "license": "Original project lesson wording; no third-party dialogue, recording or image imported. External references support language facts only. No third-party audio rights claimed.",
+      "reviewedBy": "Codex editorial/source check for this development pilot; independent teacher review pending before public release",
+      "reviewedOn": "2026-11-04",
+      "reviewStatus": "source-checked-pilot",
+      "audio": null,
+      "questions": [
+        {
+          "id": "nihao.meaning.1", "kind": "meaning",
+          "prompt": "What does 你好 mean when greeting someone?",
+          "options": [{"id": "goodbye", "text": "Goodbye"}, {"id": "hello", "text": "Hello"}, {"id": "thanks", "text": "Thank you"}, {"id": "please", "text": "Please"}],
+          "correctOptionId": "hello",
+          "explanation": "你好 is a greeting meaning hello. 再见 means goodbye, 谢谢 means thank you, and 请 can mean please."
+        },
+        {
+          "id": "nihao.hanzi.1", "kind": "hanzi",
+          "prompt": "Which expression greets someone with “hello”?",
+          "options": [{"id": "thanks", "text": "谢谢"}, {"id": "please", "text": "请"}, {"id": "goodbye", "text": "再见"}, {"id": "hello", "text": "你好"}],
+          "correctOptionId": "hello",
+          "explanation": "你好 greets someone. The other choices mean thank you, please, and goodbye. These checks practise recognition; they do not demonstrate mastery."
+        }
+      ]
+    }
+  ]
+}

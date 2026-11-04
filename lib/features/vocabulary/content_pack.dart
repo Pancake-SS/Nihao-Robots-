@@ -20,7 +20,8 @@ class VocabularyPack {
       throw const FormatException('Pack must contain valid JSON.');
     }
     final pack = _record(decoded, {'schemaVersion', 'id', 'revision', 'words'});
-    if (pack['schemaVersion'] is! int || pack['schemaVersion'] != 1) {
+    final schema = pack['schemaVersion'];
+    if (schema is! int || (schema != 1 && schema != 2)) {
       throw const FormatException('Unsupported content schema.');
     }
     final revision = pack['revision'];
@@ -46,10 +47,12 @@ class VocabularyPack {
         'reviewedOn',
         'reviewStatus',
         'audio',
+        if (schema == 2) 'questions',
       });
       final id = _id(word['id']);
       if (!ids.add(id)) throw const FormatException('Duplicate word ID.');
-      if (word['reviewStatus'] != 'approved') {
+      if (word['reviewStatus'] != 'approved' &&
+          !(schema == 2 && word['reviewStatus'] == 'source-checked-pilot')) {
         throw const FormatException('Word review is incomplete.');
       }
       // Audio import/playback needs a separate reviewed implementation.
@@ -96,6 +99,8 @@ class VocabularyPack {
           _text(word, 'license', 1000),
           _text(word, 'reviewedBy', 300),
           date,
+          word['reviewStatus'] as String,
+          schema == 2 ? _questions(word['questions']) : const [],
         ),
       );
     }
@@ -114,16 +119,89 @@ class VocabularyEntry {
     this.license,
     this.reviewedBy,
     this.reviewedOn,
-  ) : examples = List.unmodifiable(examples);
+    this.reviewStatus,
+    List<VocabularyQuestion> questions,
+  ) : examples = List.unmodifiable(examples),
+      questions = List.unmodifiable(questions);
   final String id, hanzi, pinyin, meaning;
   final List<VocabularyExample> examples;
+  final List<VocabularyQuestion> questions;
   // These declarations cover the word and all five examples as one review unit.
   final String source, license, reviewedBy, reviewedOn;
+  final String reviewStatus;
 }
 
 class VocabularyExample {
   const VocabularyExample._(this.hanzi, this.pinyin, this.meaning);
   final String hanzi, pinyin, meaning;
+}
+
+class VocabularyQuestion {
+  VocabularyQuestion._(
+    this.id,
+    this.kind,
+    this.prompt,
+    Map<String, String> options,
+    this.correctOptionId,
+    this.explanation,
+  ) : options = Map.unmodifiable(options);
+  final String id, kind, prompt, correctOptionId, explanation;
+  final Map<String, String> options;
+}
+
+List<VocabularyQuestion> _questions(Object? value) {
+  if (value is! List || value.length != 2) {
+    throw const FormatException(
+      'Pilot lessons require two recognition questions.',
+    );
+  }
+  final ids = <String>{};
+  final kinds = <String>{};
+  return value
+      .map((raw) {
+        final q = _record(raw, {
+          'id',
+          'kind',
+          'prompt',
+          'options',
+          'correctOptionId',
+          'explanation',
+        });
+        final id = _id(q['id']);
+        final kind = _text(q, 'kind', 40);
+        if (!ids.add(id) ||
+            !{'meaning', 'hanzi'}.contains(kind) ||
+            !kinds.add(kind)) {
+          throw const FormatException('Invalid question identity or kind.');
+        }
+        final options = q['options'];
+        if (options is! List || options.length != 4) {
+          throw const FormatException('Questions require four options.');
+        }
+        final choices = <String, String>{};
+        final labels = <String>{};
+        for (final raw in options) {
+          final option = _record(raw, {'id', 'text'});
+          final optionId = _id(option['id']);
+          final label = _text(option, 'text', 500);
+          if (choices.containsKey(optionId) || !labels.add(label)) {
+            throw const FormatException('Repeated quiz option.');
+          }
+          choices[optionId] = label;
+        }
+        final correct = _id(q['correctOptionId']);
+        if (!choices.containsKey(correct))
+          throw const FormatException('Missing correct option.');
+        return VocabularyQuestion._(
+          id,
+          kind,
+          _text(q, 'prompt', 1000),
+          choices,
+          correct,
+          _text(q, 'explanation', 1500),
+        );
+      })
+      .toList(growable: false);
 }
 
 Map<String, dynamic> _record(Object? value, Set<String> fields) {

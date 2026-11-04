@@ -5,8 +5,13 @@ import 'vocabulary_repository.dart';
 import 'word_introduction_screen.dart';
 
 class VocabularyCatalogueScreen extends ConsumerWidget {
-  const VocabularyCatalogueScreen({required this.showPinyin, super.key});
+  const VocabularyCatalogueScreen({
+    required this.showPinyin,
+    required this.profileId,
+    super.key,
+  });
   final bool showPinyin;
+  final int profileId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
@@ -87,6 +92,7 @@ class VocabularyCatalogueScreen extends ConsumerWidget {
                                         builder: (_) => WordIntroductionScreen(
                                           word: word,
                                           showPinyin: showPinyin,
+                                          profileId: profileId,
                                         ),
                                       ),
                                     ),
