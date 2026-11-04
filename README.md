@@ -2,7 +2,7 @@
 
 A Windows-first, local-first Mandarin learning companion built toward Flutter + Dart, Riverpod and Drift/SQLite. Simplified Chinese, tone-marked Pinyin, English guidance, and the user's original robots.
 
-**Current status:** offline profiles, Home/Vocabulary navigation, contextual tours, a nine-step introduction and a first Learn → Quiz → scheduled Review pilot are implemented. The greeting lesson has five examples and two recognition questions; each profile's attempts and schedule survive restart. Audio, grammar lessons, adaptive scheduling and mastery remain pending. Native Windows launch still requires machine toolchain setup. See [setup and exact commands](docs/SETUP.md).
+**Current status:** offline profiles, Home/Vocabulary navigation, contextual tours, a nine-step introduction and a first Learn → Quiz → scheduled Review pilot are implemented. The greeting lesson has five examples and two recognition questions; each profile's attempts and schedule survive restart. Audio, grammar lessons, adaptive scheduling and mastery remain pending. The native Windows debug build and responding app window now pass; full native functional smoke checks remain pending. See [setup and exact commands](docs/SETUP.md).
 
 ## Source reconciliation
 
@@ -42,7 +42,7 @@ Schema v3 adds per-profile vocabulary progress and attempt history; snapshots v1
 
 ## Prioritized roadmap
 
-1. **A1 — Native Windows verification:** complete the Windows machine prerequisites and smoke-test the implemented profile flow in a native build. Profile persistence and responsive UI are already covered by the Flutter test harness.
+1. **A1 — Native Windows verification:** machine prerequisites, debug build and window launch pass. Complete the native profile/lesson/restart/resize smoke checks. Persistence and responsive UI are already covered by the Flutter test harness.
 2. **A2 — Extend the working pilot:** obtain independent teacher review, add a readable attempt-history view, and select/test adaptive scheduling before expanding the content bank. The first journey already covers restart, profile isolation and exact due boundaries; no mastery is awarded.
 3. **B — Complete vocabulary and starter grammar:** three stacks, diverse exercises, custom drafts/duplicate warnings, truthful mastery and real distinct prerequisite-based grammar. Add curated imports/audio only after rights and content review.
 4. **Later:** primary Practice/Speaking, Immersion UI, optional AI/cloud/voice after design decisions. No current implementation claimed.

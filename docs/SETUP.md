@@ -1,6 +1,6 @@
 # Development setup
 
-Updated 2026-11-04. Flutter 3.47.9 / Dart 3.13.7 are now installed from the official stable repository at `%TEMP%\nihao-tools\flutter`; the resolved Pub cache is `%TEMP%\nihao-tools\pub-cache`. The source includes a generated Windows runner, generated Drift code and real `pubspec.lock`. The local-profile slice runs in the Flutter test harness; native launch has additional prerequisites below.
+Updated 2026-11-04. Flutter 3.47.9 / Dart 3.13.7 are installed at `%TEMP%\nihao-tools\flutter`; the resolved Pub cache is `%TEMP%\nihao-tools\pub-cache`. The source includes a generated Windows runner, generated Drift code and real `pubspec.lock`. Visual Studio Community 2026 with C++ and Windows Developer Mode are now installed/enabled on this machine. The temporary SDK's missing Dart runtime was restored; recovery instructions are below.
 
 ## Use the portable SDK
 
@@ -21,7 +21,26 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\flutter.ps1 test --n
 
 ## Native Windows launch
 
-Follow the official [Windows desktop setup](https://docs.flutter.dev/platform-integration/windows/setup): install Visual Studio with **Desktop development with C++** and its default components. VS Code alone does not include this compiler. Enable **Developer Mode** in Windows Settings so Flutter can create native-plugin symlinks. Both were missing in the last environment checks; these machine settings were not changed automatically.
+### Recover a missing temporary Dart runtime
+
+If the wrapper reports a missing cached Dart runtime (or Flutter exits with only `The system cannot find the path specified`), check the SDK itself. On 2026-11-04 the portable SDK's `bin/cache/dart-sdk` directory was missing while `engine-dart-sdk.stamp` remained. The cause of removal was not established. The wrapper now detects this mismatch explicitly.
+
+For this portable installation, close other Flutter commands, preserve the stale marker, then allow Flutter to download its matching runtime again:
+
+```powershell
+$sdkCache = Join-Path $env:TEMP 'nihao-tools\flutter\bin\cache'
+$stampPath = Join-Path $sdkCache 'engine-dart-sdk.stamp'
+if ((Test-Path -LiteralPath $stampPath) -and -not (Test-Path -LiteralPath (Join-Path $sdkCache 'dart-sdk\bin\dart.exe'))) {
+    Rename-Item -LiteralPath $stampPath -NewName ('engine-dart-sdk.stamp.missing-runtime-' + [guid]::NewGuid().ToString('N'))
+}
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\flutter.ps1 --version
+```
+
+This repairs only SDK cache state, not learner data. For a custom SDK, use its actual cache path. A permanent SDK location outside Temp is preferable for regular development; configure `NIHAO_FLUTTER_ROOT` as described above.
+
+### Build and open the app
+
+On a new machine, follow the official [Windows desktop setup](https://docs.flutter.dev/platform-integration/windows/setup): install Visual Studio with **Desktop development with C++** and its default components. VS Code alone does not include this compiler. Enable **Developer Mode** in Windows Settings so Flutter can create native-plugin symlinks. Both prerequisites now pass on this machine following the user's setup; these machine settings were not changed by the build helper. The Android SDK is unnecessary for the Windows build, and the wrapper handles Flutter being absent from PATH.
 
 Flutter's native builder also rejects the `!` in this workspace's name. Keep the workspace in place and use the safe-path staging helper:
 

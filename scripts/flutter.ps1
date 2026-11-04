@@ -15,6 +15,12 @@ if ($env:NIHAO_FLUTTER_ROOT) {
 if (-not (Test-Path -LiteralPath $flutterExecutable)) {
     throw 'Flutter SDK not found. Set NIHAO_FLUTTER_ROOT or follow docs/SETUP.md.'
 }
+$sdkBin = Split-Path -Parent $flutterExecutable
+$dartRuntime = Join-Path $sdkBin 'cache\dart-sdk\bin\dart.exe'
+$dartStamp = Join-Path $sdkBin 'cache\engine-dart-sdk.stamp'
+if ((Test-Path -LiteralPath $dartStamp) -and -not (Test-Path -LiteralPath $dartRuntime)) {
+    throw "Flutter's cached Dart runtime is missing: $dartRuntime. The SDK cache marker is stale. Follow the missing-runtime recovery in docs/SETUP.md, or set NIHAO_FLUTTER_ROOT to a complete SDK."
+}
 $env:FLUTTER_SUPPRESS_ANALYTICS = 'true'
 & $flutterExecutable @args
 exit $LASTEXITCODE

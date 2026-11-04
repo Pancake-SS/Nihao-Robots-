@@ -1,6 +1,8 @@
 # Native Windows smoke test
 
-Updated 2026-11-04 for the schema-v3 greeting pilot. Status: NOT RUN. Flutter widget tests are not a substitute for this checklist.
+Updated 2026-11-04 for the schema-v3 greeting pilot. Build and basic window launch: PASS. Functional checklist below: NOT RUN. Flutter widget tests are not a substitute for this checklist.
+
+After restoring the temporary SDK's missing Dart runtime, Visual Studio Community 2026/C++ and Developer Mode passed setup checks. `scripts/build_windows.ps1` produced a debug executable in `%TEMP%/nihao-windows-b1b41107bbe24c7e9e9eaec40e8efc57/build/windows/x64/runner/Debug/ni_hao_robot.exe`. Build completed in 73 seconds with nonfatal MSB8029 warnings about temporary incremental-build directories. The native process remained running with window title `Ni Hao Robot!` and Responding=True. This verifies basic process/window startup only; no profile or learner-flow acceptance row is marked passed from that observation.
 
 ## Prerequisites and launch
 
