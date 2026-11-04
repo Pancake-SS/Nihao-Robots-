@@ -70,7 +70,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
         TourStop(
           _vocabulary[0],
           'Learn in context',
-          'New word lessons will introduce characters, Pinyin, meaning and five checked examples. This card becomes available when the lesson flow is ready.',
+          'Browse words opens the lesson catalogue. Reviewed packs will supply characters, Pinyin, meaning and five examples. The catalogue explains when no lessons are available.',
         ),
         TourStop(
           _vocabulary[1],
@@ -158,7 +158,10 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
       foundationKey: _foundation,
       progressKey: _progress,
     ),
-    1 => VocabularyLanding(targets: _vocabulary),
+    1 => VocabularyLanding(
+      targets: _vocabulary,
+      showPinyin: widget.profile.showPinyin,
+    ),
     2 => LearningCard(
       key: _grammar,
       child: Column(

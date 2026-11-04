@@ -45,3 +45,7 @@ For recovery, keep the learner database intact and roll back code only when sche
 - Tours spotlight and scroll to actual live controls/cards, with keyboard-operated Back/Next/Close and replay. Activities omit the sidebar. Narrow layouts wrap controls and scroll at 200% text scale.
 - Added three byte-identical light-background originals: hover, orb and goggles. Different Vocabulary cards use different characters; source files and alpha were preserved.
 - Introduction facts checked against Open University teaching references; no curriculum/audio imported. Native-teacher review, recordings and the five-example lesson pack remain later release gates. See `FOUNDATION_CONTENT.md`.
+
+## 2026-11-04: catalogue and word-introduction infrastructure
+
+Connect the structurally validated content parser to an application-owned bundled asset list and catalogue UI, retaining pack revision and sense identity. Validate the whole catalogue before exposure; reject conflicting IDs rather than silently picking a revision. No approved pack exists yet, so production honestly shows an empty catalogue. Synthetic fixture content stays under tests/development tooling. The word view provides exactly five examples, profile-controlled Pinyin, source/review details and absent-audio text. Defer slide 19's Continue to Quiz button until an actual quiz route exists; no nonfunctional control or learning credit is added. No schema or learner-data changes.

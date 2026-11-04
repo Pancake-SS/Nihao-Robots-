@@ -6,6 +6,8 @@ A Windows-first, local-first Mandarin learning companion built toward Flutter + 
 
 ## Source reconciliation
 
+Vocabulary's **Browse words** now opens a catalogue with loading/error/empty states. The five-example word view is implemented and tested with synthetic fixtures; actual lesson content still requires review, so the bundled catalogue is empty. Quiz scoring and progress writes are the next implementation stage after content review.
+
 - Read the full Master Plan and Coding Standards under `reference/`, the implementation brief, and existing project memory.
 - Rendered/inspected all 27 original PPT slides; extracted actual notes with `python-pptx` and inspected OOXML comment parts/relationships. No true PowerPoint comments exist. Generic note template footers are separated from requirements.
 - Inspected all 20 original PNGs: ten character pairs. Black-line variants have opaque white backing; white-line variants are transparent. Welcome uses waving/orb, Home uses tracked, and Vocabulary uses distinct hover/orb/goggles robots. All six bundled files are unchanged copies.

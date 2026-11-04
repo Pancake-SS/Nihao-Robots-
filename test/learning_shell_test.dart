@@ -172,6 +172,11 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Close tutorial'), findsNothing);
       await navigate(tester, 1);
+      await press(tester, 'Browse words');
+      expect(find.text('Your first words are on their way'), findsOneWidget);
+      expect(find.byKey(const ValueKey('destination-0')), findsNothing);
+      await tester.pageBack();
+      await tester.pumpAndSettle();
       expect(
         tester
             .widgetList<RobotArt>(find.byType(RobotArt))

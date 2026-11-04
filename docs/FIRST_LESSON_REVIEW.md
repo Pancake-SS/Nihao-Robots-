@@ -1,6 +1,6 @@
 # First vocabulary lesson — review brief
 
-Prepared 2026-11-04. Status: preparation only; no approved lesson pack or new runtime content.
+Prepared 2026-11-04. Status: parser, catalogue and word-introduction UI implemented; no approved lesson pack or runtime curriculum bundled.
 
 ## Smallest useful scope
 
@@ -35,10 +35,18 @@ No new dataset, license, audio permission, native-speaker approval or scheduler 
 
 ## Structural parser implemented (2026-11-04)
 
-`lib/features/vocabulary/content_pack.dart` now parses bounded JSON into immutable records. It has no database, network or file-write side effects and is not yet connected to the landing page or an importer. An `approved` string is a declaration requiring curator verification, never proof of review or licensing. Text checks do not establish correct Hanzi, tone marks, translation or teaching quality.
+`lib/features/vocabulary/content_pack.dart` parses bounded JSON into immutable records. The bundled-asset repository now connects it to Vocabulary's Browse words catalogue. It has no database, network or file-write side effects. An `approved` string is a declaration requiring curator verification, never proof of review or licensing. Text checks do not establish correct Hanzi, tone marks, translation or teaching quality.
 
 The v1 envelope requires exactly `schemaVersion` (integer 1), `id`, `revision` (positive 32-bit integer), and `words` (1–50 entries). Input is limited to 1,000,000 UTF-16 code units. IDs use lowercase letters/digits with single dot, underscore or hyphen separators, at most 100 characters. Repeated word IDs are rejected; different sense IDs may share Hanzi.
 
 Each word requires exactly `id`, `hanzi`, `pinyin`, `meaning`, `examples`, `source`, `license`, `reviewedBy`, `reviewedOn`, `reviewStatus`, and `audio`. The source/license/review declaration must cover the whole word record including its examples; combine precise citations if several sources are used. Review status must be `approved`, the date must be a real `YYYY-MM-DD` date, and audio must be explicitly null until audio import is implemented. All required text is nonblank and bounded; controls and hidden direction markers are rejected.
 
 Examples require exactly `hanzi`, `pinyin`, and `meaning`. There must be exactly five, with distinct Hanzi strings after trimming. This catches exact repetition, not paraphrases or every Unicode-equivalent duplicate. Unknown fields fail instead of being silently ignored. Unsupported schema versions fail explicitly. No real pack is bundled. Five parser tests use synthetic, non-curriculum data; the complete 38-test suite passes.
+
+## Catalogue and introduction UI (2026-11-04)
+
+Vocabulary → Browse words now opens a back-header catalogue with loading, explicit retry and empty states. `BundledVocabularyRepository` reads only its application-owned asset list, validates every pack and rejects duplicate pack IDs or conflicting word IDs before returning any rows. Pack identity and revision remain attached to each word. The production asset list is deliberately empty until actual content review; tests and development renders use a separate synthetic fixture that is not bundled in the app.
+
+Selecting a catalogue word opens its meaning and exactly five examples. The selected profile's Pinyin preference applies to both list and example text. Source/license/review details are available in an expandable section; missing audio is clearly stated. Neither activity has the dark sidebar. The visible Continue to Quiz action required by slide 19 remains deferred until a real quiz route exists; explanatory text takes its place, without a dead button. Reading currently records no learning progress.
+
+Six additional tests cover catalogue identity/immutability, missing or conflicting packs, empty/loading/error/retry states, five examples, Pinyin on/off and 360×640 at 200% text. The existing shell test now covers Browse words and back navigation. The full suite passes 44 tests. Desktop empty-catalogue and synthetic lesson renders were inspected. Native Windows verification, reviewed content, quiz scoring, attempts and scheduling remain pending.

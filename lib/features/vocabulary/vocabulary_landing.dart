@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../../shared/learning_card.dart';
 import '../../shared/robot_art.dart';
+import 'vocabulary_catalogue_screen.dart';
 
 class VocabularyLanding extends StatelessWidget {
-  const VocabularyLanding({required this.targets, super.key});
+  const VocabularyLanding({
+    required this.targets,
+    required this.showPinyin,
+    super.key,
+  });
   final List<GlobalKey> targets;
+  final bool showPinyin;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -32,6 +38,12 @@ class VocabularyLanding extends StatelessWidget {
               artwork: RobotArtwork.hoverOnPaper,
               description: 'Meet new words through characters, meaning and checked examples.',
               status: 'Word lessons coming next',
+              action: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) =>
+                      VocabularyCatalogueScreen(showPinyin: showPinyin),
+                ),
+              ),
             ),
             _StackCard(
               key: targets[1],
@@ -78,12 +90,14 @@ class _StackCard extends StatelessWidget {
     required this.artwork,
     required this.description,
     required this.status,
+    this.action,
     super.key,
   });
   final String title;
   final RobotArtwork artwork;
   final String description;
   final String status;
+  final VoidCallback? action;
 
   @override
   Widget build(BuildContext context) => LearningCard(
@@ -97,6 +111,10 @@ class _StackCard extends StatelessWidget {
         Text(description),
         const SizedBox(height: 20),
         Text(status, style: const TextStyle(fontWeight: FontWeight.w600)),
+        if (action != null) ...[
+          const SizedBox(height: 16),
+          FilledButton(onPressed: action, child: const Text('Browse words')),
+        ],
       ],
     ),
   );

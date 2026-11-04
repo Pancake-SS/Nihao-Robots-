@@ -1,6 +1,7 @@
 // Development-only Flutter widget render; writes PNGs to OS temp, not app assets.
 // Run with: flutter test scripts/preview_profiles.dart
 import 'dart:io';
+import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -13,6 +14,12 @@ import 'package:ni_hao_robot/features/profiles/profile_providers.dart';
 import 'package:ni_hao_robot/shared/robot_art.dart';
 
 import '../test/profile_test_repository.dart';
+import '../test/content_pack_fixture.dart';
+
+import 'package:ni_hao_robot/features/vocabulary/content_pack.dart';
+import 'package:ni_hao_robot/features/vocabulary/vocabulary_repository.dart';
+import 'package:ni_hao_robot/features/vocabulary/word_introduction_screen.dart';
+
 import '../test/foundation_test_repository.dart';
 
 import 'package:ni_hao_robot/features/onboarding/foundation_repository.dart';
@@ -99,6 +106,33 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('destination-1')));
     await tester.pumpAndSettle();
     await capture('vocabulary');
+    await tester.tap(find.text('Browse words'));
+    await tester.pumpAndSettle();
+    await capture('catalogue-empty');
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    final fixturePack = VocabularyPack.parse(jsonEncode(fixture()));
+    tester
+        .state<NavigatorState>(find.byType(Navigator))
+        .push(
+          MaterialPageRoute<void>(
+            builder: (_) => WordIntroductionScreen(
+              word: CatalogueWord(
+                fixturePack.id,
+                fixturePack.revision,
+                fixturePack.entries.single,
+              ),
+              showPinyin: true,
+            ),
+          ),
+        );
+    await tester.pumpAndSettle();
+    await capture('word-introduction-test-fixture');
+    await tester.ensureVisible(find.text('Content source and review'));
+    await tester.pumpAndSettle();
+    await capture('word-introduction-test-fixture-bottom');
+    await tester.pageBack();
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('destination-0')));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Start introduction'));
