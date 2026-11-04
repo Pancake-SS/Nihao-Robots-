@@ -32,3 +32,13 @@ For the five examples, seek useful variation rather than repeated substitutions:
 6. Verify profile isolation, failed-write recovery, duplicate submission and complete Learn → Quiz → Review → restart behavior before expanding the pack.
 
 No new dataset, license, audio permission, native-speaker approval or scheduler compatibility is claimed by this document.
+
+## Structural parser implemented (2026-11-04)
+
+`lib/features/vocabulary/content_pack.dart` now parses bounded JSON into immutable records. It has no database, network or file-write side effects and is not yet connected to the landing page or an importer. An `approved` string is a declaration requiring curator verification, never proof of review or licensing. Text checks do not establish correct Hanzi, tone marks, translation or teaching quality.
+
+The v1 envelope requires exactly `schemaVersion` (integer 1), `id`, `revision` (positive 32-bit integer), and `words` (1–50 entries). Input is limited to 1,000,000 UTF-16 code units. IDs use lowercase letters/digits with single dot, underscore or hyphen separators, at most 100 characters. Repeated word IDs are rejected; different sense IDs may share Hanzi.
+
+Each word requires exactly `id`, `hanzi`, `pinyin`, `meaning`, `examples`, `source`, `license`, `reviewedBy`, `reviewedOn`, `reviewStatus`, and `audio`. The source/license/review declaration must cover the whole word record including its examples; combine precise citations if several sources are used. Review status must be `approved`, the date must be a real `YYYY-MM-DD` date, and audio must be explicitly null until audio import is implemented. All required text is nonblank and bounded; controls and hidden direction markers are rejected.
+
+Examples require exactly `hanzi`, `pinyin`, and `meaning`. There must be exactly five, with distinct Hanzi strings after trimming. This catches exact repetition, not paraphrases or every Unicode-equivalent duplicate. Unknown fields fail instead of being silently ignored. Unsupported schema versions fail explicitly. No real pack is bundled. Five parser tests use synthetic, non-curriculum data; the complete 38-test suite passes.
