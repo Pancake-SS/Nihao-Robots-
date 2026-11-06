@@ -1,0 +1,271 @@
+{
+  "schemaVersion": 3,
+  "id": "starter.greetings",
+  "revision": 3,
+  "words": [
+    {
+      "id": "starter.greeting.nihao.1",
+      "hanzi": "你好",
+      "pinyin": "nǐ hǎo",
+      "meaning": "hello (greeting one person)",
+      "examples": [
+        {
+          "hanzi": "你好！",
+          "pinyin": "Nǐ hǎo!",
+          "meaning": "Hello! Use this when greeting someone.",
+          "traditional": "你好！",
+          "sourceId": "nihao-original-1",
+          "sourceUrl": "https://www.open.edu/openlearn/languages/beginners-chinese-taster-course/content-section-4",
+          "grammarTags": []
+        },
+        {
+          "hanzi": "你好，我叫小明。",
+          "pinyin": "Nǐ hǎo, wǒ jiào Xiǎomíng.",
+          "meaning": "Hello, my name is Xiaoming. 我叫 introduces your name.",
+          "traditional": "你好，我叫小明。",
+          "sourceId": "nihao-original-2",
+          "sourceUrl": "https://www.open.edu/openlearn/languages/beginners-chinese-taster-course/content-section-4",
+          "grammarTags": []
+        },
+        {
+          "hanzi": "你好，很高兴认识你。",
+          "pinyin": "Nǐ hǎo, hěn gāoxìng rènshi nǐ.",
+          "meaning": "Hello, nice to meet you. 很高兴认识你 expresses pleasure at meeting someone.",
+          "traditional": "你好，很高興認識你。",
+          "sourceId": "nihao-original-3",
+          "sourceUrl": "https://www.open.edu/openlearn/languages/beginners-chinese-taster-course/content-section-4",
+          "grammarTags": []
+        },
+        {
+          "hanzi": "你好，请进。",
+          "pinyin": "Nǐ hǎo, qǐng jìn.",
+          "meaning": "Hello, please come in. Use 请进 to invite someone inside.",
+          "traditional": "你好，請進。",
+          "sourceId": "nihao-original-4",
+          "sourceUrl": "https://www.open.edu/openlearn/languages/beginners-chinese-taster-course/content-section-4",
+          "grammarTags": []
+        },
+        {
+          "hanzi": "你好，请坐。",
+          "pinyin": "Nǐ hǎo, qǐng zuò.",
+          "meaning": "Hello, please sit down. Use 请坐 to offer someone a seat.",
+          "traditional": "你好，請坐。",
+          "sourceId": "nihao-original-5",
+          "sourceUrl": "https://www.open.edu/openlearn/languages/beginners-chinese-taster-course/content-section-4",
+          "grammarTags": []
+        }
+      ],
+      "source": "Original pilot wording using conventional expressions. Fact checks: Open University Greetings and tone changes; Michigan State University Elementary Chinese I, Lesson 1; trainchinese 请进，请坐 dictionary entry. Exact references and review decisions: docs/STARTER_GREETING_REVIEW.md. Question distractors adapted from HearMandarin (https://hearmandarin.com/datasets/).",
+      "license": "Revision 3 lesson/question adaptation: CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/. HearMandarin word distractors: CC BY 4.0. No audio imported.",
+      "reviewedBy": "Codex editorial/source check for this development pilot; independent teacher review pending before public release",
+      "reviewedOn": "2026-11-06",
+      "reviewStatus": "source-checked-pilot",
+      "audio": null,
+      "questions": [
+        {
+          "id": "starter.greeting.nihao.1.meaning",
+          "kind": "meaning",
+          "prompt": "What does 你好 mean in this lesson?",
+          "options": [
+            {
+              "id": "choice-2",
+              "text": "to drink"
+            },
+            {
+              "id": "choice-1",
+              "text": "teacher"
+            },
+            {
+              "id": "correct",
+              "text": "hello (greeting one person)"
+            },
+            {
+              "id": "choice-0",
+              "text": "to learn; to study"
+            }
+          ],
+          "correctOptionId": "correct",
+          "explanation": "你好 · nǐ hǎo · hello (greeting one person). Pinyin shows dictionary tones; connected speech can change tones."
+        },
+        {
+          "id": "starter.greeting.nihao.1.hanzi",
+          "kind": "hanzi",
+          "prompt": "Which word means “hello (greeting one person)”?",
+          "options": [
+            {
+              "id": "choice-0",
+              "text": "去"
+            },
+            {
+              "id": "choice-2",
+              "text": "书"
+            },
+            {
+              "id": "choice-1",
+              "text": "喜欢"
+            },
+            {
+              "id": "correct",
+              "text": "你好"
+            }
+          ],
+          "correctOptionId": "correct",
+          "explanation": "你好 · nǐ hǎo · hello (greeting one person). Pinyin shows dictionary tones; connected speech can change tones."
+        },
+        {
+          "id": "starter.greeting.nihao.1.pinyin",
+          "kind": "pinyin",
+          "prompt": "Choose the dictionary Pinyin for 你好 (“hello (greeting one person)”).",
+          "options": [
+            {
+              "id": "correct",
+              "text": "nǐ hǎo"
+            },
+            {
+              "id": "choice-0",
+              "text": "wǒmen"
+            },
+            {
+              "id": "choice-1",
+              "text": "xǐhuan"
+            },
+            {
+              "id": "choice-2",
+              "text": "mǎi"
+            }
+          ],
+          "correctOptionId": "correct",
+          "explanation": "你好 · nǐ hǎo · hello (greeting one person). Pinyin shows dictionary tones; connected speech can change tones."
+        },
+        {
+          "id": "starter.greeting.nihao.1.pinyin_hanzi",
+          "kind": "pinyin_hanzi",
+          "prompt": "Which Hanzi matches nǐ hǎo? Meaning: hello (greeting one person).",
+          "options": [
+            {
+              "id": "choice-1",
+              "text": "现在"
+            },
+            {
+              "id": "correct",
+              "text": "你好"
+            },
+            {
+              "id": "choice-0",
+              "text": "商店"
+            },
+            {
+              "id": "choice-2",
+              "text": "吃"
+            }
+          ],
+          "correctOptionId": "correct",
+          "explanation": "你好 · nǐ hǎo · hello (greeting one person). Pinyin shows dictionary tones; connected speech can change tones."
+        },
+        {
+          "id": "starter.greeting.nihao.1.meaning_pinyin",
+          "kind": "meaning_pinyin",
+          "prompt": "Which Pinyin matches “hello (greeting one person)”?",
+          "options": [
+            {
+              "id": "choice-0",
+              "text": "shū"
+            },
+            {
+              "id": "choice-1",
+              "text": "wǒmen"
+            },
+            {
+              "id": "choice-2",
+              "text": "hē"
+            },
+            {
+              "id": "correct",
+              "text": "nǐ hǎo"
+            }
+          ],
+          "correctOptionId": "correct",
+          "explanation": "你好 · nǐ hǎo · hello (greeting one person). Pinyin shows dictionary tones; connected speech can change tones."
+        },
+        {
+          "id": "starter.greeting.nihao.1.pinyin_meaning",
+          "kind": "pinyin_meaning",
+          "prompt": "What does nǐ hǎo mean? Choose the meaning of the word from this lesson.",
+          "options": [
+            {
+              "id": "choice-0",
+              "text": "book"
+            },
+            {
+              "id": "choice-2",
+              "text": "teacher"
+            },
+            {
+              "id": "choice-1",
+              "text": "school"
+            },
+            {
+              "id": "correct",
+              "text": "hello (greeting one person)"
+            }
+          ],
+          "correctOptionId": "correct",
+          "explanation": "你好 · nǐ hǎo · hello (greeting one person). Pinyin shows dictionary tones; connected speech can change tones."
+        },
+        {
+          "id": "starter.greeting.nihao.1.cloze",
+          "kind": "cloze",
+          "prompt": "Complete the sentence to match the translation: ____！ English: Hello! Use this when greeting someone.",
+          "options": [
+            {
+              "id": "choice-0",
+              "text": "去"
+            },
+            {
+              "id": "choice-2",
+              "text": "他"
+            },
+            {
+              "id": "choice-1",
+              "text": "喝"
+            },
+            {
+              "id": "correct",
+              "text": "你好"
+            }
+          ],
+          "correctOptionId": "correct",
+          "explanation": "你好 · nǐ hǎo · hello (greeting one person). Pinyin shows dictionary tones; connected speech can change tones."
+        },
+        {
+          "id": "starter.greeting.nihao.1.typed_hanzi",
+          "kind": "typed_hanzi",
+          "prompt": "Type the Simplified Chinese word from this lesson for “hello (greeting one person)”.",
+          "options": [
+            {
+              "id": "correct",
+              "text": "你好"
+            }
+          ],
+          "correctOptionId": "correct",
+          "explanation": "你好 · nǐ hǎo · hello (greeting one person). Pinyin shows dictionary tones; connected speech can change tones."
+        }
+      ],
+      "details": {
+        "traditional": "你好",
+        "pinyinNumbered": "ni3 hao3",
+        "partOfSpeech": "greeting",
+        "band": 0,
+        "learningPriority": {
+          "tier": 0,
+          "order": 0,
+          "basis": "editorial-foundations-v1"
+        },
+        "sourceId": "nihao-greeting",
+        "sourceVersion": "3",
+        "sourceUrl": "https://www.open.edu/openlearn/languages/beginners-chinese-taster-course/content-section-4",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+      }
+    }
+  ]
+}

@@ -1,5 +1,9 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
+if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/flutter/ephemeral/generated_config.cmake")
+  message(FATAL_ERROR
+    "Flutter has not generated the Windows configuration. Build from the repository root with: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build_windows.ps1. In VS Code use the Ni Hao Robot: build Windows task, not CMake: Configure.")
+endif()
 project(ni_hao_robot LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change

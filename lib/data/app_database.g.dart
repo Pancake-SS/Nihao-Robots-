@@ -2139,6 +2139,1392 @@ class VocabularyAttemptsCompanion extends UpdateCompanion<VocabularyAttempt> {
   }
 }
 
+class $ContentPacksTable extends ContentPacks
+    with TableInfo<$ContentPacksTable, ContentPack> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ContentPacksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _revisionMeta = const VerificationMeta(
+    'revision',
+  );
+  @override
+  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
+    'revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentSchemaMeta = const VerificationMeta(
+    'contentSchema',
+  );
+  @override
+  late final GeneratedColumn<int> contentSchema = GeneratedColumn<int>(
+    'content_schema',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _canonicalJsonMeta = const VerificationMeta(
+    'canonicalJson',
+  );
+  @override
+  late final GeneratedColumn<String> canonicalJson = GeneratedColumn<String>(
+    'canonical_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    revision,
+    contentSchema,
+    canonicalJson,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'content_packs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ContentPack> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('revision')) {
+      context.handle(
+        _revisionMeta,
+        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_revisionMeta);
+    }
+    if (data.containsKey('content_schema')) {
+      context.handle(
+        _contentSchemaMeta,
+        contentSchema.isAcceptableOrUnknown(
+          data['content_schema']!,
+          _contentSchemaMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_contentSchemaMeta);
+    }
+    if (data.containsKey('canonical_json')) {
+      context.handle(
+        _canonicalJsonMeta,
+        canonicalJson.isAcceptableOrUnknown(
+          data['canonical_json']!,
+          _canonicalJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_canonicalJsonMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ContentPack map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ContentPack(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      revision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revision'],
+      )!,
+      contentSchema: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}content_schema'],
+      )!,
+      canonicalJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}canonical_json'],
+      )!,
+    );
+  }
+
+  @override
+  $ContentPacksTable createAlias(String alias) {
+    return $ContentPacksTable(attachedDatabase, alias);
+  }
+}
+
+class ContentPack extends DataClass implements Insertable<ContentPack> {
+  final String id;
+  final int revision;
+  final int contentSchema;
+  final String canonicalJson;
+  const ContentPack({
+    required this.id,
+    required this.revision,
+    required this.contentSchema,
+    required this.canonicalJson,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['revision'] = Variable<int>(revision);
+    map['content_schema'] = Variable<int>(contentSchema);
+    map['canonical_json'] = Variable<String>(canonicalJson);
+    return map;
+  }
+
+  ContentPacksCompanion toCompanion(bool nullToAbsent) {
+    return ContentPacksCompanion(
+      id: Value(id),
+      revision: Value(revision),
+      contentSchema: Value(contentSchema),
+      canonicalJson: Value(canonicalJson),
+    );
+  }
+
+  factory ContentPack.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ContentPack(
+      id: serializer.fromJson<String>(json['id']),
+      revision: serializer.fromJson<int>(json['revision']),
+      contentSchema: serializer.fromJson<int>(json['contentSchema']),
+      canonicalJson: serializer.fromJson<String>(json['canonicalJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'revision': serializer.toJson<int>(revision),
+      'contentSchema': serializer.toJson<int>(contentSchema),
+      'canonicalJson': serializer.toJson<String>(canonicalJson),
+    };
+  }
+
+  ContentPack copyWith({
+    String? id,
+    int? revision,
+    int? contentSchema,
+    String? canonicalJson,
+  }) => ContentPack(
+    id: id ?? this.id,
+    revision: revision ?? this.revision,
+    contentSchema: contentSchema ?? this.contentSchema,
+    canonicalJson: canonicalJson ?? this.canonicalJson,
+  );
+  ContentPack copyWithCompanion(ContentPacksCompanion data) {
+    return ContentPack(
+      id: data.id.present ? data.id.value : this.id,
+      revision: data.revision.present ? data.revision.value : this.revision,
+      contentSchema: data.contentSchema.present
+          ? data.contentSchema.value
+          : this.contentSchema,
+      canonicalJson: data.canonicalJson.present
+          ? data.canonicalJson.value
+          : this.canonicalJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ContentPack(')
+          ..write('id: $id, ')
+          ..write('revision: $revision, ')
+          ..write('contentSchema: $contentSchema, ')
+          ..write('canonicalJson: $canonicalJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, revision, contentSchema, canonicalJson);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ContentPack &&
+          other.id == this.id &&
+          other.revision == this.revision &&
+          other.contentSchema == this.contentSchema &&
+          other.canonicalJson == this.canonicalJson);
+}
+
+class ContentPacksCompanion extends UpdateCompanion<ContentPack> {
+  final Value<String> id;
+  final Value<int> revision;
+  final Value<int> contentSchema;
+  final Value<String> canonicalJson;
+  final Value<int> rowid;
+  const ContentPacksCompanion({
+    this.id = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.contentSchema = const Value.absent(),
+    this.canonicalJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ContentPacksCompanion.insert({
+    required String id,
+    required int revision,
+    required int contentSchema,
+    required String canonicalJson,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       revision = Value(revision),
+       contentSchema = Value(contentSchema),
+       canonicalJson = Value(canonicalJson);
+  static Insertable<ContentPack> custom({
+    Expression<String>? id,
+    Expression<int>? revision,
+    Expression<int>? contentSchema,
+    Expression<String>? canonicalJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (revision != null) 'revision': revision,
+      if (contentSchema != null) 'content_schema': contentSchema,
+      if (canonicalJson != null) 'canonical_json': canonicalJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ContentPacksCompanion copyWith({
+    Value<String>? id,
+    Value<int>? revision,
+    Value<int>? contentSchema,
+    Value<String>? canonicalJson,
+    Value<int>? rowid,
+  }) {
+    return ContentPacksCompanion(
+      id: id ?? this.id,
+      revision: revision ?? this.revision,
+      contentSchema: contentSchema ?? this.contentSchema,
+      canonicalJson: canonicalJson ?? this.canonicalJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (revision.present) {
+      map['revision'] = Variable<int>(revision.value);
+    }
+    if (contentSchema.present) {
+      map['content_schema'] = Variable<int>(contentSchema.value);
+    }
+    if (canonicalJson.present) {
+      map['canonical_json'] = Variable<String>(canonicalJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ContentPacksCompanion(')
+          ..write('id: $id, ')
+          ..write('revision: $revision, ')
+          ..write('contentSchema: $contentSchema, ')
+          ..write('canonicalJson: $canonicalJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ContentWordsTable extends ContentWords
+    with TableInfo<$ContentWordsTable, ContentWord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ContentWordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _packIdMeta = const VerificationMeta('packId');
+  @override
+  late final GeneratedColumn<String> packId = GeneratedColumn<String>(
+    'pack_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES content_packs (id)',
+    ),
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hanziMeta = const VerificationMeta('hanzi');
+  @override
+  late final GeneratedColumn<String> hanzi = GeneratedColumn<String>(
+    'hanzi',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _pinyinMeta = const VerificationMeta('pinyin');
+  @override
+  late final GeneratedColumn<String> pinyin = GeneratedColumn<String>(
+    'pinyin',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _metadataJsonMeta = const VerificationMeta(
+    'metadataJson',
+  );
+  @override
+  late final GeneratedColumn<String> metadataJson = GeneratedColumn<String>(
+    'metadata_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    packId,
+    position,
+    hanzi,
+    pinyin,
+    metadataJson,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'content_words';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ContentWord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('pack_id')) {
+      context.handle(
+        _packIdMeta,
+        packId.isAcceptableOrUnknown(data['pack_id']!, _packIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_packIdMeta);
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_positionMeta);
+    }
+    if (data.containsKey('hanzi')) {
+      context.handle(
+        _hanziMeta,
+        hanzi.isAcceptableOrUnknown(data['hanzi']!, _hanziMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hanziMeta);
+    }
+    if (data.containsKey('pinyin')) {
+      context.handle(
+        _pinyinMeta,
+        pinyin.isAcceptableOrUnknown(data['pinyin']!, _pinyinMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pinyinMeta);
+    }
+    if (data.containsKey('metadata_json')) {
+      context.handle(
+        _metadataJsonMeta,
+        metadataJson.isAcceptableOrUnknown(
+          data['metadata_json']!,
+          _metadataJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_metadataJsonMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ContentWord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ContentWord(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      packId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pack_id'],
+      )!,
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      )!,
+      hanzi: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hanzi'],
+      )!,
+      pinyin: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pinyin'],
+      )!,
+      metadataJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}metadata_json'],
+      )!,
+    );
+  }
+
+  @override
+  $ContentWordsTable createAlias(String alias) {
+    return $ContentWordsTable(attachedDatabase, alias);
+  }
+}
+
+class ContentWord extends DataClass implements Insertable<ContentWord> {
+  final String id;
+  final String packId;
+  final int position;
+  final String hanzi;
+  final String pinyin;
+  final String metadataJson;
+  const ContentWord({
+    required this.id,
+    required this.packId,
+    required this.position,
+    required this.hanzi,
+    required this.pinyin,
+    required this.metadataJson,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['pack_id'] = Variable<String>(packId);
+    map['position'] = Variable<int>(position);
+    map['hanzi'] = Variable<String>(hanzi);
+    map['pinyin'] = Variable<String>(pinyin);
+    map['metadata_json'] = Variable<String>(metadataJson);
+    return map;
+  }
+
+  ContentWordsCompanion toCompanion(bool nullToAbsent) {
+    return ContentWordsCompanion(
+      id: Value(id),
+      packId: Value(packId),
+      position: Value(position),
+      hanzi: Value(hanzi),
+      pinyin: Value(pinyin),
+      metadataJson: Value(metadataJson),
+    );
+  }
+
+  factory ContentWord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ContentWord(
+      id: serializer.fromJson<String>(json['id']),
+      packId: serializer.fromJson<String>(json['packId']),
+      position: serializer.fromJson<int>(json['position']),
+      hanzi: serializer.fromJson<String>(json['hanzi']),
+      pinyin: serializer.fromJson<String>(json['pinyin']),
+      metadataJson: serializer.fromJson<String>(json['metadataJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'packId': serializer.toJson<String>(packId),
+      'position': serializer.toJson<int>(position),
+      'hanzi': serializer.toJson<String>(hanzi),
+      'pinyin': serializer.toJson<String>(pinyin),
+      'metadataJson': serializer.toJson<String>(metadataJson),
+    };
+  }
+
+  ContentWord copyWith({
+    String? id,
+    String? packId,
+    int? position,
+    String? hanzi,
+    String? pinyin,
+    String? metadataJson,
+  }) => ContentWord(
+    id: id ?? this.id,
+    packId: packId ?? this.packId,
+    position: position ?? this.position,
+    hanzi: hanzi ?? this.hanzi,
+    pinyin: pinyin ?? this.pinyin,
+    metadataJson: metadataJson ?? this.metadataJson,
+  );
+  ContentWord copyWithCompanion(ContentWordsCompanion data) {
+    return ContentWord(
+      id: data.id.present ? data.id.value : this.id,
+      packId: data.packId.present ? data.packId.value : this.packId,
+      position: data.position.present ? data.position.value : this.position,
+      hanzi: data.hanzi.present ? data.hanzi.value : this.hanzi,
+      pinyin: data.pinyin.present ? data.pinyin.value : this.pinyin,
+      metadataJson: data.metadataJson.present
+          ? data.metadataJson.value
+          : this.metadataJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ContentWord(')
+          ..write('id: $id, ')
+          ..write('packId: $packId, ')
+          ..write('position: $position, ')
+          ..write('hanzi: $hanzi, ')
+          ..write('pinyin: $pinyin, ')
+          ..write('metadataJson: $metadataJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, packId, position, hanzi, pinyin, metadataJson);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ContentWord &&
+          other.id == this.id &&
+          other.packId == this.packId &&
+          other.position == this.position &&
+          other.hanzi == this.hanzi &&
+          other.pinyin == this.pinyin &&
+          other.metadataJson == this.metadataJson);
+}
+
+class ContentWordsCompanion extends UpdateCompanion<ContentWord> {
+  final Value<String> id;
+  final Value<String> packId;
+  final Value<int> position;
+  final Value<String> hanzi;
+  final Value<String> pinyin;
+  final Value<String> metadataJson;
+  final Value<int> rowid;
+  const ContentWordsCompanion({
+    this.id = const Value.absent(),
+    this.packId = const Value.absent(),
+    this.position = const Value.absent(),
+    this.hanzi = const Value.absent(),
+    this.pinyin = const Value.absent(),
+    this.metadataJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ContentWordsCompanion.insert({
+    required String id,
+    required String packId,
+    required int position,
+    required String hanzi,
+    required String pinyin,
+    required String metadataJson,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       packId = Value(packId),
+       position = Value(position),
+       hanzi = Value(hanzi),
+       pinyin = Value(pinyin),
+       metadataJson = Value(metadataJson);
+  static Insertable<ContentWord> custom({
+    Expression<String>? id,
+    Expression<String>? packId,
+    Expression<int>? position,
+    Expression<String>? hanzi,
+    Expression<String>? pinyin,
+    Expression<String>? metadataJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (packId != null) 'pack_id': packId,
+      if (position != null) 'position': position,
+      if (hanzi != null) 'hanzi': hanzi,
+      if (pinyin != null) 'pinyin': pinyin,
+      if (metadataJson != null) 'metadata_json': metadataJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ContentWordsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? packId,
+    Value<int>? position,
+    Value<String>? hanzi,
+    Value<String>? pinyin,
+    Value<String>? metadataJson,
+    Value<int>? rowid,
+  }) {
+    return ContentWordsCompanion(
+      id: id ?? this.id,
+      packId: packId ?? this.packId,
+      position: position ?? this.position,
+      hanzi: hanzi ?? this.hanzi,
+      pinyin: pinyin ?? this.pinyin,
+      metadataJson: metadataJson ?? this.metadataJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (packId.present) {
+      map['pack_id'] = Variable<String>(packId.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (hanzi.present) {
+      map['hanzi'] = Variable<String>(hanzi.value);
+    }
+    if (pinyin.present) {
+      map['pinyin'] = Variable<String>(pinyin.value);
+    }
+    if (metadataJson.present) {
+      map['metadata_json'] = Variable<String>(metadataJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ContentWordsCompanion(')
+          ..write('id: $id, ')
+          ..write('packId: $packId, ')
+          ..write('position: $position, ')
+          ..write('hanzi: $hanzi, ')
+          ..write('pinyin: $pinyin, ')
+          ..write('metadataJson: $metadataJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ContentExamplesTable extends ContentExamples
+    with TableInfo<$ContentExamplesTable, ContentExample> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ContentExamplesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _wordIdMeta = const VerificationMeta('wordId');
+  @override
+  late final GeneratedColumn<String> wordId = GeneratedColumn<String>(
+    'word_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES content_words (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadJsonMeta = const VerificationMeta(
+    'payloadJson',
+  );
+  @override
+  late final GeneratedColumn<String> payloadJson = GeneratedColumn<String>(
+    'payload_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [wordId, position, payloadJson];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'content_examples';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ContentExample> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('word_id')) {
+      context.handle(
+        _wordIdMeta,
+        wordId.isAcceptableOrUnknown(data['word_id']!, _wordIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_wordIdMeta);
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_positionMeta);
+    }
+    if (data.containsKey('payload_json')) {
+      context.handle(
+        _payloadJsonMeta,
+        payloadJson.isAcceptableOrUnknown(
+          data['payload_json']!,
+          _payloadJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_payloadJsonMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {wordId, position};
+  @override
+  ContentExample map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ContentExample(
+      wordId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}word_id'],
+      )!,
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      )!,
+      payloadJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload_json'],
+      )!,
+    );
+  }
+
+  @override
+  $ContentExamplesTable createAlias(String alias) {
+    return $ContentExamplesTable(attachedDatabase, alias);
+  }
+}
+
+class ContentExample extends DataClass implements Insertable<ContentExample> {
+  final String wordId;
+  final int position;
+  final String payloadJson;
+  const ContentExample({
+    required this.wordId,
+    required this.position,
+    required this.payloadJson,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['word_id'] = Variable<String>(wordId);
+    map['position'] = Variable<int>(position);
+    map['payload_json'] = Variable<String>(payloadJson);
+    return map;
+  }
+
+  ContentExamplesCompanion toCompanion(bool nullToAbsent) {
+    return ContentExamplesCompanion(
+      wordId: Value(wordId),
+      position: Value(position),
+      payloadJson: Value(payloadJson),
+    );
+  }
+
+  factory ContentExample.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ContentExample(
+      wordId: serializer.fromJson<String>(json['wordId']),
+      position: serializer.fromJson<int>(json['position']),
+      payloadJson: serializer.fromJson<String>(json['payloadJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'wordId': serializer.toJson<String>(wordId),
+      'position': serializer.toJson<int>(position),
+      'payloadJson': serializer.toJson<String>(payloadJson),
+    };
+  }
+
+  ContentExample copyWith({
+    String? wordId,
+    int? position,
+    String? payloadJson,
+  }) => ContentExample(
+    wordId: wordId ?? this.wordId,
+    position: position ?? this.position,
+    payloadJson: payloadJson ?? this.payloadJson,
+  );
+  ContentExample copyWithCompanion(ContentExamplesCompanion data) {
+    return ContentExample(
+      wordId: data.wordId.present ? data.wordId.value : this.wordId,
+      position: data.position.present ? data.position.value : this.position,
+      payloadJson: data.payloadJson.present
+          ? data.payloadJson.value
+          : this.payloadJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ContentExample(')
+          ..write('wordId: $wordId, ')
+          ..write('position: $position, ')
+          ..write('payloadJson: $payloadJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(wordId, position, payloadJson);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ContentExample &&
+          other.wordId == this.wordId &&
+          other.position == this.position &&
+          other.payloadJson == this.payloadJson);
+}
+
+class ContentExamplesCompanion extends UpdateCompanion<ContentExample> {
+  final Value<String> wordId;
+  final Value<int> position;
+  final Value<String> payloadJson;
+  final Value<int> rowid;
+  const ContentExamplesCompanion({
+    this.wordId = const Value.absent(),
+    this.position = const Value.absent(),
+    this.payloadJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ContentExamplesCompanion.insert({
+    required String wordId,
+    required int position,
+    required String payloadJson,
+    this.rowid = const Value.absent(),
+  }) : wordId = Value(wordId),
+       position = Value(position),
+       payloadJson = Value(payloadJson);
+  static Insertable<ContentExample> custom({
+    Expression<String>? wordId,
+    Expression<int>? position,
+    Expression<String>? payloadJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (wordId != null) 'word_id': wordId,
+      if (position != null) 'position': position,
+      if (payloadJson != null) 'payload_json': payloadJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ContentExamplesCompanion copyWith({
+    Value<String>? wordId,
+    Value<int>? position,
+    Value<String>? payloadJson,
+    Value<int>? rowid,
+  }) {
+    return ContentExamplesCompanion(
+      wordId: wordId ?? this.wordId,
+      position: position ?? this.position,
+      payloadJson: payloadJson ?? this.payloadJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (wordId.present) {
+      map['word_id'] = Variable<String>(wordId.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (payloadJson.present) {
+      map['payload_json'] = Variable<String>(payloadJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ContentExamplesCompanion(')
+          ..write('wordId: $wordId, ')
+          ..write('position: $position, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ContentExercisesTable extends ContentExercises
+    with TableInfo<$ContentExercisesTable, ContentExercise> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ContentExercisesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _wordIdMeta = const VerificationMeta('wordId');
+  @override
+  late final GeneratedColumn<String> wordId = GeneratedColumn<String>(
+    'word_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES content_words (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _questionIdMeta = const VerificationMeta(
+    'questionId',
+  );
+  @override
+  late final GeneratedColumn<String> questionId = GeneratedColumn<String>(
+    'question_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadJsonMeta = const VerificationMeta(
+    'payloadJson',
+  );
+  @override
+  late final GeneratedColumn<String> payloadJson = GeneratedColumn<String>(
+    'payload_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    wordId,
+    questionId,
+    position,
+    kind,
+    payloadJson,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'content_exercises';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ContentExercise> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('word_id')) {
+      context.handle(
+        _wordIdMeta,
+        wordId.isAcceptableOrUnknown(data['word_id']!, _wordIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_wordIdMeta);
+    }
+    if (data.containsKey('question_id')) {
+      context.handle(
+        _questionIdMeta,
+        questionId.isAcceptableOrUnknown(data['question_id']!, _questionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_questionIdMeta);
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_positionMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('payload_json')) {
+      context.handle(
+        _payloadJsonMeta,
+        payloadJson.isAcceptableOrUnknown(
+          data['payload_json']!,
+          _payloadJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_payloadJsonMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {wordId, questionId};
+  @override
+  ContentExercise map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ContentExercise(
+      wordId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}word_id'],
+      )!,
+      questionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}question_id'],
+      )!,
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      payloadJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload_json'],
+      )!,
+    );
+  }
+
+  @override
+  $ContentExercisesTable createAlias(String alias) {
+    return $ContentExercisesTable(attachedDatabase, alias);
+  }
+}
+
+class ContentExercise extends DataClass implements Insertable<ContentExercise> {
+  final String wordId;
+  final String questionId;
+  final int position;
+  final String kind;
+  final String payloadJson;
+  const ContentExercise({
+    required this.wordId,
+    required this.questionId,
+    required this.position,
+    required this.kind,
+    required this.payloadJson,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['word_id'] = Variable<String>(wordId);
+    map['question_id'] = Variable<String>(questionId);
+    map['position'] = Variable<int>(position);
+    map['kind'] = Variable<String>(kind);
+    map['payload_json'] = Variable<String>(payloadJson);
+    return map;
+  }
+
+  ContentExercisesCompanion toCompanion(bool nullToAbsent) {
+    return ContentExercisesCompanion(
+      wordId: Value(wordId),
+      questionId: Value(questionId),
+      position: Value(position),
+      kind: Value(kind),
+      payloadJson: Value(payloadJson),
+    );
+  }
+
+  factory ContentExercise.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ContentExercise(
+      wordId: serializer.fromJson<String>(json['wordId']),
+      questionId: serializer.fromJson<String>(json['questionId']),
+      position: serializer.fromJson<int>(json['position']),
+      kind: serializer.fromJson<String>(json['kind']),
+      payloadJson: serializer.fromJson<String>(json['payloadJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'wordId': serializer.toJson<String>(wordId),
+      'questionId': serializer.toJson<String>(questionId),
+      'position': serializer.toJson<int>(position),
+      'kind': serializer.toJson<String>(kind),
+      'payloadJson': serializer.toJson<String>(payloadJson),
+    };
+  }
+
+  ContentExercise copyWith({
+    String? wordId,
+    String? questionId,
+    int? position,
+    String? kind,
+    String? payloadJson,
+  }) => ContentExercise(
+    wordId: wordId ?? this.wordId,
+    questionId: questionId ?? this.questionId,
+    position: position ?? this.position,
+    kind: kind ?? this.kind,
+    payloadJson: payloadJson ?? this.payloadJson,
+  );
+  ContentExercise copyWithCompanion(ContentExercisesCompanion data) {
+    return ContentExercise(
+      wordId: data.wordId.present ? data.wordId.value : this.wordId,
+      questionId: data.questionId.present
+          ? data.questionId.value
+          : this.questionId,
+      position: data.position.present ? data.position.value : this.position,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      payloadJson: data.payloadJson.present
+          ? data.payloadJson.value
+          : this.payloadJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ContentExercise(')
+          ..write('wordId: $wordId, ')
+          ..write('questionId: $questionId, ')
+          ..write('position: $position, ')
+          ..write('kind: $kind, ')
+          ..write('payloadJson: $payloadJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(wordId, questionId, position, kind, payloadJson);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ContentExercise &&
+          other.wordId == this.wordId &&
+          other.questionId == this.questionId &&
+          other.position == this.position &&
+          other.kind == this.kind &&
+          other.payloadJson == this.payloadJson);
+}
+
+class ContentExercisesCompanion extends UpdateCompanion<ContentExercise> {
+  final Value<String> wordId;
+  final Value<String> questionId;
+  final Value<int> position;
+  final Value<String> kind;
+  final Value<String> payloadJson;
+  final Value<int> rowid;
+  const ContentExercisesCompanion({
+    this.wordId = const Value.absent(),
+    this.questionId = const Value.absent(),
+    this.position = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.payloadJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ContentExercisesCompanion.insert({
+    required String wordId,
+    required String questionId,
+    required int position,
+    required String kind,
+    required String payloadJson,
+    this.rowid = const Value.absent(),
+  }) : wordId = Value(wordId),
+       questionId = Value(questionId),
+       position = Value(position),
+       kind = Value(kind),
+       payloadJson = Value(payloadJson);
+  static Insertable<ContentExercise> custom({
+    Expression<String>? wordId,
+    Expression<String>? questionId,
+    Expression<int>? position,
+    Expression<String>? kind,
+    Expression<String>? payloadJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (wordId != null) 'word_id': wordId,
+      if (questionId != null) 'question_id': questionId,
+      if (position != null) 'position': position,
+      if (kind != null) 'kind': kind,
+      if (payloadJson != null) 'payload_json': payloadJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ContentExercisesCompanion copyWith({
+    Value<String>? wordId,
+    Value<String>? questionId,
+    Value<int>? position,
+    Value<String>? kind,
+    Value<String>? payloadJson,
+    Value<int>? rowid,
+  }) {
+    return ContentExercisesCompanion(
+      wordId: wordId ?? this.wordId,
+      questionId: questionId ?? this.questionId,
+      position: position ?? this.position,
+      kind: kind ?? this.kind,
+      payloadJson: payloadJson ?? this.payloadJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (wordId.present) {
+      map['word_id'] = Variable<String>(wordId.value);
+    }
+    if (questionId.present) {
+      map['question_id'] = Variable<String>(questionId.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (payloadJson.present) {
+      map['payload_json'] = Variable<String>(payloadJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ContentExercisesCompanion(')
+          ..write('wordId: $wordId, ')
+          ..write('questionId: $questionId, ')
+          ..write('position: $position, ')
+          ..write('kind: $kind, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2150,6 +3536,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $VocabularyProgressTable(this);
   late final $VocabularyAttemptsTable vocabularyAttempts =
       $VocabularyAttemptsTable(this);
+  late final $ContentPacksTable contentPacks = $ContentPacksTable(this);
+  late final $ContentWordsTable contentWords = $ContentWordsTable(this);
+  late final $ContentExamplesTable contentExamples = $ContentExamplesTable(
+    this,
+  );
+  late final $ContentExercisesTable contentExercises = $ContentExercisesTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2160,7 +3554,28 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     foundationProgress,
     vocabularyProgress,
     vocabularyAttempts,
+    contentPacks,
+    contentWords,
+    contentExamples,
+    contentExercises,
   ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'content_words',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('content_examples', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'content_words',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('content_exercises', kind: UpdateKind.delete)],
+    ),
+  ]);
 }
 
 typedef $$ProfilesTableCreateCompanionBuilder = ProfilesCompanion Function({
@@ -4194,6 +5609,1438 @@ typedef $$VocabularyAttemptsTableProcessedTableManager =
       VocabularyAttempt,
       PrefetchHooks Function({bool profileId})
     >;
+typedef $$ContentPacksTableCreateCompanionBuilder =
+    ContentPacksCompanion Function({
+      required String id,
+      required int revision,
+      required int contentSchema,
+      required String canonicalJson,
+      Value<int> rowid,
+    });
+typedef $$ContentPacksTableUpdateCompanionBuilder =
+    ContentPacksCompanion Function({
+      Value<String> id,
+      Value<int> revision,
+      Value<int> contentSchema,
+      Value<String> canonicalJson,
+      Value<int> rowid,
+    });
+
+final class $$ContentPacksTableReferences
+    extends BaseReferences<_$AppDatabase, $ContentPacksTable, ContentPack> {
+  $$ContentPacksTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$ContentWordsTable, List<ContentWord>>
+  _contentWordsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.contentWords,
+    aliasName: 'content_packs__id__content_words__pack_id',
+  );
+
+  $$ContentWordsTableProcessedTableManager get contentWordsRefs {
+    final manager = $$ContentWordsTableTableManager(
+      $_db,
+      $_db.contentWords,
+    ).filter((f) => f.packId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_contentWordsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$ContentPacksTableFilterComposer
+    extends Composer<_$AppDatabase, $ContentPacksTable> {
+  $$ContentPacksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get contentSchema => $composableBuilder(
+    column: $table.contentSchema,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get canonicalJson => $composableBuilder(
+    column: $table.canonicalJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> contentWordsRefs(
+    Expression<bool> Function($$ContentWordsTableFilterComposer f) f,
+  ) {
+    final $$ContentWordsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.contentWords,
+      getReferencedColumn: (t) => t.packId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ContentWordsTableFilterComposer(
+            $db: $db,
+            $table: $db.contentWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ContentPacksTableOrderingComposer
+    extends Composer<_$AppDatabase, $ContentPacksTable> {
+  $$ContentPacksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get contentSchema => $composableBuilder(
+    column: $table.contentSchema,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get canonicalJson => $composableBuilder(
+    column: $table.canonicalJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ContentPacksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ContentPacksTable> {
+  $$ContentPacksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get revision =>
+      $composableBuilder(column: $table.revision, builder: (column) => column);
+
+  GeneratedColumn<int> get contentSchema => $composableBuilder(
+    column: $table.contentSchema,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get canonicalJson => $composableBuilder(
+    column: $table.canonicalJson,
+    builder: (column) => column,
+  );
+
+  Expression<T> contentWordsRefs<T extends Object>(
+    Expression<T> Function($$ContentWordsTableAnnotationComposer a) f,
+  ) {
+    final $$ContentWordsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.contentWords,
+      getReferencedColumn: (t) => t.packId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ContentWordsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.contentWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ContentPacksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ContentPacksTable,
+          ContentPack,
+          $$ContentPacksTableFilterComposer,
+          $$ContentPacksTableOrderingComposer,
+          $$ContentPacksTableAnnotationComposer,
+          $$ContentPacksTableCreateCompanionBuilder,
+          $$ContentPacksTableUpdateCompanionBuilder,
+          (ContentPack, $$ContentPacksTableReferences),
+          ContentPack,
+          PrefetchHooks Function({bool contentWordsRefs})
+        > {
+  $$ContentPacksTableTableManager(_$AppDatabase db, $ContentPacksTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ContentPacksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ContentPacksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ContentPacksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<int> contentSchema = const Value.absent(),
+                Value<String> canonicalJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ContentPacksCompanion(
+                id: id,
+                revision: revision,
+                contentSchema: contentSchema,
+                canonicalJson: canonicalJson,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required int revision,
+                required int contentSchema,
+                required String canonicalJson,
+                Value<int> rowid = const Value.absent(),
+              }) => ContentPacksCompanion.insert(
+                id: id,
+                revision: revision,
+                contentSchema: contentSchema,
+                canonicalJson: canonicalJson,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ContentPacksTable, ContentPack>(table),
+                  $$ContentPacksTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({contentWordsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (contentWordsRefs) db.contentWords],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (contentWordsRefs)
+                    await $_getPrefetchedDataByColumns<
+                      ContentPack,
+                      $ContentPacksTable,
+                      ContentWord,
+                      $ContentWordsTable
+                    >(
+                      currentTable: table,
+                      referencedTable: $$ContentPacksTableReferences
+                          ._contentWordsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$ContentPacksTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).contentWordsRefs,
+                      currentColumn: 'id',
+                      referencedColumn: 'pack_id',
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ContentPacksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ContentPacksTable,
+      ContentPack,
+      $$ContentPacksTableFilterComposer,
+      $$ContentPacksTableOrderingComposer,
+      $$ContentPacksTableAnnotationComposer,
+      $$ContentPacksTableCreateCompanionBuilder,
+      $$ContentPacksTableUpdateCompanionBuilder,
+      (ContentPack, $$ContentPacksTableReferences),
+      ContentPack,
+      PrefetchHooks Function({bool contentWordsRefs})
+    >;
+typedef $$ContentWordsTableCreateCompanionBuilder =
+    ContentWordsCompanion Function({
+      required String id,
+      required String packId,
+      required int position,
+      required String hanzi,
+      required String pinyin,
+      required String metadataJson,
+      Value<int> rowid,
+    });
+typedef $$ContentWordsTableUpdateCompanionBuilder =
+    ContentWordsCompanion Function({
+      Value<String> id,
+      Value<String> packId,
+      Value<int> position,
+      Value<String> hanzi,
+      Value<String> pinyin,
+      Value<String> metadataJson,
+      Value<int> rowid,
+    });
+
+final class $$ContentWordsTableReferences
+    extends BaseReferences<_$AppDatabase, $ContentWordsTable, ContentWord> {
+  $$ContentWordsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ContentPacksTable _packIdTable(_$AppDatabase db) =>
+      db.contentPacks.createAlias('content_words__pack_id__content_packs__id');
+
+  $$ContentPacksTableProcessedTableManager get packId {
+    final $_column = $_itemColumn<String>('pack_id')!;
+
+    final manager = $$ContentPacksTableTableManager(
+      $_db,
+      $_db.contentPacks,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_packIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$ContentExamplesTable, List<ContentExample>>
+  _contentExamplesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.contentExamples,
+    aliasName: 'content_words__id__content_examples__word_id',
+  );
+
+  $$ContentExamplesTableProcessedTableManager get contentExamplesRefs {
+    final manager = $$ContentExamplesTableTableManager(
+      $_db,
+      $_db.contentExamples,
+    ).filter((f) => f.wordId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _contentExamplesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ContentExercisesTable, List<ContentExercise>>
+  _contentExercisesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.contentExercises,
+    aliasName: 'content_words__id__content_exercises__word_id',
+  );
+
+  $$ContentExercisesTableProcessedTableManager get contentExercisesRefs {
+    final manager = $$ContentExercisesTableTableManager(
+      $_db,
+      $_db.contentExercises,
+    ).filter((f) => f.wordId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _contentExercisesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$ContentWordsTableFilterComposer
+    extends Composer<_$AppDatabase, $ContentWordsTable> {
+  $$ContentWordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hanzi => $composableBuilder(
+    column: $table.hanzi,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pinyin => $composableBuilder(
+    column: $table.pinyin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get metadataJson => $composableBuilder(
+    column: $table.metadataJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ContentPacksTableFilterComposer get packId {
+    final $$ContentPacksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.packId,
+      referencedTable: $db.contentPacks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ContentPacksTableFilterComposer(
+            $db: $db,
+            $table: $db.contentPacks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> contentExamplesRefs(
+    Expression<bool> Function($$ContentExamplesTableFilterComposer f) f,
+  ) {
+    final $$ContentExamplesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.contentExamples,
+      getReferencedColumn: (t) => t.wordId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ContentExamplesTableFilterComposer(
+            $db: $db,
+            $table: $db.contentExamples,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> contentExercisesRefs(
+    Expression<bool> Function($$ContentExercisesTableFilterComposer f) f,
+  ) {
+    final $$ContentExercisesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.contentExercises,
+      getReferencedColumn: (t) => t.wordId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ContentExercisesTableFilterComposer(
+            $db: $db,
+            $table: $db.contentExercises,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ContentWordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ContentWordsTable> {
+  $$ContentWordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hanzi => $composableBuilder(
+    column: $table.hanzi,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pinyin => $composableBuilder(
+    column: $table.pinyin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get metadataJson => $composableBuilder(
+    column: $table.metadataJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ContentPacksTableOrderingComposer get packId {
+    final $$ContentPacksTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.packId,
+      referencedTable: $db.contentPacks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ContentPacksTableOrderingComposer(
+            $db: $db,
+            $table: $db.contentPacks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ContentWordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ContentWordsTable> {
+  $$ContentWordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<String> get hanzi =>
+      $composableBuilder(column: $table.hanzi, builder: (column) => column);
+
+  GeneratedColumn<String> get pinyin =>
+      $composableBuilder(column: $table.pinyin, builder: (column) => column);
+
+  GeneratedColumn<String> get metadataJson => $composableBuilder(
+    column: $table.metadataJson,
+    builder: (column) => column,
+  );
+
+  $$ContentPacksTableAnnotationComposer get packId {
+    final $$ContentPacksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.packId,
+      referencedTable: $db.contentPacks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ContentPacksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.contentPacks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> contentExamplesRefs<T extends Object>(
+    Expression<T> Function($$ContentExamplesTableAnnotationComposer a) f,
+  ) {
+    final $$ContentExamplesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.contentExamples,
+      getReferencedColumn: (t) => t.wordId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ContentExamplesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.contentExamples,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> contentExercisesRefs<T extends Object>(
+    Expression<T> Function($$ContentExercisesTableAnnotationComposer a) f,
+  ) {
+    final $$ContentExercisesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.contentExercises,
+      getReferencedColumn: (t) => t.wordId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ContentExercisesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.contentExercises,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ContentWordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ContentWordsTable,
+          ContentWord,
+          $$ContentWordsTableFilterComposer,
+          $$ContentWordsTableOrderingComposer,
+          $$ContentWordsTableAnnotationComposer,
+          $$ContentWordsTableCreateCompanionBuilder,
+          $$ContentWordsTableUpdateCompanionBuilder,
+          (ContentWord, $$ContentWordsTableReferences),
+          ContentWord,
+          PrefetchHooks Function({
+            bool packId,
+            bool contentExamplesRefs,
+            bool contentExercisesRefs,
+          })
+        > {
+  $$ContentWordsTableTableManager(_$AppDatabase db, $ContentWordsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ContentWordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ContentWordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ContentWordsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> packId = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<String> hanzi = const Value.absent(),
+                Value<String> pinyin = const Value.absent(),
+                Value<String> metadataJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ContentWordsCompanion(
+                id: id,
+                packId: packId,
+                position: position,
+                hanzi: hanzi,
+                pinyin: pinyin,
+                metadataJson: metadataJson,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String packId,
+                required int position,
+                required String hanzi,
+                required String pinyin,
+                required String metadataJson,
+                Value<int> rowid = const Value.absent(),
+              }) => ContentWordsCompanion.insert(
+                id: id,
+                packId: packId,
+                position: position,
+                hanzi: hanzi,
+                pinyin: pinyin,
+                metadataJson: metadataJson,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ContentWordsTable, ContentWord>(table),
+                  $$ContentWordsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                packId = false,
+                contentExamplesRefs = false,
+                contentExercisesRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (contentExamplesRefs) db.contentExamples,
+                    if (contentExercisesRefs) db.contentExercises,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (packId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.packId,
+                            referencedTable: $$ContentWordsTableReferences
+                                ._packIdTable(db),
+                            referencedColumn: $$ContentWordsTableReferences
+                                ._packIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (contentExamplesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          ContentWord,
+                          $ContentWordsTable,
+                          ContentExample,
+                          $ContentExamplesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ContentWordsTableReferences
+                              ._contentExamplesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ContentWordsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).contentExamplesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'word_id',
+                          typedResults: items,
+                        ),
+                      if (contentExercisesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          ContentWord,
+                          $ContentWordsTable,
+                          ContentExercise,
+                          $ContentExercisesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ContentWordsTableReferences
+                              ._contentExercisesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ContentWordsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).contentExercisesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'word_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$ContentWordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ContentWordsTable,
+      ContentWord,
+      $$ContentWordsTableFilterComposer,
+      $$ContentWordsTableOrderingComposer,
+      $$ContentWordsTableAnnotationComposer,
+      $$ContentWordsTableCreateCompanionBuilder,
+      $$ContentWordsTableUpdateCompanionBuilder,
+      (ContentWord, $$ContentWordsTableReferences),
+      ContentWord,
+      PrefetchHooks Function({
+        bool packId,
+        bool contentExamplesRefs,
+        bool contentExercisesRefs,
+      })
+    >;
+typedef $$ContentExamplesTableCreateCompanionBuilder =
+    ContentExamplesCompanion Function({
+      required String wordId,
+      required int position,
+      required String payloadJson,
+      Value<int> rowid,
+    });
+typedef $$ContentExamplesTableUpdateCompanionBuilder =
+    ContentExamplesCompanion Function({
+      Value<String> wordId,
+      Value<int> position,
+      Value<String> payloadJson,
+      Value<int> rowid,
+    });
+
+final class $$ContentExamplesTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $ContentExamplesTable, ContentExample> {
+  $$ContentExamplesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ContentWordsTable _wordIdTable(_$AppDatabase db) => db.contentWords
+      .createAlias('content_examples__word_id__content_words__id');
+
+  $$ContentWordsTableProcessedTableManager get wordId {
+    final $_column = $_itemColumn<String>('word_id')!;
+
+    final manager = $$ContentWordsTableTableManager(
+      $_db,
+      $_db.contentWords,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_wordIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ContentExamplesTableFilterComposer
+    extends Composer<_$AppDatabase, $ContentExamplesTable> {
+  $$ContentExamplesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ContentWordsTableFilterComposer get wordId {
+    final $$ContentWordsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.contentWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ContentWordsTableFilterComposer(
+            $db: $db,
+            $table: $db.contentWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ContentExamplesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ContentExamplesTable> {
+  $$ContentExamplesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ContentWordsTableOrderingComposer get wordId {
+    final $$ContentWordsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.contentWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ContentWordsTableOrderingComposer(
+            $db: $db,
+            $table: $db.contentWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ContentExamplesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ContentExamplesTable> {
+  $$ContentExamplesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => column,
+  );
+
+  $$ContentWordsTableAnnotationComposer get wordId {
+    final $$ContentWordsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.contentWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ContentWordsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.contentWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ContentExamplesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ContentExamplesTable,
+          ContentExample,
+          $$ContentExamplesTableFilterComposer,
+          $$ContentExamplesTableOrderingComposer,
+          $$ContentExamplesTableAnnotationComposer,
+          $$ContentExamplesTableCreateCompanionBuilder,
+          $$ContentExamplesTableUpdateCompanionBuilder,
+          (ContentExample, $$ContentExamplesTableReferences),
+          ContentExample,
+          PrefetchHooks Function({bool wordId})
+        > {
+  $$ContentExamplesTableTableManager(
+    _$AppDatabase db,
+    $ContentExamplesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ContentExamplesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ContentExamplesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ContentExamplesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> wordId = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<String> payloadJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ContentExamplesCompanion(
+                wordId: wordId,
+                position: position,
+                payloadJson: payloadJson,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String wordId,
+                required int position,
+                required String payloadJson,
+                Value<int> rowid = const Value.absent(),
+              }) => ContentExamplesCompanion.insert(
+                wordId: wordId,
+                position: position,
+                payloadJson: payloadJson,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ContentExamplesTable, ContentExample>(table),
+                  $$ContentExamplesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({wordId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (wordId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.wordId,
+                        referencedTable: $$ContentExamplesTableReferences
+                            ._wordIdTable(db),
+                        referencedColumn: $$ContentExamplesTableReferences
+                            ._wordIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ContentExamplesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ContentExamplesTable,
+      ContentExample,
+      $$ContentExamplesTableFilterComposer,
+      $$ContentExamplesTableOrderingComposer,
+      $$ContentExamplesTableAnnotationComposer,
+      $$ContentExamplesTableCreateCompanionBuilder,
+      $$ContentExamplesTableUpdateCompanionBuilder,
+      (ContentExample, $$ContentExamplesTableReferences),
+      ContentExample,
+      PrefetchHooks Function({bool wordId})
+    >;
+typedef $$ContentExercisesTableCreateCompanionBuilder =
+    ContentExercisesCompanion Function({
+      required String wordId,
+      required String questionId,
+      required int position,
+      required String kind,
+      required String payloadJson,
+      Value<int> rowid,
+    });
+typedef $$ContentExercisesTableUpdateCompanionBuilder =
+    ContentExercisesCompanion Function({
+      Value<String> wordId,
+      Value<String> questionId,
+      Value<int> position,
+      Value<String> kind,
+      Value<String> payloadJson,
+      Value<int> rowid,
+    });
+
+final class $$ContentExercisesTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $ContentExercisesTable, ContentExercise> {
+  $$ContentExercisesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ContentWordsTable _wordIdTable(_$AppDatabase db) => db.contentWords
+      .createAlias('content_exercises__word_id__content_words__id');
+
+  $$ContentWordsTableProcessedTableManager get wordId {
+    final $_column = $_itemColumn<String>('word_id')!;
+
+    final manager = $$ContentWordsTableTableManager(
+      $_db,
+      $_db.contentWords,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_wordIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ContentExercisesTableFilterComposer
+    extends Composer<_$AppDatabase, $ContentExercisesTable> {
+  $$ContentExercisesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get questionId => $composableBuilder(
+    column: $table.questionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ContentWordsTableFilterComposer get wordId {
+    final $$ContentWordsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.contentWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ContentWordsTableFilterComposer(
+            $db: $db,
+            $table: $db.contentWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ContentExercisesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ContentExercisesTable> {
+  $$ContentExercisesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get questionId => $composableBuilder(
+    column: $table.questionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ContentWordsTableOrderingComposer get wordId {
+    final $$ContentWordsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.contentWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ContentWordsTableOrderingComposer(
+            $db: $db,
+            $table: $db.contentWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ContentExercisesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ContentExercisesTable> {
+  $$ContentExercisesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get questionId => $composableBuilder(
+    column: $table.questionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => column,
+  );
+
+  $$ContentWordsTableAnnotationComposer get wordId {
+    final $$ContentWordsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.contentWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ContentWordsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.contentWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ContentExercisesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ContentExercisesTable,
+          ContentExercise,
+          $$ContentExercisesTableFilterComposer,
+          $$ContentExercisesTableOrderingComposer,
+          $$ContentExercisesTableAnnotationComposer,
+          $$ContentExercisesTableCreateCompanionBuilder,
+          $$ContentExercisesTableUpdateCompanionBuilder,
+          (ContentExercise, $$ContentExercisesTableReferences),
+          ContentExercise,
+          PrefetchHooks Function({bool wordId})
+        > {
+  $$ContentExercisesTableTableManager(
+    _$AppDatabase db,
+    $ContentExercisesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ContentExercisesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ContentExercisesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ContentExercisesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> wordId = const Value.absent(),
+                Value<String> questionId = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String> payloadJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ContentExercisesCompanion(
+                wordId: wordId,
+                questionId: questionId,
+                position: position,
+                kind: kind,
+                payloadJson: payloadJson,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String wordId,
+                required String questionId,
+                required int position,
+                required String kind,
+                required String payloadJson,
+                Value<int> rowid = const Value.absent(),
+              }) => ContentExercisesCompanion.insert(
+                wordId: wordId,
+                questionId: questionId,
+                position: position,
+                kind: kind,
+                payloadJson: payloadJson,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ContentExercisesTable, ContentExercise>(table),
+                  $$ContentExercisesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({wordId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (wordId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.wordId,
+                        referencedTable: $$ContentExercisesTableReferences
+                            ._wordIdTable(db),
+                        referencedColumn: $$ContentExercisesTableReferences
+                            ._wordIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ContentExercisesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ContentExercisesTable,
+      ContentExercise,
+      $$ContentExercisesTableFilterComposer,
+      $$ContentExercisesTableOrderingComposer,
+      $$ContentExercisesTableAnnotationComposer,
+      $$ContentExercisesTableCreateCompanionBuilder,
+      $$ContentExercisesTableUpdateCompanionBuilder,
+      (ContentExercise, $$ContentExercisesTableReferences),
+      ContentExercise,
+      PrefetchHooks Function({bool wordId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4208,4 +7055,12 @@ class $AppDatabaseManager {
       $$VocabularyProgressTableTableManager(_db, _db.vocabularyProgress);
   $$VocabularyAttemptsTableTableManager get vocabularyAttempts =>
       $$VocabularyAttemptsTableTableManager(_db, _db.vocabularyAttempts);
+  $$ContentPacksTableTableManager get contentPacks =>
+      $$ContentPacksTableTableManager(_db, _db.contentPacks);
+  $$ContentWordsTableTableManager get contentWords =>
+      $$ContentWordsTableTableManager(_db, _db.contentWords);
+  $$ContentExamplesTableTableManager get contentExamples =>
+      $$ContentExamplesTableTableManager(_db, _db.contentExamples);
+  $$ContentExercisesTableTableManager get contentExercises =>
+      $$ContentExercisesTableTableManager(_db, _db.contentExercises);
 }

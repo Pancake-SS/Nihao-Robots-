@@ -131,7 +131,7 @@ class SqliteLearningRepository implements LearningRepository {
     final frozen = Map<String, String>.of(answers);
     final sorted = frozen.keys.toList()..sort();
     final encoded = jsonEncode({for (final key in sorted) key: frozen[key]});
-    if (encoded.length > 2000) throw ArgumentError('Invalid answers.');
+    if (encoded.length > 10000) throw ArgumentError('Invalid answers.');
     return database.transaction(() async {
       final previous = await (database.select(
         database.vocabularyAttempts,
@@ -159,7 +159,7 @@ class SqliteLearningRepository implements LearningRepository {
       }
       final questions = word.entry.questions;
       if (frozen.length != questions.length ||
-          questions.any((q) => !q.options.containsKey(frozen[q.id]))) {
+          questions.any((q) => !q.accepts(frozen[q.id]))) {
         throw ArgumentError('Answer every question using an available choice.');
       }
       await _profile(session.profileId);
@@ -171,7 +171,7 @@ class SqliteLearningRepository implements LearningRepository {
       }
       final time = now().toUtc();
       _available(row, session.isReview, time);
-      final passed = questions.every((q) => frozen[q.id] == q.correctOptionId);
+      final passed = questions.every((q) => q.isCorrect(frozen[q.id]));
       final due = time.add(
         policy.delay(passed: passed, isReview: session.isReview),
       );

@@ -86,7 +86,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen>
                 ),
                 const SizedBox(height: 12),
                 const Text(
-                  'Early reviews practise recognition. They do not award mastery.',
+                  'Early reviews practise word recognition and recall. They do not award mastery.',
                 ),
                 if (words.isEmpty)
                   const Padding(

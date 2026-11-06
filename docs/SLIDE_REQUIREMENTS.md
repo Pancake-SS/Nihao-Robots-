@@ -1,5 +1,9 @@
 # Slide requirements and source reconciliation
 
+## Implementation checkpoint — 2026-11-06
+
+Slides 20–22 now have code-generated meaning, Hanzi→Pinyin and Pinyin→Hanzi questions, plus reverse meaning/Pinyin directions. Slide 19 has five examples and offline sentence controls for 20 imported lessons; standalone word audio remains unavailable. The 21 published lessons each have eight questions. Translated cloze and single-word typed recall are additional patterns, not completion of slide 24's ordering or slide 25's five-sentence production form. Slide 23's audio-choice quiz remains pending. Original slide/notes audit below is retained.
+
 Audit date: 2026-11-03 (Asia/Kuala_Lumpur). Source: `reference/Copy of MCPKI_FYP_Starred_Slides_Updated.pptx.pptx`.
 
 ## Pilot implementation update — 2026-11-04

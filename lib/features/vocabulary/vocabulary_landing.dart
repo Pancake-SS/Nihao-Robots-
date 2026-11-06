@@ -26,7 +26,7 @@ class VocabularyLanding extends StatelessWidget {
       ),
       const SizedBox(height: 12),
       const Text(
-        'Explore a pilot lesson, try two recognition checks, and return when your review is due.',
+        'Explore starter lessons, try eight varied questions, and return when your review is due.',
       ),
       const SizedBox(height: 24),
       LayoutBuilder(
@@ -40,7 +40,7 @@ class VocabularyLanding extends StatelessWidget {
               title: 'Learn',
               artwork: RobotArtwork.hoverOnPaper,
               description: 'Meet new words through characters, meaning and checked examples.',
-              status: 'Source-checked pilot lesson',
+              status: 'Source-checked starter lessons',
               action: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => VocabularyCatalogueScreen(

@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/learning_card.dart';
+import '../vocabulary/content_pack.dart';
 import 'learning.dart';
 import 'learning_providers.dart';
 
@@ -28,6 +31,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   String? _error;
   int _index = 0;
   final _scroll = ScrollController();
+
+  List<MapEntry<String, String>> _choices(VocabularyQuestion question) =>
+      question.options.entries.toList()
+        ..shuffle(Random(_session!.eventId.hashCode ^ question.id.hashCode));
 
   @override
   void initState() {
@@ -125,7 +132,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                             const SizedBox(height: 16),
                             Text(
                               receipt.passed
-                                  ? 'Both recognition checks were correct.'
+                                  ? 'All ${session!.word.entry.questions.length} checks were correct.'
                                   : 'Keep practising. Your answers and next review are saved.',
                             ),
                             const SizedBox(height: 12),
@@ -135,16 +142,16 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                             ),
                             const SizedBox(height: 12),
                             const Text(
-                              'This is early recognition practice, not mastery. Return to Vocabulary Practice when the review is due.',
+                              'This checkpoint does not award mastery. Return to Vocabulary Practice when the review is due.',
                             ),
                             for (final q in session!.word.entry.questions) ...[
                               const Divider(height: 32),
                               Text(q.prompt),
                               const SizedBox(height: 8),
-                              Text('Your answer: ${q.options[_answers[q.id]]}'),
                               Text(
-                                'Correct answer: ${q.options[q.correctOptionId]}',
+                                'Your answer: ${q.displayAnswer(_answers[q.id]!)}',
                               ),
+                              Text('Correct answer: ${q.correctAnswer}'),
                               const SizedBox(height: 8),
                               Text(q.explanation),
                             ],
@@ -163,64 +170,96 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                               style: Theme.of(context).textTheme.headlineSmall,
                             ),
                             const SizedBox(height: 24),
-                            for (final option
-                                in session
-                                    .word
-                                    .entry
-                                    .questions[_index]
-                                    .options
-                                    .entries) ...[
-                              Semantics(
-                                selected:
+                            if (session.word.entry.questions[_index].isTyped)
+                              TextFormField(
+                                key: ValueKey(
+                                  'typed-${session.word.entry.questions[_index].id}',
+                                ),
+                                initialValue:
                                     _answers[session
                                         .word
                                         .entry
                                         .questions[_index]
-                                        .id] ==
-                                    option.key,
-                                child: OutlinedButton(
-                                  key: ValueKey('answer-${option.key}'),
-                                  style: OutlinedButton.styleFrom(
-                                    alignment: Alignment.centerLeft,
-                                  ),
-                                  onPressed: _submitted || _conflict
-                                      ? null
-                                      : () => setState(
-                                          () =>
-                                              _answers[session
+                                        .id] ??
+                                    '',
+                                enabled: !_submitted && !_conflict,
+                                maxLength: 100,
+                                decoration: const InputDecoration(
+                                  labelText:
+                                      'Your answer in Simplified Chinese',
+                                  helperText: 'Use your Chinese keyboard or IME. Enter the word from this lesson.',
+                                  helperMaxLines: 4,
+                                ),
+                                onChanged: (value) => setState(
+                                  () =>
+                                      _answers[session
+                                              .word
+                                              .entry
+                                              .questions[_index]
+                                              .id] =
+                                          value,
+                                ),
+                              )
+                            else
+                              for (final option in _choices(
+                                session.word.entry.questions[_index],
+                              )) ...[
+                                Semantics(
+                                  selected:
+                                      _answers[session
+                                          .word
+                                          .entry
+                                          .questions[_index]
+                                          .id] ==
+                                      option.key,
+                                  child: OutlinedButton(
+                                    key: ValueKey('answer-${option.key}'),
+                                    style: OutlinedButton.styleFrom(
+                                      alignment: Alignment.centerLeft,
+                                    ),
+                                    onPressed: _submitted || _conflict
+                                        ? null
+                                        : () => setState(
+                                            () =>
+                                                _answers[session
+                                                        .word
+                                                        .entry
+                                                        .questions[_index]
+                                                        .id] =
+                                                    option.key,
+                                          ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          _answers[session
                                                       .word
                                                       .entry
                                                       .questions[_index]
-                                                      .id] =
-                                                  option.key,
+                                                      .id] ==
+                                                  option.key
+                                              ? Icons.radio_button_checked
+                                              : Icons.radio_button_off,
                                         ),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        _answers[session
-                                                    .word
-                                                    .entry
-                                                    .questions[_index]
-                                                    .id] ==
-                                                option.key
-                                            ? Icons.radio_button_checked
-                                            : Icons.radio_button_off,
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(child: Text(option.value)),
-                                    ],
+                                        const SizedBox(width: 12),
+                                        Expanded(child: Text(option.value)),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 12),
-                            ],
+                                const SizedBox(height: 12),
+                              ],
                             FilledButton(
                               onPressed:
                                   _saving ||
                                       _conflict ||
-                                      !_answers.containsKey(
-                                        session.word.entry.questions[_index].id,
-                                      )
+                                      !session.word.entry.questions[_index]
+                                          .accepts(
+                                            _answers[session
+                                                .word
+                                                .entry
+                                                .questions[_index]
+                                                .id],
+                                          )
                                   ? null
                                   : _index ==
                                         session.word.entry.questions.length - 1

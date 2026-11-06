@@ -1,5 +1,6 @@
 # Local tools and generated output
 .venv/
+.content-cache/
 __pycache__/
 *.pyc
 .dart_tool/

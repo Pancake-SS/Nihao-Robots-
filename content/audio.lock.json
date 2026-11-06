@@ -1,0 +1,882 @@
+{
+  "hsk1-0001": {
+    "asset": "assets/audio/hsk1-0001.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0001.mp3",
+    "sha256": "449997a6510f94e4011d7ac131476014573a9f709b60acd4da92f4432e4a57b3",
+    "bytes": 9189,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0007": {
+    "asset": "assets/audio/hsk1-0007.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0007.mp3",
+    "sha256": "70a6166a9c105bf183779741e19c9c43fd0231062346fce108c8ef9c14e8d5b5",
+    "bytes": 9069,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0009": {
+    "asset": "assets/audio/hsk1-0009.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0009.mp3",
+    "sha256": "b53bb10f1b9db68cf965c352a270dc7e6384103bce2011a4d8f68aacec9c90bc",
+    "bytes": 7197,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0010": {
+    "asset": "assets/audio/hsk1-0010.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0010.mp3",
+    "sha256": "f4165a1eac948a304ffa3ab4f8720ac3f6002cd87a659e1f87b7ae283294f03b",
+    "bytes": 12165,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0011": {
+    "asset": "assets/audio/hsk1-0011.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0011.mp3",
+    "sha256": "8791c00534db8fa35e086d4428a996a58ed39034ff67f2568f8e9dd7e8dbb45b",
+    "bytes": 16941,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0012": {
+    "asset": "assets/audio/hsk1-0012.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0012.mp3",
+    "sha256": "db886454bac01b7205dec3493e3edc36c21f5545420082123ebecb1012515501",
+    "bytes": 9885,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0028": {
+    "asset": "assets/audio/hsk1-0028.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0028.mp3",
+    "sha256": "cdbf09852417e7146e22ad6cd45f2292bdb91db358ff6b969ad3513554182916",
+    "bytes": 14349,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0033": {
+    "asset": "assets/audio/hsk1-0033.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0033.mp3",
+    "sha256": "467a24813498a5ad880b387763798296d8717eab439d874683c1d212186ca5e6",
+    "bytes": 14997,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0034": {
+    "asset": "assets/audio/hsk1-0034.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0034.mp3",
+    "sha256": "6227fb62aec3b49bb7b2e17d456382a79c32a0f55142816ef256e73b5ad75c7e",
+    "bytes": 16173,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0040": {
+    "asset": "assets/audio/hsk1-0040.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0040.mp3",
+    "sha256": "d98de8ae3fdcb83807335c70000b9e29d8fc92ec8af73ae34703ff2301f052f9",
+    "bytes": 10269,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0041": {
+    "asset": "assets/audio/hsk1-0041.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0041.mp3",
+    "sha256": "8ecfc3e53b5eefacfb9cec887bb26a23dcb5e1a2271dd1255f60801b16b7a9a3",
+    "bytes": 16701,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0042": {
+    "asset": "assets/audio/hsk1-0042.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0042.mp3",
+    "sha256": "5a75c570336db390e9e6b18d8f58b56924eedfde2107707d9eba5ab8f796d508",
+    "bytes": 13509,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0043": {
+    "asset": "assets/audio/hsk1-0043.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0043.mp3",
+    "sha256": "43a1eb0f7fc856eafcc587e465243c579d318b1bb2924abbaf7a319a0cd22cd6",
+    "bytes": 13413,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0046": {
+    "asset": "assets/audio/hsk1-0046.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0046.mp3",
+    "sha256": "c880c11f09994d2832685d967fd67b853e91b9b41fdb0f85e2c91f553e0f1966",
+    "bytes": 13629,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0047": {
+    "asset": "assets/audio/hsk1-0047.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0047.mp3",
+    "sha256": "7066712e073b393519ffb23a3741e151009c500f7a3a571f39192e4e8409d049",
+    "bytes": 16845,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0052": {
+    "asset": "assets/audio/hsk1-0052.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0052.mp3",
+    "sha256": "a60ae632f6dc8ab9bb46fd94f58fa27d3697ede98f401df61523493f2022bb3f",
+    "bytes": 11013,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0056": {
+    "asset": "assets/audio/hsk1-0056.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0056.mp3",
+    "sha256": "3d5079609dc548b893a14c135fe6b889636ef7023d4d35d3d0c774587e51b6b4",
+    "bytes": 11949,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0057": {
+    "asset": "assets/audio/hsk1-0057.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0057.mp3",
+    "sha256": "338f9738fc3c6758666df6fccede1ffcdd404b53bcb0fbeca04ad6c3e7e9c23c",
+    "bytes": 14205,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0058": {
+    "asset": "assets/audio/hsk1-0058.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0058.mp3",
+    "sha256": "85bf38906dd9040fd67224c14a567677afe16c3be698ce93ae7f9aa0e4a2a137",
+    "bytes": 12237,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0059": {
+    "asset": "assets/audio/hsk1-0059.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0059.mp3",
+    "sha256": "97cd146c71a442036105f7c68dd83306a0ddc73c8ac9c1ae910e90714d229eda",
+    "bytes": 9837,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0060": {
+    "asset": "assets/audio/hsk1-0060.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0060.mp3",
+    "sha256": "90a4efafe4d8ec01bbede5e598fddd6da3023e9cd1edb2e3e2c7b27cb9c1f7af",
+    "bytes": 13917,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0063": {
+    "asset": "assets/audio/hsk1-0063.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0063.mp3",
+    "sha256": "4733d9d75f9aab4d9be266fa1b7601e9bb435ddc89de56e78ffe6846418a82a1",
+    "bytes": 9885,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0064": {
+    "asset": "assets/audio/hsk1-0064.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0064.mp3",
+    "sha256": "8c9952a2e2813ec6989cb84238ef355f5eb1dfd2b9f686dbba2eaab250e3b82d",
+    "bytes": 10389,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0072": {
+    "asset": "assets/audio/hsk1-0072.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0072.mp3",
+    "sha256": "787ea50ffb15dd81f7c358682f86c293c11a53d201a50f438d49bda72971a625",
+    "bytes": 7629,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0078": {
+    "asset": "assets/audio/hsk1-0078.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0078.mp3",
+    "sha256": "4f10dca55534f2bb0de75de2be3d73192599d8b9ed188d8e8f5e2d1e5b963118",
+    "bytes": 8829,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0082": {
+    "asset": "assets/audio/hsk1-0082.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0082.mp3",
+    "sha256": "bfed4ee3341f2191bf245454f3ad0bd7a0c0ff2c00b3680767f59fbaba64c618",
+    "bytes": 14805,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0084": {
+    "asset": "assets/audio/hsk1-0084.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0084.mp3",
+    "sha256": "89c1a24a49faf726db41a2097a236db782fdb58322c400671bdbdfabfcb17baa",
+    "bytes": 11109,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0085": {
+    "asset": "assets/audio/hsk1-0085.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0085.mp3",
+    "sha256": "7e899fca40c427ba1a045bceaa0562b4f818741dd4953b2240ef63885a98035b",
+    "bytes": 13413,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0089": {
+    "asset": "assets/audio/hsk1-0089.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0089.mp3",
+    "sha256": "83f98405f6989f67a295fb93def68d6963bf12b80df39266be68fd7077e93318",
+    "bytes": 16197,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0090": {
+    "asset": "assets/audio/hsk1-0090.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0090.mp3",
+    "sha256": "7ee66afd3c77a957fb5cd6a126a1cab7beb6510deeac5c7410e104a091cd058e",
+    "bytes": 15069,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0091": {
+    "asset": "assets/audio/hsk1-0091.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0091.mp3",
+    "sha256": "11531c94f840b4eae10c16b9b73afd1cf8dcebb66047f23a546475ff71da8cf9",
+    "bytes": 15237,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0094": {
+    "asset": "assets/audio/hsk1-0094.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0094.mp3",
+    "sha256": "622549f93e7fc266d6bad4dc7c82377f04342e963e0fc3edc27ece5900f545c0",
+    "bytes": 11517,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0098": {
+    "asset": "assets/audio/hsk1-0098.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0098.mp3",
+    "sha256": "d106468ccab635de360eba365d32a9bf6e4aac75df014f7728b2939ed2e06347",
+    "bytes": 12861,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0099": {
+    "asset": "assets/audio/hsk1-0099.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0099.mp3",
+    "sha256": "688674f9a01298dc4439577ee980b3ca97d72d61a697c4d28781673a1544b644",
+    "bytes": 14733,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0100": {
+    "asset": "assets/audio/hsk1-0100.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0100.mp3",
+    "sha256": "95c035f4a51ff796cba2a21878e9181e5ee852f8fb5407397f7295590bfb5901",
+    "bytes": 18141,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0101": {
+    "asset": "assets/audio/hsk1-0101.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0101.mp3",
+    "sha256": "82efe6fb1c4979be8d375032376d11bb8e71140a76ae5e805d215fe7b8b667c8",
+    "bytes": 16197,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0105": {
+    "asset": "assets/audio/hsk1-0105.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0105.mp3",
+    "sha256": "3707e9cd3eed04938d7190a1f53538e6b5fe7bb2cdd8e766ca8b5966b5400c84",
+    "bytes": 21741,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0108": {
+    "asset": "assets/audio/hsk1-0108.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0108.mp3",
+    "sha256": "a9ba38eda3d7fe0adb981cd6fb4597cddfa2c344cc9716b2725524f0c9dee6b6",
+    "bytes": 15669,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0112": {
+    "asset": "assets/audio/hsk1-0112.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0112.mp3",
+    "sha256": "ac747b2042ea7bb5e661dd846a6589b68bcbf3a790c714457ab56901cb7d22ce",
+    "bytes": 11997,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0113": {
+    "asset": "assets/audio/hsk1-0113.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0113.mp3",
+    "sha256": "e916e5081f4866cec186d1f8a9c5c13784ef8a2e0bc9d8c7ffeadd6e5b5b7993",
+    "bytes": 16965,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0114": {
+    "asset": "assets/audio/hsk1-0114.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0114.mp3",
+    "sha256": "c5b81904cdda5d88103eed0d40cf2cef64ea2e5c87986cf9d9a15d4e7462740a",
+    "bytes": 14973,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0123": {
+    "asset": "assets/audio/hsk1-0123.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0123.mp3",
+    "sha256": "8e4b858e840aa62b614bcba48d88b47b4b0b599e18b49872c6fa29cb3f959e24",
+    "bytes": 11517,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0125": {
+    "asset": "assets/audio/hsk1-0125.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0125.mp3",
+    "sha256": "65b2421379ce26109485bb051b62539e257794bcc6879ad5ae6ffe17e445ead2",
+    "bytes": 18861,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0126": {
+    "asset": "assets/audio/hsk1-0126.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0126.mp3",
+    "sha256": "b9d976f0e8a448224fe4a7e707142a3f55624ea3e65d2c4e47d7e341adaaf2ce",
+    "bytes": 12645,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0130": {
+    "asset": "assets/audio/hsk1-0130.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0130.mp3",
+    "sha256": "c6f138c4fcb32938095bbcc2c89473f870f127d3d6387290aa3b291af3fc7ad1",
+    "bytes": 21837,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0131": {
+    "asset": "assets/audio/hsk1-0131.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0131.mp3",
+    "sha256": "0412d6e72f995fe5ebfc2dcbcce0392e7fc71bac6bf034862bcafa9565197786",
+    "bytes": 14949,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0133": {
+    "asset": "assets/audio/hsk1-0133.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0133.mp3",
+    "sha256": "806cc06ba78ad52f0a77d29cc75ec8718e71ada1090bf69109493798e6b3583a",
+    "bytes": 19485,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0134": {
+    "asset": "assets/audio/hsk1-0134.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0134.mp3",
+    "sha256": "39369eec77192b2ce201eb7a2ca9c82657e22234de865cd9c5ae56521339bd19",
+    "bytes": 22029,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0136": {
+    "asset": "assets/audio/hsk1-0136.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0136.mp3",
+    "sha256": "a96cabd7f1e0c5f43ea323fe8d3da85c520d5151bcb84797e19fd56816f15089",
+    "bytes": 14829,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0138": {
+    "asset": "assets/audio/hsk1-0138.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0138.mp3",
+    "sha256": "70c1c694f00b5031e8f2e85e8db6b931be49ec3dab72c2ff079958a62ee7754f",
+    "bytes": 19101,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0141": {
+    "asset": "assets/audio/hsk1-0141.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0141.mp3",
+    "sha256": "5b35807e4d74a0fdd561e3160d78829dde259a4ce86b5f670f6ebb0c894126dc",
+    "bytes": 15477,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0143": {
+    "asset": "assets/audio/hsk1-0143.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0143.mp3",
+    "sha256": "d4fb933454c55ede16afd88f3070e6a64140463b0b0d2eb2dc44b79d6b1912ca",
+    "bytes": 8181,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0147": {
+    "asset": "assets/audio/hsk1-0147.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0147.mp3",
+    "sha256": "1dcfe2de28fe0bac2cfaa21da85c67c49af7f22b0692ee4b8d20cdbfdd145242",
+    "bytes": 13749,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0151": {
+    "asset": "assets/audio/hsk1-0151.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0151.mp3",
+    "sha256": "b40edbbd4e0be167379fbed78b578e63c579847f04c4bbd7c76047417be7d111",
+    "bytes": 12189,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0152": {
+    "asset": "assets/audio/hsk1-0152.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0152.mp3",
+    "sha256": "d5972a0d072a737a0b3b8d001f6b775e411a55e1ba74bd3e15760b4bcd54c7cf",
+    "bytes": 10293,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0154": {
+    "asset": "assets/audio/hsk1-0154.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0154.mp3",
+    "sha256": "4417237b0029866e4e10691715d13faf1c9bc19de25efa82f39a6c4a2cccb399",
+    "bytes": 11085,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0155": {
+    "asset": "assets/audio/hsk1-0155.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0155.mp3",
+    "sha256": "a714d9c2af45ad0ff0996aa37b6d3a02d2824766afbe8f946b6d9f82a0688f01",
+    "bytes": 8301,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0156": {
+    "asset": "assets/audio/hsk1-0156.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0156.mp3",
+    "sha256": "8c48f6e4cf9f01d29e22238b36f47d9239f8ac2b8b082535a95149e888804c2b",
+    "bytes": 9861,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0157": {
+    "asset": "assets/audio/hsk1-0157.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0157.mp3",
+    "sha256": "7cd696164711da9c0f8259a6fb9b7a3f981dcfa67e52c56e9f8a2cec2d417b6c",
+    "bytes": 11805,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0160": {
+    "asset": "assets/audio/hsk1-0160.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0160.mp3",
+    "sha256": "11c7f7414916b196ed801bfe0226c4158cee6f02fbd88d6fb91edc5e548029f1",
+    "bytes": 13965,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0161": {
+    "asset": "assets/audio/hsk1-0161.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0161.mp3",
+    "sha256": "bb5b4a8662b2cb73e4073563b097dc01402616d00bcb63d08dbfa4feed795bfa",
+    "bytes": 17229,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0166": {
+    "asset": "assets/audio/hsk1-0166.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0166.mp3",
+    "sha256": "3ed1a161f4803d0f8fefd1c1d98d3ae5e958377fe77cca1870274774564d1b15",
+    "bytes": 24093,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0168": {
+    "asset": "assets/audio/hsk1-0168.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0168.mp3",
+    "sha256": "c860621d52badc91daa3734edeb4cd9ce3dd078959afbc5880e3bd53d8803080",
+    "bytes": 15981,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0172": {
+    "asset": "assets/audio/hsk1-0172.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0172.mp3",
+    "sha256": "e0ae97c5e4204b58357bfd7b6c09c2c1341456dc82c406e09f9d3a9a235c13af",
+    "bytes": 12525,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0186": {
+    "asset": "assets/audio/hsk1-0186.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0186.mp3",
+    "sha256": "da65b7f1af0e6642e308ff4cb997d3867a7abac80ac6b235193a87c917bbc96a",
+    "bytes": 16101,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0190": {
+    "asset": "assets/audio/hsk1-0190.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0190.mp3",
+    "sha256": "cb798562b6dc361a8bdb7e3fd905d688667e3eee8ee767bd15caed4e5168668d",
+    "bytes": 15573,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0199": {
+    "asset": "assets/audio/hsk1-0199.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0199.mp3",
+    "sha256": "ceedf718d41aaa0d4e312121aa0a201116474093c34e81d0740dda5a8db12aee",
+    "bytes": 26925,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0211": {
+    "asset": "assets/audio/hsk1-0211.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0211.mp3",
+    "sha256": "5c6bf5d6fa1fb9f31ba426e44cc8c262c628f02d1ac0422055e7b8fc682963be",
+    "bytes": 17637,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0217": {
+    "asset": "assets/audio/hsk1-0217.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0217.mp3",
+    "sha256": "03a0c7cd1643e66095f8ab61807d21c06f1187cb040f5f21f0bb74f29ac96ec9",
+    "bytes": 15957,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0223": {
+    "asset": "assets/audio/hsk1-0223.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0223.mp3",
+    "sha256": "ef4ac408352fc66b34ee9b01732b90608cd70a44065f24d76e38503ffb3cc076",
+    "bytes": 19653,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0224": {
+    "asset": "assets/audio/hsk1-0224.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0224.mp3",
+    "sha256": "0108e35171ecdb3d20a7bf9650e0b89382d4e9911e7505d9ec868195dfbe6e1f",
+    "bytes": 12021,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0225": {
+    "asset": "assets/audio/hsk1-0225.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0225.mp3",
+    "sha256": "c4a8b5cd6b5f6b4fbbb59e98edb374b3849d7d4913eb869e075bf445047e0329",
+    "bytes": 21549,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0234": {
+    "asset": "assets/audio/hsk1-0234.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0234.mp3",
+    "sha256": "55d083eb362e1ed3513562abca447732bdfd782116032f6102eb45d0c0fd9e78",
+    "bytes": 15525,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0237": {
+    "asset": "assets/audio/hsk1-0237.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0237.mp3",
+    "sha256": "a8a32dcec7c5437e50bf142016d74cb75ddaa84d3c497e546960b39385627afc",
+    "bytes": 7581,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0242": {
+    "asset": "assets/audio/hsk1-0242.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0242.mp3",
+    "sha256": "c9386885a812886fe5ea806c54b76f6a2d384f33d03921f35eccbdd8d16ddf17",
+    "bytes": 15309,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0245": {
+    "asset": "assets/audio/hsk1-0245.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0245.mp3",
+    "sha256": "71073e4218e2014a44c7d080a3af331e51d592fe665969f8364e3d1c19f15162",
+    "bytes": 7269,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0247": {
+    "asset": "assets/audio/hsk1-0247.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0247.mp3",
+    "sha256": "81c4b1720730c785da499da52e054395585e2c50fd42a25ecf72e6c1fd7ce415",
+    "bytes": 13509,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0248": {
+    "asset": "assets/audio/hsk1-0248.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0248.mp3",
+    "sha256": "484e79b9a680f9151ab42ec7fd83e7b1534572e8b63b048194b076883d6f0074",
+    "bytes": 11397,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0249": {
+    "asset": "assets/audio/hsk1-0249.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0249.mp3",
+    "sha256": "54a15fa940adc0c0e77ad6b7aa369e28a2648febfc604f908c2699429e4df540",
+    "bytes": 12309,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0251": {
+    "asset": "assets/audio/hsk1-0251.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0251.mp3",
+    "sha256": "e4408d2442461d3d6760d4d4215b0de8cc726ff0d052d903392d81dd8b8fc5f6",
+    "bytes": 23565,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0253": {
+    "asset": "assets/audio/hsk1-0253.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0253.mp3",
+    "sha256": "c8d7ffb3470ae216946e745673069b5627e4608633e080edc1547f11cd49bc19",
+    "bytes": 9621,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0256": {
+    "asset": "assets/audio/hsk1-0256.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0256.mp3",
+    "sha256": "f8bb06d162715394115949040038c5db23669622d6b44e84f5e243463650a126",
+    "bytes": 9789,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0258": {
+    "asset": "assets/audio/hsk1-0258.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0258.mp3",
+    "sha256": "912e0e0fdf3eb7fe8dde8bd199f7abd3b04a2b0a97dfc33476e093bcdff18525",
+    "bytes": 11781,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0259": {
+    "asset": "assets/audio/hsk1-0259.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0259.mp3",
+    "sha256": "264b001b33b6d9f11565da44e811ab0c6da3fc7af18c557fd64652cdef01e87e",
+    "bytes": 12189,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0268": {
+    "asset": "assets/audio/hsk1-0268.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0268.mp3",
+    "sha256": "3edb188076135234db8d66f34f628905438c1aaac2b43118dc0df3fd6c9afd9e",
+    "bytes": 11541,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0271": {
+    "asset": "assets/audio/hsk1-0271.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0271.mp3",
+    "sha256": "082d86d309be9bb7668395ec5e84aeb4c093b864376008e306704c83f8eefdf5",
+    "bytes": 13389,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0278": {
+    "asset": "assets/audio/hsk1-0278.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0278.mp3",
+    "sha256": "9ccda3cc6e6d9456204ead3430685b8bdea3d7be246d0aaa2fa7357708187132",
+    "bytes": 15501,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  },
+  "hsk1-0280": {
+    "asset": "assets/audio/hsk1-0280.mp3",
+    "url": "https://raw.githubusercontent.com/no7z/hsk-sentences-audio/857dfbab91027ebd97df01260e91b817cb6b4854/dist/audio/hsk1-0280.mp3",
+    "sha256": "273b05ec17133cf024a545cd235982364d075fce55d0bdb3cac350008a46ca5b",
+    "bytes": 14325,
+    "speed": "normal",
+    "license": "CC BY-SA 4.0",
+    "voice": "zh-female-studio",
+    "synthetic": true
+  }
+}

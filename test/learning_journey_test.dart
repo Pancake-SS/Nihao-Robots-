@@ -16,24 +16,44 @@ import 'package:ni_hao_robot/features/review/learning_providers.dart';
 import 'package:ni_hao_robot/features/review/quiz_screen.dart';
 import 'package:ni_hao_robot/features/review/review_screen.dart';
 import 'package:ni_hao_robot/features/vocabulary/vocabulary_repository.dart';
+import 'package:ni_hao_robot/features/vocabulary/sqlite_vocabulary_repository.dart';
+import 'package:ni_hao_robot/features/vocabulary/vocabulary_catalogue_screen.dart';
 import 'package:ni_hao_robot/features/review/sqlite_learning_repository.dart';
 
 import 'pilot_fixture.dart';
+import 'imported_fixture.dart';
 
 Future<void> press(WidgetTester tester, Finder target) async {
   await tester.ensureVisible(target);
+  await tester.pumpAndSettle();
   await tester.tap(target);
   await tester.pumpAndSettle();
 }
 
-Future<void> answerQuiz(WidgetTester tester, {bool correct = true}) async {
-  await press(
-    tester,
-    find.byKey(ValueKey(correct ? 'answer-hello' : 'answer-goodbye')),
-  );
-  await press(tester, find.text('Next question'));
-  await press(tester, find.byKey(const ValueKey('answer-hello')));
-  await press(tester, find.text('Save answers'));
+Future<void> answerQuiz(
+  WidgetTester tester, {
+  bool correct = true,
+  CatalogueWord? word,
+}) async {
+  final questions = (word ?? loadPilot()).entry.questions;
+  for (var i = 0; i < questions.length; i++) {
+    final q = questions[i];
+    if (q.isTyped) {
+      final field = find.byKey(ValueKey('typed-${q.id}'));
+      await tester.ensureVisible(field);
+      await tester.enterText(field, q.correctAnswer);
+      await tester.pumpAndSettle();
+    } else {
+      final option = !correct && i == 0
+          ? q.options.keys.firstWhere((id) => id != q.correctOptionId)
+          : q.correctOptionId;
+      await press(tester, find.byKey(ValueKey('answer-$option')));
+    }
+    await press(
+      tester,
+      find.text(i == questions.length - 1 ? 'Save answers' : 'Next question'),
+    );
+  }
 }
 
 class _LostAcknowledgement implements LearningRepository {
@@ -62,6 +82,90 @@ class _LostAcknowledgement implements LearningRepository {
 }
 
 void main() {
+  testWidgets(
+    'imported book lesson supports search, both Pinyin directions and typed recall at large text',
+    (tester) async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final profile = (await SqliteProfileRepository(db).create(
+        const ProfileDraft(name: 'Reader', showPinyin: false),
+      )).selected!;
+      final content = SqliteVocabularyRepository(
+        db,
+        BundledVocabularyRepository(ContentTestBundle(), starterPaths),
+      );
+      final words = await content.load();
+      final book = words.firstWhere((w) => w.entry.hanzi == '书');
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      try {
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              appDatabaseProvider.overrideWithValue(db),
+              vocabularyRepositoryProvider.overrideWithValue(content),
+            ],
+            child: MaterialApp(
+              theme: buildTheme(),
+              home: VocabularyCatalogueScreen(
+                profileId: profile.id,
+                showPinyin: false,
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.enterText(
+          find.byKey(const ValueKey('word-search')),
+          'shu',
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('1 of 21 lessons · basics first'), findsOneWidget);
+        expect(find.text('shū'), findsNothing);
+        await press(tester, find.text('Explore word'));
+        expect(find.text('Example 5'), findsOneWidget);
+        await press(tester, find.text('Continue to Quiz'));
+        for (var i = 0; i < book.entry.questions.length; i++) {
+          final q = book.entry.questions[i];
+          if (q.kind == 'pinyin_hanzi')
+            expect(find.textContaining('shū'), findsWidgets);
+          if (q.isTyped) {
+            expect(find.byType(OutlinedButton), findsNothing);
+            final field = find.byKey(ValueKey('typed-${q.id}'));
+            await tester.ensureVisible(field);
+            await tester.enterText(field, '错');
+            await tester.pumpAndSettle();
+          } else {
+            await press(
+              tester,
+              find.byKey(ValueKey('answer-${q.correctOptionId}')),
+            );
+          }
+          await press(
+            tester,
+            find.text(i == 7 ? 'Save answers' : 'Next question'),
+          );
+        }
+        expect(find.text('Attempt saved'), findsOneWidget);
+        final event = (await db.select(db.vocabularyAttempts).get()).single;
+        expect(event.passed, isFalse);
+        expect(event.questionsJson, contains('typed_hanzi'));
+        expect(event.answersJson, contains('错'));
+        expect(
+          (await db.select(db.vocabularyProgress).get()).single.stage,
+          'relearning',
+        );
+        expect(tester.takeException(), isNull);
+      } finally {
+        await tester.pumpWidget(const SizedBox.shrink());
+        await db.close();
+      }
+    },
+  );
+
   testWidgets(
     'missing lesson content retains a due record without a broken review action',
     (tester) async {
@@ -139,6 +243,15 @@ void main() {
           ProviderScope(
             overrides: [
               appDatabaseProvider.overrideWithValue(db!),
+              vocabularyRepositoryProvider.overrideWithValue(
+                SqliteVocabularyRepository(
+                  db!,
+                  BundledVocabularyRepository(
+                    ContentTestBundle(),
+                    starterPaths,
+                  ),
+                ),
+              ),
               learningClockProvider.overrideWithValue(() => clock),
             ],
             child: const NiHaoRobotApp(),
@@ -152,11 +265,11 @@ void main() {
         await press(tester, find.text('Continue'));
         await press(tester, find.byKey(const ValueKey('destination-1')));
         await press(tester, find.text('Browse words'));
-        await press(tester, find.text('Explore word'));
+        await press(tester, find.text('Explore word').first);
         expect(find.text('Example 5'), findsOneWidget);
         expect(find.textContaining('teacher review pending'), findsWidgets);
         await press(tester, find.text('Continue to Quiz'));
-        await answerQuiz(tester);
+        await answerQuiz(tester, word: loadExpandedGreeting());
         expect(find.text('Attempt saved'), findsOneWidget);
         expect(await db!.select(db!.vocabularyAttempts).get(), hasLength(1));
         await press(tester, find.text('Done'));
@@ -176,7 +289,7 @@ void main() {
         clock = DateTime.fromMillisecondsSinceEpoch(firstDue, isUtc: true);
         await tester.pump(const Duration(seconds: 1));
         await press(tester, find.text('Review now'));
-        await answerQuiz(tester, correct: false);
+        await answerQuiz(tester, correct: false, word: loadExpandedGreeting());
         expect(find.textContaining('Keep practising'), findsOneWidget);
         final row = (await db!.select(db!.vocabularyProgress).get()).single;
         expect(row.stage, 'relearning');
@@ -192,7 +305,7 @@ void main() {
         await press(tester, find.text('Open reviews'));
         expect(find.text('1 due · 1 in early learning'), findsOneWidget);
         await press(tester, find.text('Review now'));
-        await answerQuiz(tester);
+        await answerQuiz(tester, word: loadExpandedGreeting());
         final history = await db!.select(db!.vocabularyAttempts).get();
         expect(history.map((a) => a.passed), [true, false, true]);
         expect(

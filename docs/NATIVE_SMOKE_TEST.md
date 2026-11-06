@@ -1,5 +1,19 @@
 # Native Windows smoke test
 
+## Current content/audio acceptance — 2026-11-06
+
+The previous successful native launch below predates schema v4 and the audio plugin. Current debug build: **PASS**, 113.9 seconds, including the audio plugin. Output: `%TEMP%/nihao-windows-c741e0edd7ac498080d9f69606a184c0/build/windows/x64/runner/Debug/ni_hao_robot.exe`. Its dictionary, lesson packs, attribution and all 88 MP3 hashes match source. Full functional/native playback checks for this checkpoint remain **NOT RUN** until explicitly recorded.
+
+1. Close the old app and back up its database as described in MIGRATIONS.md; preserve old attempt counts and due dates.
+2. Build the current source using `scripts\build_windows.ps1`, then open its printed executable.
+3. Browse the 21 lessons and open the full 11,147-word library; check Start here → Beginner → Intermediate → Advanced ordering and the separate Unranked filter. Then return to lessons; search `书`, `shū`, `shu1` and `book`. Open 书 and inspect its five examples and source labels.
+4. With network disconnected, play and stop sentence recordings; change clips, navigate back and enter the quiz during playback. Sound should stop appropriately. Check volume/device failures retain readable lessons and allow retry.
+5. Complete all eight questions, including both Pinyin directions, cloze and a real Chinese IME typed answer. Verify wrong answers record relearning and no mastery; repeat at a smaller window/large text.
+6. Close/reopen, confirm profiles, old two-question greeting snapshots, new attempts and due dates survive. Keep the updated database; never run the old executable against it.
+7. Listen to all selected recordings during teacher review for pronunciation, text alignment and quality. File checksums and mock-player tests do not establish audible correctness.
+
+## Historical schema-v3 launch record
+
 Updated 2026-11-04 for the schema-v3 greeting pilot. Build and basic window launch: PASS. Functional checklist below: NOT RUN. Flutter widget tests are not a substitute for this checklist.
 
 After restoring the temporary SDK's missing Dart runtime, Visual Studio Community 2026/C++ and Developer Mode passed setup checks. `scripts/build_windows.ps1` produced a debug executable in `%TEMP%/nihao-windows-b1b41107bbe24c7e9e9eaec40e8efc57/build/windows/x64/runner/Debug/ni_hao_robot.exe`. Build completed in 73 seconds with nonfatal MSB8029 warnings about temporary incremental-build directories. The native process remained running with window title `Ni Hao Robot!` and Responding=True. This verifies basic process/window startup only; no profile or learner-flow acceptance row is marked passed from that observation.

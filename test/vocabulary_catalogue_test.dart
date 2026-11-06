@@ -132,6 +132,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text('cèshì'), pinyin ? findsOneWidget : findsNothing);
         await tester.ensureVisible(find.text('Explore word'));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('Explore word'));
         await tester.pumpAndSettle();
         expect(find.text('Meet a word'), findsOneWidget);

@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:drift/native.dart';
+import 'package:ni_hao_robot/data/app_database.dart';
+import 'package:ni_hao_robot/features/vocabulary/vocabulary_repository.dart';
+import 'package:ni_hao_robot/features/vocabulary/sqlite_vocabulary_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ni_hao_robot/app/theme.dart';
 import 'package:ni_hao_robot/features/onboarding/foundation_repository.dart';
@@ -11,6 +15,7 @@ import 'package:ni_hao_robot/features/profiles/profile_home_screen.dart';
 import 'package:ni_hao_robot/shared/robot_art.dart';
 
 import 'foundation_test_repository.dart';
+import 'imported_fixture.dart';
 
 Future<void> mountShell(
   WidgetTester tester,
@@ -25,9 +30,19 @@ Future<void> mountShell(
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
   addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+  final contentDb = AppDatabase(NativeDatabase.memory());
+  addTearDown(contentDb.close);
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [foundationRepositoryProvider.overrideWithValue(repository)],
+      overrides: [
+        foundationRepositoryProvider.overrideWithValue(repository),
+        vocabularyRepositoryProvider.overrideWithValue(
+          SqliteVocabularyRepository(
+            contentDb,
+            BundledVocabularyRepository(ContentTestBundle(), starterPaths),
+          ),
+        ),
+      ],
       child: MaterialApp(
         theme: buildTheme(),
         home: ProfileHomeScreen(

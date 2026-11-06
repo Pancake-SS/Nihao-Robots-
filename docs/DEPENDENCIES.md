@@ -1,4 +1,14 @@
-# Profile slice dependency record
+# Application dependency record
+
+## Sentence audio checkpoint — 2026-11-06
+
+Added pinned `audioplayers 6.8.1`, with `audioplayers_windows 4.4.1`. The [official package documentation](https://pub.dev/packages/audioplayers) documents Windows asset playback. The native adapter uses local bundled paths and is created lazily when playback is requested. No microphone permission or streaming endpoint is introduced.
+
+Resolved adapters: android 5.3.0, darwin 6.5.0, linux 4.3.0, platform_interface 7.2.0, web 5.3.0, windows 4.4.1. Additional hosted dependencies: http 1.6.0 and synchronized 3.6.1; flutter_web_plugins comes from the SDK. Installed license files reviewed: audioplayers adapters and synchronized use MIT; http uses BSD-style terms. Code licenses are separate from recording/data attribution.
+
+Queried OSV on 2026-11-06 for all **102 hosted package/version pairs** in the current lockfile: 102 results, no matching advisories returned. This is a dated lookup, not an absence-of-vulnerabilities guarantee. Versions/checksums remain in `pubspec.lock`.
+
+## Earlier profile slice record
 
 Recorded 2026-11-04; resolution and package/advisory checks performed 2026-11-03. Exact transitive versions and package archive checksums are in `pubspec.lock`.
 

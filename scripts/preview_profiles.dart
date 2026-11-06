@@ -14,9 +14,17 @@ import 'package:ni_hao_robot/data/app_database.dart';
 import 'package:ni_hao_robot/data/database_provider.dart';
 import 'package:ni_hao_robot/features/profiles/sqlite_profile_repository.dart';
 import 'package:ni_hao_robot/features/review/learning_providers.dart';
+import 'package:ni_hao_robot/features/vocabulary/vocabulary_repository.dart';
+import 'package:ni_hao_robot/features/vocabulary/sqlite_vocabulary_repository.dart';
+import 'package:ni_hao_robot/features/vocabulary/word_library.dart';
 import 'package:ni_hao_robot/shared/robot_art.dart';
 
+import '../test/imported_fixture.dart';
+
 void main() {
+  final library = WordLibrary.parse(
+    File('assets/content/dictionary_v1.json').readAsStringSync(),
+  );
   testWidgets('render profile entry for visual inspection', (tester) async {
     await tester.runAsync(() async {
       for (final font in {
@@ -40,6 +48,15 @@ void main() {
     final database = AppDatabase(NativeDatabase.memory());
     var clock = DateTime.utc(2026, 11, 4, 12);
     await SqliteProfileRepository(database).load();
+    final content = SqliteVocabularyRepository(
+      database,
+      BundledVocabularyRepository(ContentTestBundle(), const [
+        'assets/content/starter_greeting_v2.json',
+        'assets/content/starter_imported_v1.json',
+      ]),
+    );
+    final words = await content.load();
+    final book = words.firstWhere((w) => w.entry.hanzi == '书');
     addTearDown(() async {
       await tester.pumpWidget(const SizedBox.shrink());
       await database.close();
@@ -52,6 +69,8 @@ void main() {
       ProviderScope(
         overrides: [
           appDatabaseProvider.overrideWithValue(database),
+          vocabularyRepositoryProvider.overrideWithValue(content),
+          wordLibraryProvider.overrideWith((ref) async => library),
           learningClockProvider.overrideWithValue(() => clock),
         ],
         child: RepaintBoundary(key: key, child: const NiHaoRobotApp()),
@@ -106,6 +125,20 @@ void main() {
     await tester.tap(find.text('Browse words'));
     await tester.pumpAndSettle();
     await capture('catalogue-pilot');
+    await tester.tap(find.text('Browse full imported word library'));
+    await tester.pumpAndSettle();
+    await capture('word-library');
+    await tester.enterText(
+      find.byKey(const ValueKey('dictionary-search')),
+      'shu1',
+    );
+    await tester.pumpAndSettle();
+    await capture('word-library-search');
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const ValueKey('word-search')), 'book');
+    await tester.pumpAndSettle();
+    await capture('catalogue-search');
     await tester.tap(find.text('Explore word'));
     await tester.pumpAndSettle();
     await capture('pilot-lesson');
@@ -115,14 +148,26 @@ void main() {
     await tester.tap(find.text('Continue to Quiz'));
     await tester.pumpAndSettle();
     await capture('pilot-quiz');
-    await tester.tap(find.byKey(const ValueKey('answer-hello')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Next question'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('answer-hello')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Save answers'));
-    await tester.pumpAndSettle();
+    for (var i = 0; i < book.entry.questions.length; i++) {
+      final q = book.entry.questions[i];
+      if ({'pinyin', 'pinyin_hanzi', 'cloze', 'typed_hanzi'}.contains(q.kind))
+        await capture('quiz-${q.kind}');
+      if (q.isTyped) {
+        await tester.enterText(
+          find.byKey(ValueKey('typed-${q.id}')),
+          q.correctAnswer,
+        );
+      } else {
+        await tester.tap(find.byKey(ValueKey('answer-${q.correctOptionId}')));
+      }
+      await tester.pumpAndSettle();
+      final next = find.text(
+        i == book.entry.questions.length - 1 ? 'Save answers' : 'Next question',
+      );
+      await tester.ensureVisible(next);
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+    }
     await capture('pilot-result');
     await tester.ensureVisible(find.text('Done'));
     await tester.tap(find.text('Done'));

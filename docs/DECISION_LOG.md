@@ -1,5 +1,11 @@
 # Ni Hao Robot! — Decision log
 
+## 2026-11-06: imported vocabulary and reusable question patterns
+
+The user explicitly requested bulk real-data imports, more question directions, object-oriented pattern generation and existing sentence/audio sources. Added pinned HearMandarin/no7z imports, a separate staging database, an extensible Python question strategy hierarchy and additive app content schema v4. Generation and grading have no AI/network dependency. Twenty imported lessons plus the existing greeting publish eight questions each; the broader generated bank remains draft.
+
+Zhongdex records are retained in quarantine with original license metadata because its NOTICE flags unresolved upstream HSK provenance. Exact Hanzi/Pinyin crosswalks are candidates, not reviewed sense equivalence. Its unhosted audio metadata cannot supply playback files. Selected no7z sentence recordings are bundled with CC BY-SA attribution and labeled synthetic; word audio remains unavailable. Source comparison does not replace independent teacher/listening review. No original artwork or learner records were altered.
+
 ## 2026-11-03: source reconciliation and bootstrap scope
 
 Authority: latest user prompt, then Master Plan, Coding Standards, actual PPT notes/comments, then slide artwork.
@@ -59,3 +65,9 @@ Connect the structurally validated content parser to an application-owned bundle
 - Database schema 3 adds attempts and progress atomically; keep previous schema snapshots. Save stable sense identity, pack revision, question snapshot, selected answers and resulting schedule. Guard duplicate event IDs, stale progress versions and due eligibility. Freeze submitted UI answers so a save retry cannot alter a potentially committed payload.
 - Review counts derive from the active profile's persisted rows. Content removal retains history and explains unavailability. Main Practice/Speaking, grammar lessons, Master and dashboard metrics remain pending. Next incremental UI is a readable attempt-history view.
 - Existing native build prerequisites remain unresolved. All 61 Flutter tests, analysis and formatting pass; desktop pilot widget renders were inspected. Native-process acceptance remains NOT RUN. No new dependency or artwork changes.
+
+## 2026-11-06: complete dictionary, learning order and editor workflow
+
+The user explicitly requested continued import into the app, priorities and repair of the supplied CMake error. Bundle the full 11,147-word read-only dictionary alongside 21 prepared lessons rather than pretending all candidate examples are reviewed. Use an explicit foundation list followed by HSK bands; retain missing bands as unranked. Priorities guide ordering without locking harder words. Existing learner attempts remain untouched.
+
+The supplied VS Code command bypassed Flutter generation. Disable CMake auto-configuration in the previously user-owned workspace settings and add a Flutter build task; this targeted change is now authorized by the bug request. Keep generated files owned by Flutter. Restore the same pinned SDK in persistent LocalAppData because the Temp installation became incomplete; preserve the old installation and global PATH.

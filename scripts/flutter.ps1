@@ -2,10 +2,16 @@
 # This wrapper never changes the machine/user PATH.
 $ErrorActionPreference = 'Stop'
 $portableRoot = Join-Path ([System.IO.Path]::GetTempPath()) 'nihao-tools'
+$persistentRoot = Join-Path $env:LOCALAPPDATA 'NihaoRobotTools'
 if ($env:NIHAO_FLUTTER_ROOT) {
     $flutterExecutable = Join-Path $env:NIHAO_FLUTTER_ROOT 'bin\flutter.bat'
 } elseif (Get-Command flutter -ErrorAction SilentlyContinue) {
     $flutterExecutable = (Get-Command flutter).Source
+} elseif (Test-Path -LiteralPath (Join-Path $persistentRoot 'flutter\bin\flutter.bat')) {
+    $flutterExecutable = Join-Path $persistentRoot 'flutter\bin\flutter.bat'
+    if (-not $env:PUB_CACHE) {
+        $env:PUB_CACHE = Join-Path $persistentRoot 'pub-cache'
+    }
 } else {
     $flutterExecutable = Join-Path $portableRoot 'flutter\bin\flutter.bat'
     if (-not $env:PUB_CACHE) {

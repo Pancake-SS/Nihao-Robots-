@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/learning_card.dart';
 import '../review/word_quiz_entry.dart';
 import 'vocabulary_repository.dart';
+import 'sentence_audio.dart';
 
-class WordIntroductionScreen extends StatelessWidget {
+class WordIntroductionScreen extends ConsumerWidget {
   const WordIntroductionScreen({
     required this.word,
     required this.showPinyin,
@@ -16,8 +18,11 @@ class WordIntroductionScreen extends StatelessWidget {
   final int profileId;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final entry = word.entry;
+    final audioSession = entry.examples.any((e) => e.audio != null)
+        ? ref.watch(sentenceAudioSessionProvider)
+        : null;
     return Scaffold(
       appBar: AppBar(title: const Text('Meet a word')),
       body: SingleChildScrollView(
@@ -46,6 +51,20 @@ class WordIntroductionScreen extends StatelessWidget {
                         ),
                       const SizedBox(height: 12),
                       Text(entry.meaning),
+                      if (entry.details case final details?) ...[
+                        if (details.learningPriority case final priority?)
+                          Text('Learning priority: ${priority.label}'),
+                        const SizedBox(height: 8),
+                        Text(
+                          '${details.partOfSpeech} · Traditional: ${details.traditional}',
+                        ),
+                        if (details.band > 0)
+                          Text('HearMandarin HSK 3.0 band ${details.band}'),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Pinyin shows dictionary tones. In connected speech, tones can change.',
+                        ),
+                      ],
                       if (entry.reviewStatus == 'source-checked-pilot') ...[
                         const SizedBox(height: 12),
                         const Text(
@@ -53,7 +72,11 @@ class WordIntroductionScreen extends StatelessWidget {
                         ),
                       ],
                       const SizedBox(height: 20),
-                      const Text('Audio unavailable for this word.'),
+                      Text(
+                        audioSession == null
+                            ? 'Audio unavailable for this word.'
+                            : 'Sentence recordings are available below. Standalone word audio is not included.',
+                      ),
                     ],
                   ),
                 ),
@@ -82,13 +105,32 @@ class WordIntroductionScreen extends StatelessWidget {
                           ),
                         const SizedBox(height: 8),
                         Text(entry.examples[i].meaning),
+                        if (entry.examples[i].audio case final clip?) ...[
+                          const SizedBox(height: 12),
+                          SentenceAudioControls(
+                            session: audioSession!,
+                            clip: clip,
+                          ),
+                        ],
+                        if (entry.examples[i].sourceId != null) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            'Example source ID: ${entry.examples[i].sourceId}',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
                       ],
                     ),
                   ),
                 ],
                 const SizedBox(height: 24),
                 if (entry.questions.isNotEmpty)
-                  WordQuizEntry(profileId: profileId, wordId: entry.id)
+                  WordQuizEntry(
+                    profileId: profileId,
+                    wordId: entry.id,
+                    questionCount: entry.questions.length,
+                    beforeQuiz: audioSession?.stop,
+                  )
                 else
                   const Text(
                     'Quiz activities are not available for this word yet.',

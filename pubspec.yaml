@@ -7,6 +7,7 @@ environment:
   sdk: '>=3.13.0 <4.0.0'
 
 dependencies:
+  audioplayers: 6.8.1
   characters: ^1.4.1
   drift: ^2.35.3
   drift_flutter: ^0.3.1
@@ -25,7 +26,13 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/content/starter_greeting_v1.json
+    - assets/audio/
+    - assets/content/starter_greeting_v2.json
+    - assets/content/starter_imported_v1.json
+    - assets/content/dictionary_v1.json
+    - assets/content/ATTRIBUTION.txt
+    - assets/content/LICENSE-CC-BY-SA-4.0.txt
+    - assets/content/LICENSE-CC-BY-4.0.txt
     - assets/mascots/welcome_waving_light.png
     - assets/mascots/welcome_orb_dark.png
     - assets/mascots/profile_tracked_light.png

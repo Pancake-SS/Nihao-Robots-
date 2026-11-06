@@ -1,0 +1,50 @@
+Ni Hao Robot! starter content
+
+Word records: HearMandarin (https://hearmandarin.com).
+Source: https://hearmandarin.com/datasets/hsk-3-0-words.json
+Dataset version: 2026-09-09; generated: 2026-09-28.
+Original word data licensed CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+
+Sentence records: no7z/hsk-sentences-audio.
+Source: https://github.com/no7z/hsk-sentences-audio
+Pinned revision: 857dfbab91027ebd97df01260e91b817cb6b4854.
+Dataset licensed CC BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/
+Per-word meanings and Pinyin include contributions derived from CC-CEDICT:
+https://www.mdbg.net/chinese/dictionary?page=cc-cedict (CC BY-SA 4.0).
+Upstream uses pypinyin and jieba (MIT), OpenCC (Apache-2.0), and
+complete-hsk-vocabulary (MIT) for annotation/grading. No upstream code is bundled here.
+88 original normal-speed sentence MP3 recordings from the pinned repository
+are bundled, unmodified, under CC BY-SA 4.0. The source identifies them as
+synthetic CosyVoice2 recordings, voice zh-female-studio. Model licensing
+does not replace the distributed dataset/recording license.
+Exact recording URLs, hashes and sizes are in content/audio.lock.json.
+
+Changes by Ni Hao Robot!: selected 20 beginner entries and 5 examples each;
+added stable sense IDs and question records; corrected selected sentence Pinyin;
+added Hanzi/meaning/Pinyin recognition, translated cloze and typed Hanzi recall.
+Exact selection and corrections: content/starter_selection.json in the project source.
+Imported lesson and question adaptations are shared under CC BY-SA 4.0.
+License texts are included beside this notice. Attribution is also shown in each lesson.
+The existing original greeting lesson remains the same sense at revision 3,
+with eight questions and HearMandarin-derived distractors; that adaptation is
+also shared under CC BY-SA 4.0. Open University reference links support its
+language facts; no Open University course text or recording is redistributed.
+
+Source comparison and editorial checks are not independent teacher approval.
+These starter lessons remain marked source-checked-pilot pending teacher review.
+HearMandarin word bands follow the 2025 exam list; sentence levels follow
+GF0025-2021. These level systems are retained separately, not equated.
+Sentence audio is available offline for the 20 imported lessons. Standalone
+word audio and audio for the original greeting examples are unavailable.
+Recording presence and checksums do not establish pronunciation quality;
+independent listening/teacher review remains pending.
+
+Zhongdex (https://github.com/saymei/zhongdex) is staged separately for review,
+including its per-record source licenses and upstream NOTICE. Its NOTICE
+flags unresolved HSK-list provenance. No Zhongdex records or audio are
+published in these lesson bundles. See docs/CONTENT_DATABASE.md.
+
+The complete 11,147-entry HearMandarin word list is included in the offline
+dictionary under CC BY 4.0. Ni Hao Robot! adds an editorial starting order
+and band-based priorities; missing source bands remain unranked. Source
+bands/sequence do not claim measured individual word difficulty.

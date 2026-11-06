@@ -1,5 +1,13 @@
 # Local database migrations and recovery
 
+## Version 1/2/3 → 4 (2026-11-06)
+
+Schema v4 adds `content_packs`, `content_words`, `content_examples` and `content_exercises`. Historical snapshots v1–v3 remain unchanged and v4 is exported separately. The migration creates missing earlier-version tables where needed, then the new content tables. Existing profiles, introduction state, progress, attempts and due dates are preserved.
+
+Validated bundled content is installed in one transaction after opening the database. Stable sense IDs survive pack revisions; a content cascade affects examples/exercises only. Learner history has no cascading content foreign key. Same-version payload changes fail; older bundles cannot silently downgrade installed content. Old two-question greeting attempts remain historical snapshots after the greeting gains eight questions.
+
+`test/content_database_test.dart` verifies a real v3 snapshot upgrade, old attempt/due-date preservation, new content installation, due review, SQLite reopen and closed-file backup restoration. It also checks idempotency, version validation, corruption detection and injected-write rollback. No live learner database was migrated during development. Follow the closed-app backup procedure below before upgrading an existing installation; never run the old app against a schema-v4 database.
+
 ## Version 1 → 2 (2026-11-04)
 
 Schema v2 adds `foundation_progress` with one row per profile: profile foreign key, current step (0–8), and completion flag. No profiles, preferences or existing rows are rewritten or removed. Missing rows mean an introduction that has not started. A replay may move the cursor while retaining completion.

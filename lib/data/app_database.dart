@@ -93,6 +93,64 @@ class VocabularyAttempts extends Table {
   ];
 }
 
+// Shared, versioned learning content is independent of private learner history.
+class ContentPacks extends Table {
+  TextColumn get id => text()();
+  IntColumn get revision => integer()();
+  IntColumn get contentSchema => integer()();
+  TextColumn get canonicalJson => text()();
+  @override
+  Set<Column> get primaryKey => {id};
+  @override
+  List<String> get customConstraints => [
+    'CHECK (revision > 0)',
+    'CHECK (content_schema BETWEEN 1 AND 3)',
+  ];
+}
+
+class ContentWords extends Table {
+  TextColumn get id => text()();
+  TextColumn get packId => text().references(ContentPacks, #id)();
+  IntColumn get position => integer()();
+  TextColumn get hanzi => text()();
+  TextColumn get pinyin => text()();
+  TextColumn get metadataJson => text()();
+  @override
+  Set<Column> get primaryKey => {id};
+  @override
+  List<String> get customConstraints => [
+    'CHECK (position >= 0)',
+    'UNIQUE (pack_id, position)',
+  ];
+}
+
+class ContentExamples extends Table {
+  TextColumn get wordId =>
+      text().references(ContentWords, #id, onDelete: KeyAction.cascade)();
+  IntColumn get position => integer()();
+  TextColumn get payloadJson => text()();
+  @override
+  Set<Column> get primaryKey => {wordId, position};
+  @override
+  List<String> get customConstraints => ['CHECK (position BETWEEN 0 AND 4)'];
+}
+
+class ContentExercises extends Table {
+  TextColumn get wordId =>
+      text().references(ContentWords, #id, onDelete: KeyAction.cascade)();
+  TextColumn get questionId => text()();
+  IntColumn get position => integer()();
+  TextColumn get kind => text()();
+  TextColumn get payloadJson => text()();
+  @override
+  Set<Column> get primaryKey => {wordId, questionId};
+  @override
+  List<String> get customConstraints => [
+    'CHECK (position BETWEEN 0 AND 23)',
+    'UNIQUE (word_id, position)',
+  ];
+}
+
 @DriftDatabase(
   tables: [
     Profiles,
@@ -100,26 +158,36 @@ class VocabularyAttempts extends Table {
     FoundationProgress,
     VocabularyProgress,
     VocabularyAttempts,
+    ContentPacks,
+    ContentWords,
+    ContentExamples,
+    ContentExercises,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (migrator) => migrator.createAll(),
     onUpgrade: (migrator, from, to) async {
-      if (from < 1 || from > 2 || to != 3) {
+      if (from < 1 || from > 3 || to != 4) {
         throw StateError('No migration from schema $from to $to.');
       }
       // Additive migration: existing profiles and selection are never rewritten.
       await transaction(() async {
         if (from < 2) await migrator.createTable(foundationProgress);
-        await migrator.createTable(vocabularyProgress);
-        await migrator.createTable(vocabularyAttempts);
+        if (from < 3) {
+          await migrator.createTable(vocabularyProgress);
+          await migrator.createTable(vocabularyAttempts);
+        }
+        await migrator.createTable(contentPacks);
+        await migrator.createTable(contentWords);
+        await migrator.createTable(contentExamples);
+        await migrator.createTable(contentExercises);
       });
     },
     beforeOpen: (_) async {

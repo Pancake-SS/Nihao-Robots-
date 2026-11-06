@@ -1,6 +1,8 @@
 # Starter greeting pilot — content review record
 
-Recorded 2026-11-04. Pack `starter.greetings`, revision 1; sense `starter.greeting.nihao.1`; content schema 2. Asset: `assets/content/starter_greeting_v1.json`.
+Current checkpoint 2026-11-06: pack `starter.greetings`, revision 3; unchanged sense `starter.greeting.nihao.1`; content schema 3. Asset: `assets/content/starter_greeting_v2.json`. Revision 1 remains a historical test fixture, not a bundled lesson.
+
+Revision 3 preserves the five original examples and adds six recognition directions, translated cloze and typed Hanzi recall through the shared object-oriented generator. Distractors come from HearMandarin-derived starter words; the adaptation is CC BY-SA 4.0 with attribution. No recording was imported for this greeting. Historical attempts retain their original snapshots. The review below describes the unchanged expressions; its two-question section is revision-1 history. Full source/import details: [content database](CONTENT_DATABASE.md).
 
 **Status: source-checked-pilot.** Codex performed an editorial/source check of the language facts, examples, Pinyin and answer keys. This is not independent native-teacher approval. The lesson displays that limitation. Independent teacher review is required before public release; do not silently change the status to `approved`.
 

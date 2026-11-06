@@ -11,5 +11,6 @@ CatalogueWord loadPilot() {
 }
 
 Map<String, String> correctAnswers(CatalogueWord word) => {
-  for (final q in word.entry.questions) q.id: q.correctOptionId,
+  for (final q in word.entry.questions)
+    q.id: q.isTyped ? q.correctAnswer : q.correctOptionId,
 };

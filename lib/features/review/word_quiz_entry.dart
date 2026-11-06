@@ -8,10 +8,14 @@ class WordQuizEntry extends ConsumerWidget {
   const WordQuizEntry({
     required this.profileId,
     required this.wordId,
+    required this.questionCount,
+    this.beforeQuiz,
     super.key,
   });
   final int profileId;
   final String wordId;
+  final int questionCount;
+  final Future<void> Function()? beforeQuiz;
   @override
   Widget build(BuildContext context, WidgetRef ref) => ref
       .watch(learningProgressProvider(profileId))
@@ -36,22 +40,24 @@ class WordQuizEntry extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                existing == null
-                    ? 'Ready to try two short recognition checks?'
-                    : 'This word is in your review list. Vocabulary Practice shows when it is due.',
+                existing == null ? 'Ready to try $questionCount questions?' : 'This word is in your review list. Vocabulary Practice shows when it is due.',
               ),
               const SizedBox(height: 12),
               if (existing == null)
                 FilledButton(
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => QuizScreen(
-                        profileId: profileId,
-                        wordId: wordId,
-                        review: false,
+                  onPressed: () async {
+                    await beforeQuiz?.call();
+                    if (!context.mounted) return;
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => QuizScreen(
+                          profileId: profileId,
+                          wordId: wordId,
+                          review: false,
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                   child: const Text('Continue to Quiz'),
                 ),
             ],

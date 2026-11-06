@@ -1,5 +1,9 @@
 # Ni Hao Robot! — Design system
 
+## Vocabulary checkpoint — 2026-11-06
+
+Catalogue cards show actual lesson counts and support Hanzi/Pinyin/English search. Lesson details include Traditional Hanzi and source labels; imported example cards have Play sentence/Stop audio controls with synthetic/offline labeling and explicit retry. Quiz layout supports variable banks, four shuffled choices or a Simplified Chinese input, and a dynamic progress indicator. Audio stops on entering a quiz. The imported lesson journey passes 360 × 640 / 200% text testing. No new artwork or changed original robot pixels.
+
 Status: initial implementation specification, 2026-11-03. Native Flutter, Windows first. The storyboard supplies composition and mood; this document sets reusable production rules. See SLIDE_REQUIREMENTS.md for individual flows and ASSET_MANIFEST.md for original artwork.
 
 ## Color tokens
@@ -63,3 +67,5 @@ Home shows persisted learning preferences and a working introduction action with
 All introduction pages and tours are tested at 360 × 640 with 200% text; keyboard Enter/Escape are covered. Desktop Home, Vocabulary, tour and Pinyin compositions were visually reviewed with system fonts. Native Windows launch remains a separate verification gate.
 
 The pilot lesson, quiz, saved result and review list use back-header subpages without the primary sidebar. Choice buttons expose selected semantics and visible radio indicators. Submitted choices freeze so a retry preserves the original payload; saving blocks duplicate submission, then exposes retry or a recoverable conflict message. Feedback appears only after the transaction succeeds. Due counts and dates come from the active profile's records; missing content retains progress and explains why reviewing is unavailable. No additional artwork or duplicate mascot was added. Desktop renders and a narrow 200%-text quiz/retry flow were checked.
+
+The complete imported dictionary has five priority filters and visible source attribution. Catalogue/dictionary headers scroll with the results so large text cannot consume the entire list viewport. Lists remain lazy for 11,147 records; full lessons link by stable sense ID. Entries without prepared examples visibly state that their lesson is pending review.

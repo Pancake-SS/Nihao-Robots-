@@ -1,0 +1,5 @@
+{
+    "cmake.sourceDirectory": "${workspaceFolder}/windows",
+    "cmake.configureOnOpen": false,
+    "cmake.configureOnEdit": false
+}

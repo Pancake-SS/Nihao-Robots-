@@ -1,8 +1,16 @@
 # First vocabulary lesson — review brief
 
-Updated 2026-11-04. Current status: one explicitly source-checked pilot is bundled, with five examples, two recognition questions and persistent early reviews. Independent teacher approval is still pending. The original preparation brief and earlier implementation checkpoints below are retained as history; current evidence is in [the pilot review record](STARTER_GREETING_REVIEW.md).
+Updated 2026-11-06. Current status: 21 source-checked starter lessons, five examples and eight questions each; 20 imported lessons include offline sentence recordings. Independent teacher/listening approval is pending. See [database, sources and generation](CONTENT_DATABASE.md). Earlier schema-2 checkpoints below are retained as history.
 
-## Current pilot and schema-2 contract
+## Current schema-3 contract
+
+Production bundles are `starter_greeting_v2.json` (revision 3, original stable sense) and `starter_imported_v1.json` (revision 2, 20 imported senses). Schema 3 requires source/version/license metadata, Traditional Hanzi, numbered Pinyin, part of speech, band, example source IDs/URLs and grammar tags. Optional example audio requires a bounded local asset path, source URL, SHA-256, size, speed, voice, synthetic flag and license. Word audio remains null.
+
+Banks accept 4–24 questions and require meaning, Hanzi, Hanzi→Pinyin and Pinyin→Hanzi directions. Each published bank has eight: six recognition directions, sourced translated cloze and constrained typed Hanzi recall. Multiple choice requires four distinct choices; typed recall stores one canonical answer and displays an input field. Unknown kinds/fields and malformed content fail. Schemas 1 and 2 remain readable for old fixtures/history.
+
+The deterministic Python generator composes reusable pattern classes over imported words; runtime grading uses canonical records without AI. Existing atomic saves, retry identity, profile isolation and early-review scheduling remain in force. A larger question count does not award mastery. Bulk drafts are separate from published source-checked lessons.
+
+## Historical pilot and schema-2 contract (2026-11-04)
 
 The production allowlist now includes `assets/content/starter_greeting_v1.json`, pack `starter.greetings`, revision 1. It is not labeled `approved`: schema 2 accepts the distinct `source-checked-pilot` status and the lesson displays the outstanding teacher-review requirement. No draft status is accepted. Audio remains explicitly null. The source record covers examples, supporting vocabulary, quiz options and feedback.
 
