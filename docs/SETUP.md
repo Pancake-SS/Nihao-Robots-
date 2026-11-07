@@ -1,6 +1,6 @@
 # Development setup
 
-Content import/generation commands and pinned sources are documented in [CONTENT_DATABASE.md](CONTENT_DATABASE.md). Bundled lessons/audio are already present: users do not need to run the importer to study. On memory-constrained machines, run `scripts\flutter.ps1 test --no-pub --concurrency 1` and avoid simultaneous render/build/import tasks. Back up a closed learner database before upgrading to schema v4.
+Content import/generation commands and pinned sources are documented in [CONTENT_DATABASE.md](CONTENT_DATABASE.md). Bundled lessons/audio are already present: users do not need to run the importer to study. On memory-constrained machines, run `scripts\flutter.ps1 test --no-pub --concurrency 1` and avoid simultaneous render/build/import tasks. Back up a closed learner database before upgrading to schema v5.
 
 Updated 2026-11-06. Flutter 3.47.9 / Dart 3.13.7 are restored at `%LOCALAPPDATA%\NihaoRobotTools\flutter`; the resolved Pub cache is `%LOCALAPPDATA%\NihaoRobotTools\pub-cache`. The old Temp installation became incomplete and is preserved rather than deleted. The source includes a generated Windows runner, generated Drift code and real `pubspec.lock`. Visual Studio Community 2026 with C++ and Windows Developer Mode are now installed/enabled on this machine. The temporary SDK's missing Dart runtime was restored; recovery instructions are below.
 
@@ -58,7 +58,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build_windows.ps1
 
 The helper copies only `lib`, `assets`, `windows`, `pubspec.yaml`, `pubspec.lock` and `.metadata` to a new `%TEMP%\nihao-windows-...` directory, resolves packages there and builds a debug executable. It prints the executable path on success. It does not copy learner data, the reference deck, source robot inventory, `.git`, `.venv` or editor settings. The source snapshot is retained for inspection; subsequent edits require a new build. Use `-Configuration release` for a release build only after native smoke tests pass.
 
-The implemented flow is Create Local Profile → Choose → Continue → Home → Introduction → Save/Resume/Replay. Vocabulary → Browse words → Explore word → Continue to Quiz opens any of 21 starter lessons with eight varied questions; Vocabulary → Open reviews shows its saved schedule. Initial checks and failed reviews schedule five minutes; a successful due review schedules one day. Home, Vocabulary and Grammar have contextual tours; primary Practice/Speaking remain design-pending. Profile settings, selection, introduction, attempts and due dates persist in SQLite. Twenty imported lessons include offline sentence audio. Independent teacher/listening review, standalone word audio, grammar, adaptive scheduling and dashboard metrics remain pending. No web server is needed.
+The implemented flow is Create Local Profile > Choose > Continue > Home. Vocabulary > Browse words opens a priority queue of all 11,147 words, loading 20 at a time. Select a row and press Learn, then Continue to Quiz. Move up/down/to front changes the saved order. See 20 more adds a page; search covers the full queue. Open reviews shows saved schedules. All words have seven or eight questions; available source examples and audio vary by word. The first queue visit installs the bundled curriculum once, so allow it to finish. No web server or runtime download is needed.
 
 ## Dependencies, code generation and data preservation
 
@@ -68,11 +68,11 @@ Riverpod/Drift are resolved and tested; see `docs/DEPENDENCIES.md` and `pubspec.
 $env:PUB_CACHE = Join-Path $env:LOCALAPPDATA 'NihaoRobotTools\pub-cache'
 $dartTool = Join-Path $env:LOCALAPPDATA 'NihaoRobotTools\flutter\bin\dart.bat'
 & $dartTool run build_runner build
-& $dartTool run drift_dev schema dump lib\data\app_database.dart docs\schema\drift_schema_v4.json
+& $dartTool run drift_dev schema dump lib\data\app_database.dart docs\schema\drift_schema_v5.json
 & $dartTool format lib test scripts\preview_profiles.dart
 ```
 
-Schema v1 is the retained baseline; v2 adds introduction state and v3 adds vocabulary progress/attempts and v4 adds versioned content tables through tested additive migrations. For later versions, use a new export filename and implement/test migration; never overwrite historical schemas. Read [migration and backup recovery](MIGRATIONS.md) before updating a real installation. The database is `ni_hao_robot.sqlite` under the OS app-support directory. Windows company/product metadata influences that directory: changing it requires a data-path migration. Unknown upgrades fail rather than dropping tables. Keep real databases intact; never use test reset logic on learner storage.
+Schema v1 is the retained baseline; v2 adds introduction state and v3 adds vocabulary progress/attempts and v4 adds versioned content tables; v5 adds the relational curriculum and per-profile queue through tested additive migrations. For later versions, use a new export filename and implement/test migration; never overwrite historical schemas. Read [migration and backup recovery](MIGRATIONS.md) before updating a real installation. The database is `ni_hao_robot.sqlite` under the OS app-support directory. Windows company/product metadata influences that directory: changing it requires a data-path migration. Unknown upgrades fail rather than dropping tables. Keep real databases intact; never use test reset logic on learner storage.
 
 Profile acceptance tests cover independent same-name profiles, invalid inputs, write rollback, persistent selection, temporary SQLite file reopening, and a UI-created profile continued after database/widget restart. Full native process testing is still a separate gate. Optional visual review: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\flutter.ps1 test --no-pub scripts\preview_profiles.dart`; PNGs go to `%TEMP%\nihao-profile-previews`.
 
@@ -93,6 +93,10 @@ Update `docs/PROJECT_MEMORY.md` first; the Word file is its generated mirror. Th
 
 The original PPTX stays local and outside Git because it contains illustrative credentials. Do not copy those values into code, curriculum, logs or reports. Do not commit `.venv`, learner databases, secrets or generated QA images.
 
-## Latest verified build — 2026-11-06
+## Current Windows build
 
-Windows debug compilation passed with the persistent SDK, including sentence audio. The resulting executable is `%TEMP%\nihao-windows-c741e0edd7ac498080d9f69606a184c0\build\windows\x64\runner\Debug\ni_hao_robot.exe`. Its bundled dictionary contains 11,147 words; both lesson packs and 88 MP3 hashes match the source assets. Open the executable together with its adjacent DLLs/data directory; do not copy only the EXE. A new Ctrl+Shift+B build prints a new snapshot path. MSB8029 Temp-directory incremental-build warnings are nonfatal for these fresh snapshots. Native audible playback/interaction is still to be checked with the checklist.
+Use the executable path printed by the current build helper. Keep its adjacent DLLs and data directory together; do not copy only the EXE. Older Nov 6 builds do not include the queue. The new bundle includes curriculum.sqlite, 82,595 questions and 4,118 MP3s. MSB8029 Temp-directory warnings are nonfatal for these fresh snapshots. See PROJECT_MEMORY.md for the latest build result; native audible playback remains a manual checklist item.
+
+Verified 2026-11-07: debug build PASS (275.1 seconds). Current executable:
+`%TEMP%\nihao-windows-6e38076c4fe14c9995c39c4a387c63b5\build\windows\x64\runner\Debug\ni_hao_robot.exe`.
+Compiled curriculum, all 4,118 audio hashes and the native audio plugin were checked. Close the old app and back up learner data before first launch. This build was not launched against real learner data during development.

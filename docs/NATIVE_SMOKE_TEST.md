@@ -1,5 +1,17 @@
 # Native Windows smoke test
 
+## Queue and full curriculum acceptance - 2026-11-07
+
+Windows debug build PASS in 275.1 seconds; seed checksum, all 4,118 audio hashes and audio plugin DLL verified. Use the newest build path recorded in PROJECT_MEMORY.md. Full native interaction/listening checks for this revision are NOT RUN; automated tests and widget screenshots do not replace them.
+
+1. Close the existing app and make the documented database backup before schema-v5 migration.
+2. Open Vocabulary > Browse words; allow the initial curriculum install to finish. Confirm 20 words and basic-first ordering. See 20 more must increase the count to 40.
+3. Select a lower row, verify its highlight and Learn label, move it to front, and restart. Order must persist. A second profile must retain its own order. Restore priority order must preserve learning records.
+4. Search for a word outside the first page, learn it and complete its seven/eight questions. Confirm it leaves the new-word queue and appears in scheduled review. Check a word with no examples still explains the gap and opens its quiz.
+5. Play several linked sentence recordings, change clips and enter a quiz. Check stopping/retry/device errors. Use a Chinese IME for typed answers and test a narrow window/large text.
+6. Reopen and compare old attempts, due dates and settings with the backup. Never launch an older executable against the migrated database.
+7. Independently review sentence sense matching, distractor ambiguity and audio/text alignment before public release.
+
 ## Current content/audio acceptance — 2026-11-06
 
 The previous successful native launch below predates schema v4 and the audio plugin. Current debug build: **PASS**, 113.9 seconds, including the audio plugin. Output: `%TEMP%/nihao-windows-c741e0edd7ac498080d9f69606a184c0/build/windows/x64/runner/Debug/ni_hao_robot.exe`. Its dictionary, lesson packs, attribution and all 88 MP3 hashes match source. Full functional/native playback checks for this checkpoint remain **NOT RUN** until explicitly recorded.

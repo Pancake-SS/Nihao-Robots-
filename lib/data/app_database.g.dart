@@ -3525,6 +3525,2288 @@ class ContentExercisesCompanion extends UpdateCompanion<ContentExercise> {
   }
 }
 
+class $CurriculumWordsTable extends CurriculumWords
+    with TableInfo<$CurriculumWordsTable, CurriculumWord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CurriculumWordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _packIdMeta = const VerificationMeta('packId');
+  @override
+  late final GeneratedColumn<String> packId = GeneratedColumn<String>(
+    'pack_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _revisionMeta = const VerificationMeta(
+    'revision',
+  );
+  @override
+  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
+    'revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentSchemaMeta = const VerificationMeta(
+    'contentSchema',
+  );
+  @override
+  late final GeneratedColumn<int> contentSchema = GeneratedColumn<int>(
+    'content_schema',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hanziMeta = const VerificationMeta('hanzi');
+  @override
+  late final GeneratedColumn<String> hanzi = GeneratedColumn<String>(
+    'hanzi',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _pinyinMeta = const VerificationMeta('pinyin');
+  @override
+  late final GeneratedColumn<String> pinyin = GeneratedColumn<String>(
+    'pinyin',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _meaningMeta = const VerificationMeta(
+    'meaning',
+  );
+  @override
+  late final GeneratedColumn<String> meaning = GeneratedColumn<String>(
+    'meaning',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _searchTextMeta = const VerificationMeta(
+    'searchText',
+  );
+  @override
+  late final GeneratedColumn<String> searchText = GeneratedColumn<String>(
+    'search_text',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _defaultPositionMeta = const VerificationMeta(
+    'defaultPosition',
+  );
+  @override
+  late final GeneratedColumn<int> defaultPosition = GeneratedColumn<int>(
+    'default_position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _metadataJsonMeta = const VerificationMeta(
+    'metadataJson',
+  );
+  @override
+  late final GeneratedColumn<String> metadataJson = GeneratedColumn<String>(
+    'metadata_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    packId,
+    revision,
+    contentSchema,
+    hanzi,
+    pinyin,
+    meaning,
+    searchText,
+    defaultPosition,
+    metadataJson,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'curriculum_words';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CurriculumWord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('pack_id')) {
+      context.handle(
+        _packIdMeta,
+        packId.isAcceptableOrUnknown(data['pack_id']!, _packIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_packIdMeta);
+    }
+    if (data.containsKey('revision')) {
+      context.handle(
+        _revisionMeta,
+        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_revisionMeta);
+    }
+    if (data.containsKey('content_schema')) {
+      context.handle(
+        _contentSchemaMeta,
+        contentSchema.isAcceptableOrUnknown(
+          data['content_schema']!,
+          _contentSchemaMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_contentSchemaMeta);
+    }
+    if (data.containsKey('hanzi')) {
+      context.handle(
+        _hanziMeta,
+        hanzi.isAcceptableOrUnknown(data['hanzi']!, _hanziMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hanziMeta);
+    }
+    if (data.containsKey('pinyin')) {
+      context.handle(
+        _pinyinMeta,
+        pinyin.isAcceptableOrUnknown(data['pinyin']!, _pinyinMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pinyinMeta);
+    }
+    if (data.containsKey('meaning')) {
+      context.handle(
+        _meaningMeta,
+        meaning.isAcceptableOrUnknown(data['meaning']!, _meaningMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_meaningMeta);
+    }
+    if (data.containsKey('search_text')) {
+      context.handle(
+        _searchTextMeta,
+        searchText.isAcceptableOrUnknown(data['search_text']!, _searchTextMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_searchTextMeta);
+    }
+    if (data.containsKey('default_position')) {
+      context.handle(
+        _defaultPositionMeta,
+        defaultPosition.isAcceptableOrUnknown(
+          data['default_position']!,
+          _defaultPositionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_defaultPositionMeta);
+    }
+    if (data.containsKey('metadata_json')) {
+      context.handle(
+        _metadataJsonMeta,
+        metadataJson.isAcceptableOrUnknown(
+          data['metadata_json']!,
+          _metadataJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_metadataJsonMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CurriculumWord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CurriculumWord(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      packId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pack_id'],
+      )!,
+      revision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revision'],
+      )!,
+      contentSchema: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}content_schema'],
+      )!,
+      hanzi: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hanzi'],
+      )!,
+      pinyin: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pinyin'],
+      )!,
+      meaning: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}meaning'],
+      )!,
+      searchText: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}search_text'],
+      )!,
+      defaultPosition: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}default_position'],
+      )!,
+      metadataJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}metadata_json'],
+      )!,
+    );
+  }
+
+  @override
+  $CurriculumWordsTable createAlias(String alias) {
+    return $CurriculumWordsTable(attachedDatabase, alias);
+  }
+}
+
+class CurriculumWord extends DataClass implements Insertable<CurriculumWord> {
+  final String id;
+  final String packId;
+  final int revision;
+  final int contentSchema;
+  final String hanzi;
+  final String pinyin;
+  final String meaning;
+  final String searchText;
+  final int defaultPosition;
+  final String metadataJson;
+  const CurriculumWord({
+    required this.id,
+    required this.packId,
+    required this.revision,
+    required this.contentSchema,
+    required this.hanzi,
+    required this.pinyin,
+    required this.meaning,
+    required this.searchText,
+    required this.defaultPosition,
+    required this.metadataJson,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['pack_id'] = Variable<String>(packId);
+    map['revision'] = Variable<int>(revision);
+    map['content_schema'] = Variable<int>(contentSchema);
+    map['hanzi'] = Variable<String>(hanzi);
+    map['pinyin'] = Variable<String>(pinyin);
+    map['meaning'] = Variable<String>(meaning);
+    map['search_text'] = Variable<String>(searchText);
+    map['default_position'] = Variable<int>(defaultPosition);
+    map['metadata_json'] = Variable<String>(metadataJson);
+    return map;
+  }
+
+  CurriculumWordsCompanion toCompanion(bool nullToAbsent) {
+    return CurriculumWordsCompanion(
+      id: Value(id),
+      packId: Value(packId),
+      revision: Value(revision),
+      contentSchema: Value(contentSchema),
+      hanzi: Value(hanzi),
+      pinyin: Value(pinyin),
+      meaning: Value(meaning),
+      searchText: Value(searchText),
+      defaultPosition: Value(defaultPosition),
+      metadataJson: Value(metadataJson),
+    );
+  }
+
+  factory CurriculumWord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CurriculumWord(
+      id: serializer.fromJson<String>(json['id']),
+      packId: serializer.fromJson<String>(json['packId']),
+      revision: serializer.fromJson<int>(json['revision']),
+      contentSchema: serializer.fromJson<int>(json['contentSchema']),
+      hanzi: serializer.fromJson<String>(json['hanzi']),
+      pinyin: serializer.fromJson<String>(json['pinyin']),
+      meaning: serializer.fromJson<String>(json['meaning']),
+      searchText: serializer.fromJson<String>(json['searchText']),
+      defaultPosition: serializer.fromJson<int>(json['defaultPosition']),
+      metadataJson: serializer.fromJson<String>(json['metadataJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'packId': serializer.toJson<String>(packId),
+      'revision': serializer.toJson<int>(revision),
+      'contentSchema': serializer.toJson<int>(contentSchema),
+      'hanzi': serializer.toJson<String>(hanzi),
+      'pinyin': serializer.toJson<String>(pinyin),
+      'meaning': serializer.toJson<String>(meaning),
+      'searchText': serializer.toJson<String>(searchText),
+      'defaultPosition': serializer.toJson<int>(defaultPosition),
+      'metadataJson': serializer.toJson<String>(metadataJson),
+    };
+  }
+
+  CurriculumWord copyWith({
+    String? id,
+    String? packId,
+    int? revision,
+    int? contentSchema,
+    String? hanzi,
+    String? pinyin,
+    String? meaning,
+    String? searchText,
+    int? defaultPosition,
+    String? metadataJson,
+  }) => CurriculumWord(
+    id: id ?? this.id,
+    packId: packId ?? this.packId,
+    revision: revision ?? this.revision,
+    contentSchema: contentSchema ?? this.contentSchema,
+    hanzi: hanzi ?? this.hanzi,
+    pinyin: pinyin ?? this.pinyin,
+    meaning: meaning ?? this.meaning,
+    searchText: searchText ?? this.searchText,
+    defaultPosition: defaultPosition ?? this.defaultPosition,
+    metadataJson: metadataJson ?? this.metadataJson,
+  );
+  CurriculumWord copyWithCompanion(CurriculumWordsCompanion data) {
+    return CurriculumWord(
+      id: data.id.present ? data.id.value : this.id,
+      packId: data.packId.present ? data.packId.value : this.packId,
+      revision: data.revision.present ? data.revision.value : this.revision,
+      contentSchema: data.contentSchema.present
+          ? data.contentSchema.value
+          : this.contentSchema,
+      hanzi: data.hanzi.present ? data.hanzi.value : this.hanzi,
+      pinyin: data.pinyin.present ? data.pinyin.value : this.pinyin,
+      meaning: data.meaning.present ? data.meaning.value : this.meaning,
+      searchText: data.searchText.present
+          ? data.searchText.value
+          : this.searchText,
+      defaultPosition: data.defaultPosition.present
+          ? data.defaultPosition.value
+          : this.defaultPosition,
+      metadataJson: data.metadataJson.present
+          ? data.metadataJson.value
+          : this.metadataJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CurriculumWord(')
+          ..write('id: $id, ')
+          ..write('packId: $packId, ')
+          ..write('revision: $revision, ')
+          ..write('contentSchema: $contentSchema, ')
+          ..write('hanzi: $hanzi, ')
+          ..write('pinyin: $pinyin, ')
+          ..write('meaning: $meaning, ')
+          ..write('searchText: $searchText, ')
+          ..write('defaultPosition: $defaultPosition, ')
+          ..write('metadataJson: $metadataJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    packId,
+    revision,
+    contentSchema,
+    hanzi,
+    pinyin,
+    meaning,
+    searchText,
+    defaultPosition,
+    metadataJson,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CurriculumWord &&
+          other.id == this.id &&
+          other.packId == this.packId &&
+          other.revision == this.revision &&
+          other.contentSchema == this.contentSchema &&
+          other.hanzi == this.hanzi &&
+          other.pinyin == this.pinyin &&
+          other.meaning == this.meaning &&
+          other.searchText == this.searchText &&
+          other.defaultPosition == this.defaultPosition &&
+          other.metadataJson == this.metadataJson);
+}
+
+class CurriculumWordsCompanion extends UpdateCompanion<CurriculumWord> {
+  final Value<String> id;
+  final Value<String> packId;
+  final Value<int> revision;
+  final Value<int> contentSchema;
+  final Value<String> hanzi;
+  final Value<String> pinyin;
+  final Value<String> meaning;
+  final Value<String> searchText;
+  final Value<int> defaultPosition;
+  final Value<String> metadataJson;
+  final Value<int> rowid;
+  const CurriculumWordsCompanion({
+    this.id = const Value.absent(),
+    this.packId = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.contentSchema = const Value.absent(),
+    this.hanzi = const Value.absent(),
+    this.pinyin = const Value.absent(),
+    this.meaning = const Value.absent(),
+    this.searchText = const Value.absent(),
+    this.defaultPosition = const Value.absent(),
+    this.metadataJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CurriculumWordsCompanion.insert({
+    required String id,
+    required String packId,
+    required int revision,
+    required int contentSchema,
+    required String hanzi,
+    required String pinyin,
+    required String meaning,
+    required String searchText,
+    required int defaultPosition,
+    required String metadataJson,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       packId = Value(packId),
+       revision = Value(revision),
+       contentSchema = Value(contentSchema),
+       hanzi = Value(hanzi),
+       pinyin = Value(pinyin),
+       meaning = Value(meaning),
+       searchText = Value(searchText),
+       defaultPosition = Value(defaultPosition),
+       metadataJson = Value(metadataJson);
+  static Insertable<CurriculumWord> custom({
+    Expression<String>? id,
+    Expression<String>? packId,
+    Expression<int>? revision,
+    Expression<int>? contentSchema,
+    Expression<String>? hanzi,
+    Expression<String>? pinyin,
+    Expression<String>? meaning,
+    Expression<String>? searchText,
+    Expression<int>? defaultPosition,
+    Expression<String>? metadataJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (packId != null) 'pack_id': packId,
+      if (revision != null) 'revision': revision,
+      if (contentSchema != null) 'content_schema': contentSchema,
+      if (hanzi != null) 'hanzi': hanzi,
+      if (pinyin != null) 'pinyin': pinyin,
+      if (meaning != null) 'meaning': meaning,
+      if (searchText != null) 'search_text': searchText,
+      if (defaultPosition != null) 'default_position': defaultPosition,
+      if (metadataJson != null) 'metadata_json': metadataJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CurriculumWordsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? packId,
+    Value<int>? revision,
+    Value<int>? contentSchema,
+    Value<String>? hanzi,
+    Value<String>? pinyin,
+    Value<String>? meaning,
+    Value<String>? searchText,
+    Value<int>? defaultPosition,
+    Value<String>? metadataJson,
+    Value<int>? rowid,
+  }) {
+    return CurriculumWordsCompanion(
+      id: id ?? this.id,
+      packId: packId ?? this.packId,
+      revision: revision ?? this.revision,
+      contentSchema: contentSchema ?? this.contentSchema,
+      hanzi: hanzi ?? this.hanzi,
+      pinyin: pinyin ?? this.pinyin,
+      meaning: meaning ?? this.meaning,
+      searchText: searchText ?? this.searchText,
+      defaultPosition: defaultPosition ?? this.defaultPosition,
+      metadataJson: metadataJson ?? this.metadataJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (packId.present) {
+      map['pack_id'] = Variable<String>(packId.value);
+    }
+    if (revision.present) {
+      map['revision'] = Variable<int>(revision.value);
+    }
+    if (contentSchema.present) {
+      map['content_schema'] = Variable<int>(contentSchema.value);
+    }
+    if (hanzi.present) {
+      map['hanzi'] = Variable<String>(hanzi.value);
+    }
+    if (pinyin.present) {
+      map['pinyin'] = Variable<String>(pinyin.value);
+    }
+    if (meaning.present) {
+      map['meaning'] = Variable<String>(meaning.value);
+    }
+    if (searchText.present) {
+      map['search_text'] = Variable<String>(searchText.value);
+    }
+    if (defaultPosition.present) {
+      map['default_position'] = Variable<int>(defaultPosition.value);
+    }
+    if (metadataJson.present) {
+      map['metadata_json'] = Variable<String>(metadataJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CurriculumWordsCompanion(')
+          ..write('id: $id, ')
+          ..write('packId: $packId, ')
+          ..write('revision: $revision, ')
+          ..write('contentSchema: $contentSchema, ')
+          ..write('hanzi: $hanzi, ')
+          ..write('pinyin: $pinyin, ')
+          ..write('meaning: $meaning, ')
+          ..write('searchText: $searchText, ')
+          ..write('defaultPosition: $defaultPosition, ')
+          ..write('metadataJson: $metadataJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CurriculumSentencesTable extends CurriculumSentences
+    with TableInfo<$CurriculumSentencesTable, CurriculumSentence> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CurriculumSentencesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadJsonMeta = const VerificationMeta(
+    'payloadJson',
+  );
+  @override
+  late final GeneratedColumn<String> payloadJson = GeneratedColumn<String>(
+    'payload_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, payloadJson];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'curriculum_sentences';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CurriculumSentence> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('payload_json')) {
+      context.handle(
+        _payloadJsonMeta,
+        payloadJson.isAcceptableOrUnknown(
+          data['payload_json']!,
+          _payloadJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_payloadJsonMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CurriculumSentence map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CurriculumSentence(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      payloadJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload_json'],
+      )!,
+    );
+  }
+
+  @override
+  $CurriculumSentencesTable createAlias(String alias) {
+    return $CurriculumSentencesTable(attachedDatabase, alias);
+  }
+}
+
+class CurriculumSentence extends DataClass
+    implements Insertable<CurriculumSentence> {
+  final String id;
+  final String payloadJson;
+  const CurriculumSentence({required this.id, required this.payloadJson});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['payload_json'] = Variable<String>(payloadJson);
+    return map;
+  }
+
+  CurriculumSentencesCompanion toCompanion(bool nullToAbsent) {
+    return CurriculumSentencesCompanion(
+      id: Value(id),
+      payloadJson: Value(payloadJson),
+    );
+  }
+
+  factory CurriculumSentence.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CurriculumSentence(
+      id: serializer.fromJson<String>(json['id']),
+      payloadJson: serializer.fromJson<String>(json['payloadJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'payloadJson': serializer.toJson<String>(payloadJson),
+    };
+  }
+
+  CurriculumSentence copyWith({String? id, String? payloadJson}) =>
+      CurriculumSentence(
+        id: id ?? this.id,
+        payloadJson: payloadJson ?? this.payloadJson,
+      );
+  CurriculumSentence copyWithCompanion(CurriculumSentencesCompanion data) {
+    return CurriculumSentence(
+      id: data.id.present ? data.id.value : this.id,
+      payloadJson: data.payloadJson.present
+          ? data.payloadJson.value
+          : this.payloadJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CurriculumSentence(')
+          ..write('id: $id, ')
+          ..write('payloadJson: $payloadJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, payloadJson);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CurriculumSentence &&
+          other.id == this.id &&
+          other.payloadJson == this.payloadJson);
+}
+
+class CurriculumSentencesCompanion extends UpdateCompanion<CurriculumSentence> {
+  final Value<String> id;
+  final Value<String> payloadJson;
+  final Value<int> rowid;
+  const CurriculumSentencesCompanion({
+    this.id = const Value.absent(),
+    this.payloadJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CurriculumSentencesCompanion.insert({
+    required String id,
+    required String payloadJson,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       payloadJson = Value(payloadJson);
+  static Insertable<CurriculumSentence> custom({
+    Expression<String>? id,
+    Expression<String>? payloadJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (payloadJson != null) 'payload_json': payloadJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CurriculumSentencesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? payloadJson,
+    Value<int>? rowid,
+  }) {
+    return CurriculumSentencesCompanion(
+      id: id ?? this.id,
+      payloadJson: payloadJson ?? this.payloadJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (payloadJson.present) {
+      map['payload_json'] = Variable<String>(payloadJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CurriculumSentencesCompanion(')
+          ..write('id: $id, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CurriculumExamplesTable extends CurriculumExamples
+    with TableInfo<$CurriculumExamplesTable, CurriculumExample> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CurriculumExamplesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _wordIdMeta = const VerificationMeta('wordId');
+  @override
+  late final GeneratedColumn<String> wordId = GeneratedColumn<String>(
+    'word_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES curriculum_words (id)',
+    ),
+  );
+  static const VerificationMeta _sentenceIdMeta = const VerificationMeta(
+    'sentenceId',
+  );
+  @override
+  late final GeneratedColumn<String> sentenceId = GeneratedColumn<String>(
+    'sentence_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES curriculum_sentences (id)',
+    ),
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [wordId, sentenceId, position];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'curriculum_examples';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CurriculumExample> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('word_id')) {
+      context.handle(
+        _wordIdMeta,
+        wordId.isAcceptableOrUnknown(data['word_id']!, _wordIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_wordIdMeta);
+    }
+    if (data.containsKey('sentence_id')) {
+      context.handle(
+        _sentenceIdMeta,
+        sentenceId.isAcceptableOrUnknown(data['sentence_id']!, _sentenceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sentenceIdMeta);
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_positionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {wordId, position};
+  @override
+  CurriculumExample map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CurriculumExample(
+      wordId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}word_id'],
+      )!,
+      sentenceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sentence_id'],
+      )!,
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      )!,
+    );
+  }
+
+  @override
+  $CurriculumExamplesTable createAlias(String alias) {
+    return $CurriculumExamplesTable(attachedDatabase, alias);
+  }
+}
+
+class CurriculumExample extends DataClass
+    implements Insertable<CurriculumExample> {
+  final String wordId;
+  final String sentenceId;
+  final int position;
+  const CurriculumExample({
+    required this.wordId,
+    required this.sentenceId,
+    required this.position,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['word_id'] = Variable<String>(wordId);
+    map['sentence_id'] = Variable<String>(sentenceId);
+    map['position'] = Variable<int>(position);
+    return map;
+  }
+
+  CurriculumExamplesCompanion toCompanion(bool nullToAbsent) {
+    return CurriculumExamplesCompanion(
+      wordId: Value(wordId),
+      sentenceId: Value(sentenceId),
+      position: Value(position),
+    );
+  }
+
+  factory CurriculumExample.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CurriculumExample(
+      wordId: serializer.fromJson<String>(json['wordId']),
+      sentenceId: serializer.fromJson<String>(json['sentenceId']),
+      position: serializer.fromJson<int>(json['position']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'wordId': serializer.toJson<String>(wordId),
+      'sentenceId': serializer.toJson<String>(sentenceId),
+      'position': serializer.toJson<int>(position),
+    };
+  }
+
+  CurriculumExample copyWith({
+    String? wordId,
+    String? sentenceId,
+    int? position,
+  }) => CurriculumExample(
+    wordId: wordId ?? this.wordId,
+    sentenceId: sentenceId ?? this.sentenceId,
+    position: position ?? this.position,
+  );
+  CurriculumExample copyWithCompanion(CurriculumExamplesCompanion data) {
+    return CurriculumExample(
+      wordId: data.wordId.present ? data.wordId.value : this.wordId,
+      sentenceId: data.sentenceId.present
+          ? data.sentenceId.value
+          : this.sentenceId,
+      position: data.position.present ? data.position.value : this.position,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CurriculumExample(')
+          ..write('wordId: $wordId, ')
+          ..write('sentenceId: $sentenceId, ')
+          ..write('position: $position')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(wordId, sentenceId, position);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CurriculumExample &&
+          other.wordId == this.wordId &&
+          other.sentenceId == this.sentenceId &&
+          other.position == this.position);
+}
+
+class CurriculumExamplesCompanion extends UpdateCompanion<CurriculumExample> {
+  final Value<String> wordId;
+  final Value<String> sentenceId;
+  final Value<int> position;
+  final Value<int> rowid;
+  const CurriculumExamplesCompanion({
+    this.wordId = const Value.absent(),
+    this.sentenceId = const Value.absent(),
+    this.position = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CurriculumExamplesCompanion.insert({
+    required String wordId,
+    required String sentenceId,
+    required int position,
+    this.rowid = const Value.absent(),
+  }) : wordId = Value(wordId),
+       sentenceId = Value(sentenceId),
+       position = Value(position);
+  static Insertable<CurriculumExample> custom({
+    Expression<String>? wordId,
+    Expression<String>? sentenceId,
+    Expression<int>? position,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (wordId != null) 'word_id': wordId,
+      if (sentenceId != null) 'sentence_id': sentenceId,
+      if (position != null) 'position': position,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CurriculumExamplesCompanion copyWith({
+    Value<String>? wordId,
+    Value<String>? sentenceId,
+    Value<int>? position,
+    Value<int>? rowid,
+  }) {
+    return CurriculumExamplesCompanion(
+      wordId: wordId ?? this.wordId,
+      sentenceId: sentenceId ?? this.sentenceId,
+      position: position ?? this.position,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (wordId.present) {
+      map['word_id'] = Variable<String>(wordId.value);
+    }
+    if (sentenceId.present) {
+      map['sentence_id'] = Variable<String>(sentenceId.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CurriculumExamplesCompanion(')
+          ..write('wordId: $wordId, ')
+          ..write('sentenceId: $sentenceId, ')
+          ..write('position: $position, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CurriculumAudioTable extends CurriculumAudio
+    with TableInfo<$CurriculumAudioTable, CurriculumAudioData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CurriculumAudioTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sentenceIdMeta = const VerificationMeta(
+    'sentenceId',
+  );
+  @override
+  late final GeneratedColumn<String> sentenceId = GeneratedColumn<String>(
+    'sentence_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES curriculum_sentences (id)',
+    ),
+  );
+  static const VerificationMeta _payloadJsonMeta = const VerificationMeta(
+    'payloadJson',
+  );
+  @override
+  late final GeneratedColumn<String> payloadJson = GeneratedColumn<String>(
+    'payload_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _localAvailableMeta = const VerificationMeta(
+    'localAvailable',
+  );
+  @override
+  late final GeneratedColumn<bool> localAvailable = GeneratedColumn<bool>(
+    'local_available',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("local_available" IN (0, 1))',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sentenceId,
+    payloadJson,
+    localAvailable,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'curriculum_audio';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CurriculumAudioData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('sentence_id')) {
+      context.handle(
+        _sentenceIdMeta,
+        sentenceId.isAcceptableOrUnknown(data['sentence_id']!, _sentenceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sentenceIdMeta);
+    }
+    if (data.containsKey('payload_json')) {
+      context.handle(
+        _payloadJsonMeta,
+        payloadJson.isAcceptableOrUnknown(
+          data['payload_json']!,
+          _payloadJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_payloadJsonMeta);
+    }
+    if (data.containsKey('local_available')) {
+      context.handle(
+        _localAvailableMeta,
+        localAvailable.isAcceptableOrUnknown(
+          data['local_available']!,
+          _localAvailableMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_localAvailableMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CurriculumAudioData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CurriculumAudioData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      sentenceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sentence_id'],
+      )!,
+      payloadJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload_json'],
+      )!,
+      localAvailable: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}local_available'],
+      )!,
+    );
+  }
+
+  @override
+  $CurriculumAudioTable createAlias(String alias) {
+    return $CurriculumAudioTable(attachedDatabase, alias);
+  }
+}
+
+class CurriculumAudioData extends DataClass
+    implements Insertable<CurriculumAudioData> {
+  final String id;
+  final String sentenceId;
+  final String payloadJson;
+  final bool localAvailable;
+  const CurriculumAudioData({
+    required this.id,
+    required this.sentenceId,
+    required this.payloadJson,
+    required this.localAvailable,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['sentence_id'] = Variable<String>(sentenceId);
+    map['payload_json'] = Variable<String>(payloadJson);
+    map['local_available'] = Variable<bool>(localAvailable);
+    return map;
+  }
+
+  CurriculumAudioCompanion toCompanion(bool nullToAbsent) {
+    return CurriculumAudioCompanion(
+      id: Value(id),
+      sentenceId: Value(sentenceId),
+      payloadJson: Value(payloadJson),
+      localAvailable: Value(localAvailable),
+    );
+  }
+
+  factory CurriculumAudioData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CurriculumAudioData(
+      id: serializer.fromJson<String>(json['id']),
+      sentenceId: serializer.fromJson<String>(json['sentenceId']),
+      payloadJson: serializer.fromJson<String>(json['payloadJson']),
+      localAvailable: serializer.fromJson<bool>(json['localAvailable']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'sentenceId': serializer.toJson<String>(sentenceId),
+      'payloadJson': serializer.toJson<String>(payloadJson),
+      'localAvailable': serializer.toJson<bool>(localAvailable),
+    };
+  }
+
+  CurriculumAudioData copyWith({
+    String? id,
+    String? sentenceId,
+    String? payloadJson,
+    bool? localAvailable,
+  }) => CurriculumAudioData(
+    id: id ?? this.id,
+    sentenceId: sentenceId ?? this.sentenceId,
+    payloadJson: payloadJson ?? this.payloadJson,
+    localAvailable: localAvailable ?? this.localAvailable,
+  );
+  CurriculumAudioData copyWithCompanion(CurriculumAudioCompanion data) {
+    return CurriculumAudioData(
+      id: data.id.present ? data.id.value : this.id,
+      sentenceId: data.sentenceId.present
+          ? data.sentenceId.value
+          : this.sentenceId,
+      payloadJson: data.payloadJson.present
+          ? data.payloadJson.value
+          : this.payloadJson,
+      localAvailable: data.localAvailable.present
+          ? data.localAvailable.value
+          : this.localAvailable,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CurriculumAudioData(')
+          ..write('id: $id, ')
+          ..write('sentenceId: $sentenceId, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('localAvailable: $localAvailable')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, sentenceId, payloadJson, localAvailable);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CurriculumAudioData &&
+          other.id == this.id &&
+          other.sentenceId == this.sentenceId &&
+          other.payloadJson == this.payloadJson &&
+          other.localAvailable == this.localAvailable);
+}
+
+class CurriculumAudioCompanion extends UpdateCompanion<CurriculumAudioData> {
+  final Value<String> id;
+  final Value<String> sentenceId;
+  final Value<String> payloadJson;
+  final Value<bool> localAvailable;
+  final Value<int> rowid;
+  const CurriculumAudioCompanion({
+    this.id = const Value.absent(),
+    this.sentenceId = const Value.absent(),
+    this.payloadJson = const Value.absent(),
+    this.localAvailable = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CurriculumAudioCompanion.insert({
+    required String id,
+    required String sentenceId,
+    required String payloadJson,
+    required bool localAvailable,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       sentenceId = Value(sentenceId),
+       payloadJson = Value(payloadJson),
+       localAvailable = Value(localAvailable);
+  static Insertable<CurriculumAudioData> custom({
+    Expression<String>? id,
+    Expression<String>? sentenceId,
+    Expression<String>? payloadJson,
+    Expression<bool>? localAvailable,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sentenceId != null) 'sentence_id': sentenceId,
+      if (payloadJson != null) 'payload_json': payloadJson,
+      if (localAvailable != null) 'local_available': localAvailable,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CurriculumAudioCompanion copyWith({
+    Value<String>? id,
+    Value<String>? sentenceId,
+    Value<String>? payloadJson,
+    Value<bool>? localAvailable,
+    Value<int>? rowid,
+  }) {
+    return CurriculumAudioCompanion(
+      id: id ?? this.id,
+      sentenceId: sentenceId ?? this.sentenceId,
+      payloadJson: payloadJson ?? this.payloadJson,
+      localAvailable: localAvailable ?? this.localAvailable,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (sentenceId.present) {
+      map['sentence_id'] = Variable<String>(sentenceId.value);
+    }
+    if (payloadJson.present) {
+      map['payload_json'] = Variable<String>(payloadJson.value);
+    }
+    if (localAvailable.present) {
+      map['local_available'] = Variable<bool>(localAvailable.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CurriculumAudioCompanion(')
+          ..write('id: $id, ')
+          ..write('sentenceId: $sentenceId, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('localAvailable: $localAvailable, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CurriculumQuestionsTable extends CurriculumQuestions
+    with TableInfo<$CurriculumQuestionsTable, CurriculumQuestion> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CurriculumQuestionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _wordIdMeta = const VerificationMeta('wordId');
+  @override
+  late final GeneratedColumn<String> wordId = GeneratedColumn<String>(
+    'word_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES curriculum_words (id)',
+    ),
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadJsonMeta = const VerificationMeta(
+    'payloadJson',
+  );
+  @override
+  late final GeneratedColumn<String> payloadJson = GeneratedColumn<String>(
+    'payload_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, wordId, position, payloadJson];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'curriculum_questions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CurriculumQuestion> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('word_id')) {
+      context.handle(
+        _wordIdMeta,
+        wordId.isAcceptableOrUnknown(data['word_id']!, _wordIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_wordIdMeta);
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_positionMeta);
+    }
+    if (data.containsKey('payload_json')) {
+      context.handle(
+        _payloadJsonMeta,
+        payloadJson.isAcceptableOrUnknown(
+          data['payload_json']!,
+          _payloadJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_payloadJsonMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CurriculumQuestion map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CurriculumQuestion(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      wordId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}word_id'],
+      )!,
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      )!,
+      payloadJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload_json'],
+      )!,
+    );
+  }
+
+  @override
+  $CurriculumQuestionsTable createAlias(String alias) {
+    return $CurriculumQuestionsTable(attachedDatabase, alias);
+  }
+}
+
+class CurriculumQuestion extends DataClass
+    implements Insertable<CurriculumQuestion> {
+  final String id;
+  final String wordId;
+  final int position;
+  final String payloadJson;
+  const CurriculumQuestion({
+    required this.id,
+    required this.wordId,
+    required this.position,
+    required this.payloadJson,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['word_id'] = Variable<String>(wordId);
+    map['position'] = Variable<int>(position);
+    map['payload_json'] = Variable<String>(payloadJson);
+    return map;
+  }
+
+  CurriculumQuestionsCompanion toCompanion(bool nullToAbsent) {
+    return CurriculumQuestionsCompanion(
+      id: Value(id),
+      wordId: Value(wordId),
+      position: Value(position),
+      payloadJson: Value(payloadJson),
+    );
+  }
+
+  factory CurriculumQuestion.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CurriculumQuestion(
+      id: serializer.fromJson<String>(json['id']),
+      wordId: serializer.fromJson<String>(json['wordId']),
+      position: serializer.fromJson<int>(json['position']),
+      payloadJson: serializer.fromJson<String>(json['payloadJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'wordId': serializer.toJson<String>(wordId),
+      'position': serializer.toJson<int>(position),
+      'payloadJson': serializer.toJson<String>(payloadJson),
+    };
+  }
+
+  CurriculumQuestion copyWith({
+    String? id,
+    String? wordId,
+    int? position,
+    String? payloadJson,
+  }) => CurriculumQuestion(
+    id: id ?? this.id,
+    wordId: wordId ?? this.wordId,
+    position: position ?? this.position,
+    payloadJson: payloadJson ?? this.payloadJson,
+  );
+  CurriculumQuestion copyWithCompanion(CurriculumQuestionsCompanion data) {
+    return CurriculumQuestion(
+      id: data.id.present ? data.id.value : this.id,
+      wordId: data.wordId.present ? data.wordId.value : this.wordId,
+      position: data.position.present ? data.position.value : this.position,
+      payloadJson: data.payloadJson.present
+          ? data.payloadJson.value
+          : this.payloadJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CurriculumQuestion(')
+          ..write('id: $id, ')
+          ..write('wordId: $wordId, ')
+          ..write('position: $position, ')
+          ..write('payloadJson: $payloadJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, wordId, position, payloadJson);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CurriculumQuestion &&
+          other.id == this.id &&
+          other.wordId == this.wordId &&
+          other.position == this.position &&
+          other.payloadJson == this.payloadJson);
+}
+
+class CurriculumQuestionsCompanion extends UpdateCompanion<CurriculumQuestion> {
+  final Value<String> id;
+  final Value<String> wordId;
+  final Value<int> position;
+  final Value<String> payloadJson;
+  final Value<int> rowid;
+  const CurriculumQuestionsCompanion({
+    this.id = const Value.absent(),
+    this.wordId = const Value.absent(),
+    this.position = const Value.absent(),
+    this.payloadJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CurriculumQuestionsCompanion.insert({
+    required String id,
+    required String wordId,
+    required int position,
+    required String payloadJson,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       wordId = Value(wordId),
+       position = Value(position),
+       payloadJson = Value(payloadJson);
+  static Insertable<CurriculumQuestion> custom({
+    Expression<String>? id,
+    Expression<String>? wordId,
+    Expression<int>? position,
+    Expression<String>? payloadJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (wordId != null) 'word_id': wordId,
+      if (position != null) 'position': position,
+      if (payloadJson != null) 'payload_json': payloadJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CurriculumQuestionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? wordId,
+    Value<int>? position,
+    Value<String>? payloadJson,
+    Value<int>? rowid,
+  }) {
+    return CurriculumQuestionsCompanion(
+      id: id ?? this.id,
+      wordId: wordId ?? this.wordId,
+      position: position ?? this.position,
+      payloadJson: payloadJson ?? this.payloadJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (wordId.present) {
+      map['word_id'] = Variable<String>(wordId.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (payloadJson.present) {
+      map['payload_json'] = Variable<String>(payloadJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CurriculumQuestionsCompanion(')
+          ..write('id: $id, ')
+          ..write('wordId: $wordId, ')
+          ..write('position: $position, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CurriculumInstallsTable extends CurriculumInstalls
+    with TableInfo<$CurriculumInstallsTable, CurriculumInstall> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CurriculumInstallsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _revisionMeta = const VerificationMeta(
+    'revision',
+  );
+  @override
+  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
+    'revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _digestMeta = const VerificationMeta('digest');
+  @override
+  late final GeneratedColumn<String> digest = GeneratedColumn<String>(
+    'digest',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, revision, digest];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'curriculum_installs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CurriculumInstall> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('revision')) {
+      context.handle(
+        _revisionMeta,
+        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_revisionMeta);
+    }
+    if (data.containsKey('digest')) {
+      context.handle(
+        _digestMeta,
+        digest.isAcceptableOrUnknown(data['digest']!, _digestMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_digestMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CurriculumInstall map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CurriculumInstall(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      revision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revision'],
+      )!,
+      digest: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}digest'],
+      )!,
+    );
+  }
+
+  @override
+  $CurriculumInstallsTable createAlias(String alias) {
+    return $CurriculumInstallsTable(attachedDatabase, alias);
+  }
+}
+
+class CurriculumInstall extends DataClass
+    implements Insertable<CurriculumInstall> {
+  final int id;
+  final int revision;
+  final String digest;
+  const CurriculumInstall({
+    required this.id,
+    required this.revision,
+    required this.digest,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['revision'] = Variable<int>(revision);
+    map['digest'] = Variable<String>(digest);
+    return map;
+  }
+
+  CurriculumInstallsCompanion toCompanion(bool nullToAbsent) {
+    return CurriculumInstallsCompanion(
+      id: Value(id),
+      revision: Value(revision),
+      digest: Value(digest),
+    );
+  }
+
+  factory CurriculumInstall.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CurriculumInstall(
+      id: serializer.fromJson<int>(json['id']),
+      revision: serializer.fromJson<int>(json['revision']),
+      digest: serializer.fromJson<String>(json['digest']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'revision': serializer.toJson<int>(revision),
+      'digest': serializer.toJson<String>(digest),
+    };
+  }
+
+  CurriculumInstall copyWith({int? id, int? revision, String? digest}) =>
+      CurriculumInstall(
+        id: id ?? this.id,
+        revision: revision ?? this.revision,
+        digest: digest ?? this.digest,
+      );
+  CurriculumInstall copyWithCompanion(CurriculumInstallsCompanion data) {
+    return CurriculumInstall(
+      id: data.id.present ? data.id.value : this.id,
+      revision: data.revision.present ? data.revision.value : this.revision,
+      digest: data.digest.present ? data.digest.value : this.digest,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CurriculumInstall(')
+          ..write('id: $id, ')
+          ..write('revision: $revision, ')
+          ..write('digest: $digest')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, revision, digest);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CurriculumInstall &&
+          other.id == this.id &&
+          other.revision == this.revision &&
+          other.digest == this.digest);
+}
+
+class CurriculumInstallsCompanion extends UpdateCompanion<CurriculumInstall> {
+  final Value<int> id;
+  final Value<int> revision;
+  final Value<String> digest;
+  const CurriculumInstallsCompanion({
+    this.id = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.digest = const Value.absent(),
+  });
+  CurriculumInstallsCompanion.insert({
+    this.id = const Value.absent(),
+    required int revision,
+    required String digest,
+  }) : revision = Value(revision),
+       digest = Value(digest);
+  static Insertable<CurriculumInstall> custom({
+    Expression<int>? id,
+    Expression<int>? revision,
+    Expression<String>? digest,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (revision != null) 'revision': revision,
+      if (digest != null) 'digest': digest,
+    });
+  }
+
+  CurriculumInstallsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? revision,
+    Value<String>? digest,
+  }) {
+    return CurriculumInstallsCompanion(
+      id: id ?? this.id,
+      revision: revision ?? this.revision,
+      digest: digest ?? this.digest,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (revision.present) {
+      map['revision'] = Variable<int>(revision.value);
+    }
+    if (digest.present) {
+      map['digest'] = Variable<String>(digest.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CurriculumInstallsCompanion(')
+          ..write('id: $id, ')
+          ..write('revision: $revision, ')
+          ..write('digest: $digest')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LearningQueueTable extends LearningQueue
+    with TableInfo<$LearningQueueTable, LearningQueueData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LearningQueueTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<int> profileId = GeneratedColumn<int>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES profiles (id)',
+    ),
+  );
+  static const VerificationMeta _wordIdMeta = const VerificationMeta('wordId');
+  @override
+  late final GeneratedColumn<String> wordId = GeneratedColumn<String>(
+    'word_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES curriculum_words (id)',
+    ),
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [profileId, wordId, position];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'learning_queue';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LearningQueueData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('word_id')) {
+      context.handle(
+        _wordIdMeta,
+        wordId.isAcceptableOrUnknown(data['word_id']!, _wordIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_wordIdMeta);
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_positionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {profileId, wordId};
+  @override
+  LearningQueueData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LearningQueueData(
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      wordId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}word_id'],
+      )!,
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      )!,
+    );
+  }
+
+  @override
+  $LearningQueueTable createAlias(String alias) {
+    return $LearningQueueTable(attachedDatabase, alias);
+  }
+}
+
+class LearningQueueData extends DataClass
+    implements Insertable<LearningQueueData> {
+  final int profileId;
+  final String wordId;
+  final int position;
+  const LearningQueueData({
+    required this.profileId,
+    required this.wordId,
+    required this.position,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['profile_id'] = Variable<int>(profileId);
+    map['word_id'] = Variable<String>(wordId);
+    map['position'] = Variable<int>(position);
+    return map;
+  }
+
+  LearningQueueCompanion toCompanion(bool nullToAbsent) {
+    return LearningQueueCompanion(
+      profileId: Value(profileId),
+      wordId: Value(wordId),
+      position: Value(position),
+    );
+  }
+
+  factory LearningQueueData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LearningQueueData(
+      profileId: serializer.fromJson<int>(json['profileId']),
+      wordId: serializer.fromJson<String>(json['wordId']),
+      position: serializer.fromJson<int>(json['position']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'profileId': serializer.toJson<int>(profileId),
+      'wordId': serializer.toJson<String>(wordId),
+      'position': serializer.toJson<int>(position),
+    };
+  }
+
+  LearningQueueData copyWith({int? profileId, String? wordId, int? position}) =>
+      LearningQueueData(
+        profileId: profileId ?? this.profileId,
+        wordId: wordId ?? this.wordId,
+        position: position ?? this.position,
+      );
+  LearningQueueData copyWithCompanion(LearningQueueCompanion data) {
+    return LearningQueueData(
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      wordId: data.wordId.present ? data.wordId.value : this.wordId,
+      position: data.position.present ? data.position.value : this.position,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LearningQueueData(')
+          ..write('profileId: $profileId, ')
+          ..write('wordId: $wordId, ')
+          ..write('position: $position')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(profileId, wordId, position);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LearningQueueData &&
+          other.profileId == this.profileId &&
+          other.wordId == this.wordId &&
+          other.position == this.position);
+}
+
+class LearningQueueCompanion extends UpdateCompanion<LearningQueueData> {
+  final Value<int> profileId;
+  final Value<String> wordId;
+  final Value<int> position;
+  final Value<int> rowid;
+  const LearningQueueCompanion({
+    this.profileId = const Value.absent(),
+    this.wordId = const Value.absent(),
+    this.position = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LearningQueueCompanion.insert({
+    required int profileId,
+    required String wordId,
+    required int position,
+    this.rowid = const Value.absent(),
+  }) : profileId = Value(profileId),
+       wordId = Value(wordId),
+       position = Value(position);
+  static Insertable<LearningQueueData> custom({
+    Expression<int>? profileId,
+    Expression<String>? wordId,
+    Expression<int>? position,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (profileId != null) 'profile_id': profileId,
+      if (wordId != null) 'word_id': wordId,
+      if (position != null) 'position': position,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LearningQueueCompanion copyWith({
+    Value<int>? profileId,
+    Value<String>? wordId,
+    Value<int>? position,
+    Value<int>? rowid,
+  }) {
+    return LearningQueueCompanion(
+      profileId: profileId ?? this.profileId,
+      wordId: wordId ?? this.wordId,
+      position: position ?? this.position,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (profileId.present) {
+      map['profile_id'] = Variable<int>(profileId.value);
+    }
+    if (wordId.present) {
+      map['word_id'] = Variable<String>(wordId.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LearningQueueCompanion(')
+          ..write('profileId: $profileId, ')
+          ..write('wordId: $wordId, ')
+          ..write('position: $position, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3544,6 +5826,33 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ContentExercisesTable contentExercises = $ContentExercisesTable(
     this,
   );
+  late final $CurriculumWordsTable curriculumWords = $CurriculumWordsTable(
+    this,
+  );
+  late final $CurriculumSentencesTable curriculumSentences =
+      $CurriculumSentencesTable(this);
+  late final $CurriculumExamplesTable curriculumExamples =
+      $CurriculumExamplesTable(this);
+  late final $CurriculumAudioTable curriculumAudio = $CurriculumAudioTable(
+    this,
+  );
+  late final $CurriculumQuestionsTable curriculumQuestions =
+      $CurriculumQuestionsTable(this);
+  late final $CurriculumInstallsTable curriculumInstalls =
+      $CurriculumInstallsTable(this);
+  late final $LearningQueueTable learningQueue = $LearningQueueTable(this);
+  late final Index curriculumAudioSentence = Index(
+    'curriculum_audio_sentence',
+    'CREATE INDEX curriculum_audio_sentence ON curriculum_audio (sentence_id)',
+  );
+  late final Index curriculumQuestionWord = Index(
+    'curriculum_question_word',
+    'CREATE INDEX curriculum_question_word ON curriculum_questions (word_id, position)',
+  );
+  late final Index queueProfilePosition = Index(
+    'queue_profile_position',
+    'CREATE INDEX queue_profile_position ON learning_queue (profile_id, position, word_id)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3558,6 +5867,16 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     contentWords,
     contentExamples,
     contentExercises,
+    curriculumWords,
+    curriculumSentences,
+    curriculumExamples,
+    curriculumAudio,
+    curriculumQuestions,
+    curriculumInstalls,
+    learningQueue,
+    curriculumAudioSentence,
+    curriculumQuestionWord,
+    queueProfilePosition,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -3683,6 +6002,24 @@ final class $$ProfilesTableReferences
     final cache = $_typedResult.readTableOrNull(
       _vocabularyAttemptsRefsTable($_db),
     );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$LearningQueueTable, List<LearningQueueData>>
+  _learningQueueRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.learningQueue,
+    aliasName: 'profiles__id__learning_queue__profile_id',
+  );
+
+  $$LearningQueueTableProcessedTableManager get learningQueueRefs {
+    final manager = $$LearningQueueTableTableManager(
+      $_db,
+      $_db.learningQueue,
+    ).filter((f) => f.profileId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_learningQueueRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -3824,6 +6161,31 @@ class $$ProfilesTableFilterComposer
           }) => $$VocabularyAttemptsTableFilterComposer(
             $db: $db,
             $table: $db.vocabularyAttempts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> learningQueueRefs(
+    Expression<bool> Function($$LearningQueueTableFilterComposer f) f,
+  ) {
+    final $$LearningQueueTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.learningQueue,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LearningQueueTableFilterComposer(
+            $db: $db,
+            $table: $db.learningQueue,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -4015,6 +6377,31 @@ class $$ProfilesTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> learningQueueRefs<T extends Object>(
+    Expression<T> Function($$LearningQueueTableAnnotationComposer a) f,
+  ) {
+    final $$LearningQueueTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.learningQueue,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LearningQueueTableAnnotationComposer(
+            $db: $db,
+            $table: $db.learningQueue,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$ProfilesTableTableManager
@@ -4035,6 +6422,7 @@ class $$ProfilesTableTableManager
             bool foundationProgressRefs,
             bool vocabularyProgressRefs,
             bool vocabularyAttemptsRefs,
+            bool learningQueueRefs,
           })
         > {
   $$ProfilesTableTableManager(_$AppDatabase db, $ProfilesTable table)
@@ -4098,6 +6486,7 @@ class $$ProfilesTableTableManager
                 foundationProgressRefs = false,
                 vocabularyProgressRefs = false,
                 vocabularyAttemptsRefs = false,
+                learningQueueRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -4106,6 +6495,7 @@ class $$ProfilesTableTableManager
                     if (foundationProgressRefs) db.foundationProgress,
                     if (vocabularyProgressRefs) db.vocabularyProgress,
                     if (vocabularyAttemptsRefs) db.vocabularyAttempts,
+                    if (learningQueueRefs) db.learningQueue,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -4190,6 +6580,26 @@ class $$ProfilesTableTableManager
                           referencedColumn: 'profile_id',
                           typedResults: items,
                         ),
+                      if (learningQueueRefs)
+                        await $_getPrefetchedDataByColumns<
+                          ProfileRow,
+                          $ProfilesTable,
+                          LearningQueueData,
+                          $LearningQueueTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ProfilesTableReferences
+                              ._learningQueueRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProfilesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).learningQueueRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'profile_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -4215,6 +6625,7 @@ typedef $$ProfilesTableProcessedTableManager =
         bool foundationProgressRefs,
         bool vocabularyProgressRefs,
         bool vocabularyAttemptsRefs,
+        bool learningQueueRefs,
       })
     >;
 typedef $$AppPreferencesTableCreateCompanionBuilder =
@@ -7041,6 +9452,2555 @@ typedef $$ContentExercisesTableProcessedTableManager =
       ContentExercise,
       PrefetchHooks Function({bool wordId})
     >;
+typedef $$CurriculumWordsTableCreateCompanionBuilder =
+    CurriculumWordsCompanion Function({
+      required String id,
+      required String packId,
+      required int revision,
+      required int contentSchema,
+      required String hanzi,
+      required String pinyin,
+      required String meaning,
+      required String searchText,
+      required int defaultPosition,
+      required String metadataJson,
+      Value<int> rowid,
+    });
+typedef $$CurriculumWordsTableUpdateCompanionBuilder =
+    CurriculumWordsCompanion Function({
+      Value<String> id,
+      Value<String> packId,
+      Value<int> revision,
+      Value<int> contentSchema,
+      Value<String> hanzi,
+      Value<String> pinyin,
+      Value<String> meaning,
+      Value<String> searchText,
+      Value<int> defaultPosition,
+      Value<String> metadataJson,
+      Value<int> rowid,
+    });
+
+final class $$CurriculumWordsTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $CurriculumWordsTable, CurriculumWord> {
+  $$CurriculumWordsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$CurriculumExamplesTable, List<CurriculumExample>>
+  _curriculumExamplesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.curriculumExamples,
+        aliasName: 'curriculum_words__id__curriculum_examples__word_id',
+      );
+
+  $$CurriculumExamplesTableProcessedTableManager get curriculumExamplesRefs {
+    final manager = $$CurriculumExamplesTableTableManager(
+      $_db,
+      $_db.curriculumExamples,
+    ).filter((f) => f.wordId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _curriculumExamplesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $CurriculumQuestionsTable,
+    List<CurriculumQuestion>
+  >
+  _curriculumQuestionsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.curriculumQuestions,
+        aliasName: 'curriculum_words__id__curriculum_questions__word_id',
+      );
+
+  $$CurriculumQuestionsTableProcessedTableManager get curriculumQuestionsRefs {
+    final manager = $$CurriculumQuestionsTableTableManager(
+      $_db,
+      $_db.curriculumQuestions,
+    ).filter((f) => f.wordId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _curriculumQuestionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$LearningQueueTable, List<LearningQueueData>>
+  _learningQueueRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.learningQueue,
+    aliasName: 'curriculum_words__id__learning_queue__word_id',
+  );
+
+  $$LearningQueueTableProcessedTableManager get learningQueueRefs {
+    final manager = $$LearningQueueTableTableManager(
+      $_db,
+      $_db.learningQueue,
+    ).filter((f) => f.wordId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_learningQueueRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$CurriculumWordsTableFilterComposer
+    extends Composer<_$AppDatabase, $CurriculumWordsTable> {
+  $$CurriculumWordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get packId => $composableBuilder(
+    column: $table.packId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get contentSchema => $composableBuilder(
+    column: $table.contentSchema,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hanzi => $composableBuilder(
+    column: $table.hanzi,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pinyin => $composableBuilder(
+    column: $table.pinyin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get meaning => $composableBuilder(
+    column: $table.meaning,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get searchText => $composableBuilder(
+    column: $table.searchText,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get defaultPosition => $composableBuilder(
+    column: $table.defaultPosition,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get metadataJson => $composableBuilder(
+    column: $table.metadataJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> curriculumExamplesRefs(
+    Expression<bool> Function($$CurriculumExamplesTableFilterComposer f) f,
+  ) {
+    final $$CurriculumExamplesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.curriculumExamples,
+      getReferencedColumn: (t) => t.wordId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumExamplesTableFilterComposer(
+            $db: $db,
+            $table: $db.curriculumExamples,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> curriculumQuestionsRefs(
+    Expression<bool> Function($$CurriculumQuestionsTableFilterComposer f) f,
+  ) {
+    final $$CurriculumQuestionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.curriculumQuestions,
+      getReferencedColumn: (t) => t.wordId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumQuestionsTableFilterComposer(
+            $db: $db,
+            $table: $db.curriculumQuestions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> learningQueueRefs(
+    Expression<bool> Function($$LearningQueueTableFilterComposer f) f,
+  ) {
+    final $$LearningQueueTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.learningQueue,
+      getReferencedColumn: (t) => t.wordId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LearningQueueTableFilterComposer(
+            $db: $db,
+            $table: $db.learningQueue,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$CurriculumWordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CurriculumWordsTable> {
+  $$CurriculumWordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get packId => $composableBuilder(
+    column: $table.packId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get contentSchema => $composableBuilder(
+    column: $table.contentSchema,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hanzi => $composableBuilder(
+    column: $table.hanzi,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pinyin => $composableBuilder(
+    column: $table.pinyin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get meaning => $composableBuilder(
+    column: $table.meaning,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get searchText => $composableBuilder(
+    column: $table.searchText,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get defaultPosition => $composableBuilder(
+    column: $table.defaultPosition,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get metadataJson => $composableBuilder(
+    column: $table.metadataJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CurriculumWordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CurriculumWordsTable> {
+  $$CurriculumWordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get packId =>
+      $composableBuilder(column: $table.packId, builder: (column) => column);
+
+  GeneratedColumn<int> get revision =>
+      $composableBuilder(column: $table.revision, builder: (column) => column);
+
+  GeneratedColumn<int> get contentSchema => $composableBuilder(
+    column: $table.contentSchema,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get hanzi =>
+      $composableBuilder(column: $table.hanzi, builder: (column) => column);
+
+  GeneratedColumn<String> get pinyin =>
+      $composableBuilder(column: $table.pinyin, builder: (column) => column);
+
+  GeneratedColumn<String> get meaning =>
+      $composableBuilder(column: $table.meaning, builder: (column) => column);
+
+  GeneratedColumn<String> get searchText => $composableBuilder(
+    column: $table.searchText,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get defaultPosition => $composableBuilder(
+    column: $table.defaultPosition,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get metadataJson => $composableBuilder(
+    column: $table.metadataJson,
+    builder: (column) => column,
+  );
+
+  Expression<T> curriculumExamplesRefs<T extends Object>(
+    Expression<T> Function($$CurriculumExamplesTableAnnotationComposer a) f,
+  ) {
+    final $$CurriculumExamplesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.curriculumExamples,
+          getReferencedColumn: (t) => t.wordId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CurriculumExamplesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.curriculumExamples,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> curriculumQuestionsRefs<T extends Object>(
+    Expression<T> Function($$CurriculumQuestionsTableAnnotationComposer a) f,
+  ) {
+    final $$CurriculumQuestionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.curriculumQuestions,
+          getReferencedColumn: (t) => t.wordId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CurriculumQuestionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.curriculumQuestions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> learningQueueRefs<T extends Object>(
+    Expression<T> Function($$LearningQueueTableAnnotationComposer a) f,
+  ) {
+    final $$LearningQueueTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.learningQueue,
+      getReferencedColumn: (t) => t.wordId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LearningQueueTableAnnotationComposer(
+            $db: $db,
+            $table: $db.learningQueue,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$CurriculumWordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CurriculumWordsTable,
+          CurriculumWord,
+          $$CurriculumWordsTableFilterComposer,
+          $$CurriculumWordsTableOrderingComposer,
+          $$CurriculumWordsTableAnnotationComposer,
+          $$CurriculumWordsTableCreateCompanionBuilder,
+          $$CurriculumWordsTableUpdateCompanionBuilder,
+          (CurriculumWord, $$CurriculumWordsTableReferences),
+          CurriculumWord,
+          PrefetchHooks Function({
+            bool curriculumExamplesRefs,
+            bool curriculumQuestionsRefs,
+            bool learningQueueRefs,
+          })
+        > {
+  $$CurriculumWordsTableTableManager(
+    _$AppDatabase db,
+    $CurriculumWordsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CurriculumWordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CurriculumWordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CurriculumWordsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> packId = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<int> contentSchema = const Value.absent(),
+                Value<String> hanzi = const Value.absent(),
+                Value<String> pinyin = const Value.absent(),
+                Value<String> meaning = const Value.absent(),
+                Value<String> searchText = const Value.absent(),
+                Value<int> defaultPosition = const Value.absent(),
+                Value<String> metadataJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CurriculumWordsCompanion(
+                id: id,
+                packId: packId,
+                revision: revision,
+                contentSchema: contentSchema,
+                hanzi: hanzi,
+                pinyin: pinyin,
+                meaning: meaning,
+                searchText: searchText,
+                defaultPosition: defaultPosition,
+                metadataJson: metadataJson,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String packId,
+                required int revision,
+                required int contentSchema,
+                required String hanzi,
+                required String pinyin,
+                required String meaning,
+                required String searchText,
+                required int defaultPosition,
+                required String metadataJson,
+                Value<int> rowid = const Value.absent(),
+              }) => CurriculumWordsCompanion.insert(
+                id: id,
+                packId: packId,
+                revision: revision,
+                contentSchema: contentSchema,
+                hanzi: hanzi,
+                pinyin: pinyin,
+                meaning: meaning,
+                searchText: searchText,
+                defaultPosition: defaultPosition,
+                metadataJson: metadataJson,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CurriculumWordsTable, CurriculumWord>(table),
+                  $$CurriculumWordsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                curriculumExamplesRefs = false,
+                curriculumQuestionsRefs = false,
+                learningQueueRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (curriculumExamplesRefs) db.curriculumExamples,
+                    if (curriculumQuestionsRefs) db.curriculumQuestions,
+                    if (learningQueueRefs) db.learningQueue,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (curriculumExamplesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          CurriculumWord,
+                          $CurriculumWordsTable,
+                          CurriculumExample,
+                          $CurriculumExamplesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CurriculumWordsTableReferences
+                              ._curriculumExamplesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CurriculumWordsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).curriculumExamplesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'word_id',
+                          typedResults: items,
+                        ),
+                      if (curriculumQuestionsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          CurriculumWord,
+                          $CurriculumWordsTable,
+                          CurriculumQuestion,
+                          $CurriculumQuestionsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CurriculumWordsTableReferences
+                              ._curriculumQuestionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CurriculumWordsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).curriculumQuestionsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'word_id',
+                          typedResults: items,
+                        ),
+                      if (learningQueueRefs)
+                        await $_getPrefetchedDataByColumns<
+                          CurriculumWord,
+                          $CurriculumWordsTable,
+                          LearningQueueData,
+                          $LearningQueueTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CurriculumWordsTableReferences
+                              ._learningQueueRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CurriculumWordsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).learningQueueRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'word_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$CurriculumWordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CurriculumWordsTable,
+      CurriculumWord,
+      $$CurriculumWordsTableFilterComposer,
+      $$CurriculumWordsTableOrderingComposer,
+      $$CurriculumWordsTableAnnotationComposer,
+      $$CurriculumWordsTableCreateCompanionBuilder,
+      $$CurriculumWordsTableUpdateCompanionBuilder,
+      (CurriculumWord, $$CurriculumWordsTableReferences),
+      CurriculumWord,
+      PrefetchHooks Function({
+        bool curriculumExamplesRefs,
+        bool curriculumQuestionsRefs,
+        bool learningQueueRefs,
+      })
+    >;
+typedef $$CurriculumSentencesTableCreateCompanionBuilder =
+    CurriculumSentencesCompanion Function({
+      required String id,
+      required String payloadJson,
+      Value<int> rowid,
+    });
+typedef $$CurriculumSentencesTableUpdateCompanionBuilder =
+    CurriculumSentencesCompanion Function({
+      Value<String> id,
+      Value<String> payloadJson,
+      Value<int> rowid,
+    });
+
+final class $$CurriculumSentencesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $CurriculumSentencesTable,
+          CurriculumSentence
+        > {
+  $$CurriculumSentencesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$CurriculumExamplesTable, List<CurriculumExample>>
+  _curriculumExamplesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.curriculumExamples,
+        aliasName: 'curriculum_sentences__id__curriculum_examples__sentence_id',
+      );
+
+  $$CurriculumExamplesTableProcessedTableManager get curriculumExamplesRefs {
+    final manager = $$CurriculumExamplesTableTableManager(
+      $_db,
+      $_db.curriculumExamples,
+    ).filter((f) => f.sentenceId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _curriculumExamplesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$CurriculumAudioTable, List<CurriculumAudioData>>
+  _curriculumAudioRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.curriculumAudio,
+    aliasName: 'curriculum_sentences__id__curriculum_audio__sentence_id',
+  );
+
+  $$CurriculumAudioTableProcessedTableManager get curriculumAudioRefs {
+    final manager = $$CurriculumAudioTableTableManager(
+      $_db,
+      $_db.curriculumAudio,
+    ).filter((f) => f.sentenceId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _curriculumAudioRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$CurriculumSentencesTableFilterComposer
+    extends Composer<_$AppDatabase, $CurriculumSentencesTable> {
+  $$CurriculumSentencesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> curriculumExamplesRefs(
+    Expression<bool> Function($$CurriculumExamplesTableFilterComposer f) f,
+  ) {
+    final $$CurriculumExamplesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.curriculumExamples,
+      getReferencedColumn: (t) => t.sentenceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumExamplesTableFilterComposer(
+            $db: $db,
+            $table: $db.curriculumExamples,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> curriculumAudioRefs(
+    Expression<bool> Function($$CurriculumAudioTableFilterComposer f) f,
+  ) {
+    final $$CurriculumAudioTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.curriculumAudio,
+      getReferencedColumn: (t) => t.sentenceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumAudioTableFilterComposer(
+            $db: $db,
+            $table: $db.curriculumAudio,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$CurriculumSentencesTableOrderingComposer
+    extends Composer<_$AppDatabase, $CurriculumSentencesTable> {
+  $$CurriculumSentencesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CurriculumSentencesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CurriculumSentencesTable> {
+  $$CurriculumSentencesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => column,
+  );
+
+  Expression<T> curriculumExamplesRefs<T extends Object>(
+    Expression<T> Function($$CurriculumExamplesTableAnnotationComposer a) f,
+  ) {
+    final $$CurriculumExamplesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.curriculumExamples,
+          getReferencedColumn: (t) => t.sentenceId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CurriculumExamplesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.curriculumExamples,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> curriculumAudioRefs<T extends Object>(
+    Expression<T> Function($$CurriculumAudioTableAnnotationComposer a) f,
+  ) {
+    final $$CurriculumAudioTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.curriculumAudio,
+      getReferencedColumn: (t) => t.sentenceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumAudioTableAnnotationComposer(
+            $db: $db,
+            $table: $db.curriculumAudio,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$CurriculumSentencesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CurriculumSentencesTable,
+          CurriculumSentence,
+          $$CurriculumSentencesTableFilterComposer,
+          $$CurriculumSentencesTableOrderingComposer,
+          $$CurriculumSentencesTableAnnotationComposer,
+          $$CurriculumSentencesTableCreateCompanionBuilder,
+          $$CurriculumSentencesTableUpdateCompanionBuilder,
+          (CurriculumSentence, $$CurriculumSentencesTableReferences),
+          CurriculumSentence,
+          PrefetchHooks Function({
+            bool curriculumExamplesRefs,
+            bool curriculumAudioRefs,
+          })
+        > {
+  $$CurriculumSentencesTableTableManager(
+    _$AppDatabase db,
+    $CurriculumSentencesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CurriculumSentencesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CurriculumSentencesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CurriculumSentencesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> payloadJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CurriculumSentencesCompanion(
+                id: id,
+                payloadJson: payloadJson,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String payloadJson,
+                Value<int> rowid = const Value.absent(),
+              }) => CurriculumSentencesCompanion.insert(
+                id: id,
+                payloadJson: payloadJson,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CurriculumSentencesTable, CurriculumSentence>(
+                    table,
+                  ),
+                  $$CurriculumSentencesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({curriculumExamplesRefs = false, curriculumAudioRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (curriculumExamplesRefs) db.curriculumExamples,
+                    if (curriculumAudioRefs) db.curriculumAudio,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (curriculumExamplesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          CurriculumSentence,
+                          $CurriculumSentencesTable,
+                          CurriculumExample,
+                          $CurriculumExamplesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CurriculumSentencesTableReferences
+                              ._curriculumExamplesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CurriculumSentencesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).curriculumExamplesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'sentence_id',
+                          typedResults: items,
+                        ),
+                      if (curriculumAudioRefs)
+                        await $_getPrefetchedDataByColumns<
+                          CurriculumSentence,
+                          $CurriculumSentencesTable,
+                          CurriculumAudioData,
+                          $CurriculumAudioTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CurriculumSentencesTableReferences
+                              ._curriculumAudioRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CurriculumSentencesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).curriculumAudioRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'sentence_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$CurriculumSentencesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CurriculumSentencesTable,
+      CurriculumSentence,
+      $$CurriculumSentencesTableFilterComposer,
+      $$CurriculumSentencesTableOrderingComposer,
+      $$CurriculumSentencesTableAnnotationComposer,
+      $$CurriculumSentencesTableCreateCompanionBuilder,
+      $$CurriculumSentencesTableUpdateCompanionBuilder,
+      (CurriculumSentence, $$CurriculumSentencesTableReferences),
+      CurriculumSentence,
+      PrefetchHooks Function({
+        bool curriculumExamplesRefs,
+        bool curriculumAudioRefs,
+      })
+    >;
+typedef $$CurriculumExamplesTableCreateCompanionBuilder =
+    CurriculumExamplesCompanion Function({
+      required String wordId,
+      required String sentenceId,
+      required int position,
+      Value<int> rowid,
+    });
+typedef $$CurriculumExamplesTableUpdateCompanionBuilder =
+    CurriculumExamplesCompanion Function({
+      Value<String> wordId,
+      Value<String> sentenceId,
+      Value<int> position,
+      Value<int> rowid,
+    });
+
+final class $$CurriculumExamplesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $CurriculumExamplesTable,
+          CurriculumExample
+        > {
+  $$CurriculumExamplesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $CurriculumWordsTable _wordIdTable(_$AppDatabase db) => db
+      .curriculumWords
+      .createAlias('curriculum_examples__word_id__curriculum_words__id');
+
+  $$CurriculumWordsTableProcessedTableManager get wordId {
+    final $_column = $_itemColumn<String>('word_id')!;
+
+    final manager = $$CurriculumWordsTableTableManager(
+      $_db,
+      $_db.curriculumWords,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_wordIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $CurriculumSentencesTable _sentenceIdTable(_$AppDatabase db) =>
+      db.curriculumSentences.createAlias(
+        'curriculum_examples__sentence_id__curriculum_sentences__id',
+      );
+
+  $$CurriculumSentencesTableProcessedTableManager get sentenceId {
+    final $_column = $_itemColumn<String>('sentence_id')!;
+
+    final manager = $$CurriculumSentencesTableTableManager(
+      $_db,
+      $_db.curriculumSentences,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_sentenceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$CurriculumExamplesTableFilterComposer
+    extends Composer<_$AppDatabase, $CurriculumExamplesTable> {
+  $$CurriculumExamplesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$CurriculumWordsTableFilterComposer get wordId {
+    final $$CurriculumWordsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.curriculumWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumWordsTableFilterComposer(
+            $db: $db,
+            $table: $db.curriculumWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CurriculumSentencesTableFilterComposer get sentenceId {
+    final $$CurriculumSentencesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sentenceId,
+      referencedTable: $db.curriculumSentences,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumSentencesTableFilterComposer(
+            $db: $db,
+            $table: $db.curriculumSentences,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CurriculumExamplesTableOrderingComposer
+    extends Composer<_$AppDatabase, $CurriculumExamplesTable> {
+  $$CurriculumExamplesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$CurriculumWordsTableOrderingComposer get wordId {
+    final $$CurriculumWordsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.curriculumWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumWordsTableOrderingComposer(
+            $db: $db,
+            $table: $db.curriculumWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CurriculumSentencesTableOrderingComposer get sentenceId {
+    final $$CurriculumSentencesTableOrderingComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.sentenceId,
+          referencedTable: $db.curriculumSentences,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CurriculumSentencesTableOrderingComposer(
+                $db: $db,
+                $table: $db.curriculumSentences,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$CurriculumExamplesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CurriculumExamplesTable> {
+  $$CurriculumExamplesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  $$CurriculumWordsTableAnnotationComposer get wordId {
+    final $$CurriculumWordsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.curriculumWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumWordsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.curriculumWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CurriculumSentencesTableAnnotationComposer get sentenceId {
+    final $$CurriculumSentencesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.sentenceId,
+          referencedTable: $db.curriculumSentences,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CurriculumSentencesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.curriculumSentences,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$CurriculumExamplesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CurriculumExamplesTable,
+          CurriculumExample,
+          $$CurriculumExamplesTableFilterComposer,
+          $$CurriculumExamplesTableOrderingComposer,
+          $$CurriculumExamplesTableAnnotationComposer,
+          $$CurriculumExamplesTableCreateCompanionBuilder,
+          $$CurriculumExamplesTableUpdateCompanionBuilder,
+          (CurriculumExample, $$CurriculumExamplesTableReferences),
+          CurriculumExample,
+          PrefetchHooks Function({bool wordId, bool sentenceId})
+        > {
+  $$CurriculumExamplesTableTableManager(
+    _$AppDatabase db,
+    $CurriculumExamplesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CurriculumExamplesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CurriculumExamplesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CurriculumExamplesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> wordId = const Value.absent(),
+                Value<String> sentenceId = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CurriculumExamplesCompanion(
+                wordId: wordId,
+                sentenceId: sentenceId,
+                position: position,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String wordId,
+                required String sentenceId,
+                required int position,
+                Value<int> rowid = const Value.absent(),
+              }) => CurriculumExamplesCompanion.insert(
+                wordId: wordId,
+                sentenceId: sentenceId,
+                position: position,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CurriculumExamplesTable, CurriculumExample>(
+                    table,
+                  ),
+                  $$CurriculumExamplesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({wordId = false, sentenceId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (wordId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.wordId,
+                        referencedTable: $$CurriculumExamplesTableReferences
+                            ._wordIdTable(db),
+                        referencedColumn: $$CurriculumExamplesTableReferences
+                            ._wordIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+                    if (sentenceId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.sentenceId,
+                        referencedTable: $$CurriculumExamplesTableReferences
+                            ._sentenceIdTable(db),
+                        referencedColumn: $$CurriculumExamplesTableReferences
+                            ._sentenceIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$CurriculumExamplesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CurriculumExamplesTable,
+      CurriculumExample,
+      $$CurriculumExamplesTableFilterComposer,
+      $$CurriculumExamplesTableOrderingComposer,
+      $$CurriculumExamplesTableAnnotationComposer,
+      $$CurriculumExamplesTableCreateCompanionBuilder,
+      $$CurriculumExamplesTableUpdateCompanionBuilder,
+      (CurriculumExample, $$CurriculumExamplesTableReferences),
+      CurriculumExample,
+      PrefetchHooks Function({bool wordId, bool sentenceId})
+    >;
+typedef $$CurriculumAudioTableCreateCompanionBuilder =
+    CurriculumAudioCompanion Function({
+      required String id,
+      required String sentenceId,
+      required String payloadJson,
+      required bool localAvailable,
+      Value<int> rowid,
+    });
+typedef $$CurriculumAudioTableUpdateCompanionBuilder =
+    CurriculumAudioCompanion Function({
+      Value<String> id,
+      Value<String> sentenceId,
+      Value<String> payloadJson,
+      Value<bool> localAvailable,
+      Value<int> rowid,
+    });
+
+final class $$CurriculumAudioTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $CurriculumAudioTable,
+          CurriculumAudioData
+        > {
+  $$CurriculumAudioTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $CurriculumSentencesTable _sentenceIdTable(_$AppDatabase db) => db
+      .curriculumSentences
+      .createAlias('curriculum_audio__sentence_id__curriculum_sentences__id');
+
+  $$CurriculumSentencesTableProcessedTableManager get sentenceId {
+    final $_column = $_itemColumn<String>('sentence_id')!;
+
+    final manager = $$CurriculumSentencesTableTableManager(
+      $_db,
+      $_db.curriculumSentences,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_sentenceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$CurriculumAudioTableFilterComposer
+    extends Composer<_$AppDatabase, $CurriculumAudioTable> {
+  $$CurriculumAudioTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get localAvailable => $composableBuilder(
+    column: $table.localAvailable,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$CurriculumSentencesTableFilterComposer get sentenceId {
+    final $$CurriculumSentencesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sentenceId,
+      referencedTable: $db.curriculumSentences,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumSentencesTableFilterComposer(
+            $db: $db,
+            $table: $db.curriculumSentences,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CurriculumAudioTableOrderingComposer
+    extends Composer<_$AppDatabase, $CurriculumAudioTable> {
+  $$CurriculumAudioTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get localAvailable => $composableBuilder(
+    column: $table.localAvailable,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$CurriculumSentencesTableOrderingComposer get sentenceId {
+    final $$CurriculumSentencesTableOrderingComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.sentenceId,
+          referencedTable: $db.curriculumSentences,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CurriculumSentencesTableOrderingComposer(
+                $db: $db,
+                $table: $db.curriculumSentences,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$CurriculumAudioTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CurriculumAudioTable> {
+  $$CurriculumAudioTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get localAvailable => $composableBuilder(
+    column: $table.localAvailable,
+    builder: (column) => column,
+  );
+
+  $$CurriculumSentencesTableAnnotationComposer get sentenceId {
+    final $$CurriculumSentencesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.sentenceId,
+          referencedTable: $db.curriculumSentences,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CurriculumSentencesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.curriculumSentences,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$CurriculumAudioTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CurriculumAudioTable,
+          CurriculumAudioData,
+          $$CurriculumAudioTableFilterComposer,
+          $$CurriculumAudioTableOrderingComposer,
+          $$CurriculumAudioTableAnnotationComposer,
+          $$CurriculumAudioTableCreateCompanionBuilder,
+          $$CurriculumAudioTableUpdateCompanionBuilder,
+          (CurriculumAudioData, $$CurriculumAudioTableReferences),
+          CurriculumAudioData,
+          PrefetchHooks Function({bool sentenceId})
+        > {
+  $$CurriculumAudioTableTableManager(
+    _$AppDatabase db,
+    $CurriculumAudioTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CurriculumAudioTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CurriculumAudioTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CurriculumAudioTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> sentenceId = const Value.absent(),
+                Value<String> payloadJson = const Value.absent(),
+                Value<bool> localAvailable = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CurriculumAudioCompanion(
+                id: id,
+                sentenceId: sentenceId,
+                payloadJson: payloadJson,
+                localAvailable: localAvailable,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String sentenceId,
+                required String payloadJson,
+                required bool localAvailable,
+                Value<int> rowid = const Value.absent(),
+              }) => CurriculumAudioCompanion.insert(
+                id: id,
+                sentenceId: sentenceId,
+                payloadJson: payloadJson,
+                localAvailable: localAvailable,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CurriculumAudioTable, CurriculumAudioData>(
+                    table,
+                  ),
+                  $$CurriculumAudioTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({sentenceId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (sentenceId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.sentenceId,
+                        referencedTable: $$CurriculumAudioTableReferences
+                            ._sentenceIdTable(db),
+                        referencedColumn: $$CurriculumAudioTableReferences
+                            ._sentenceIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$CurriculumAudioTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CurriculumAudioTable,
+      CurriculumAudioData,
+      $$CurriculumAudioTableFilterComposer,
+      $$CurriculumAudioTableOrderingComposer,
+      $$CurriculumAudioTableAnnotationComposer,
+      $$CurriculumAudioTableCreateCompanionBuilder,
+      $$CurriculumAudioTableUpdateCompanionBuilder,
+      (CurriculumAudioData, $$CurriculumAudioTableReferences),
+      CurriculumAudioData,
+      PrefetchHooks Function({bool sentenceId})
+    >;
+typedef $$CurriculumQuestionsTableCreateCompanionBuilder =
+    CurriculumQuestionsCompanion Function({
+      required String id,
+      required String wordId,
+      required int position,
+      required String payloadJson,
+      Value<int> rowid,
+    });
+typedef $$CurriculumQuestionsTableUpdateCompanionBuilder =
+    CurriculumQuestionsCompanion Function({
+      Value<String> id,
+      Value<String> wordId,
+      Value<int> position,
+      Value<String> payloadJson,
+      Value<int> rowid,
+    });
+
+final class $$CurriculumQuestionsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $CurriculumQuestionsTable,
+          CurriculumQuestion
+        > {
+  $$CurriculumQuestionsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $CurriculumWordsTable _wordIdTable(_$AppDatabase db) => db
+      .curriculumWords
+      .createAlias('curriculum_questions__word_id__curriculum_words__id');
+
+  $$CurriculumWordsTableProcessedTableManager get wordId {
+    final $_column = $_itemColumn<String>('word_id')!;
+
+    final manager = $$CurriculumWordsTableTableManager(
+      $_db,
+      $_db.curriculumWords,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_wordIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$CurriculumQuestionsTableFilterComposer
+    extends Composer<_$AppDatabase, $CurriculumQuestionsTable> {
+  $$CurriculumQuestionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$CurriculumWordsTableFilterComposer get wordId {
+    final $$CurriculumWordsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.curriculumWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumWordsTableFilterComposer(
+            $db: $db,
+            $table: $db.curriculumWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CurriculumQuestionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CurriculumQuestionsTable> {
+  $$CurriculumQuestionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$CurriculumWordsTableOrderingComposer get wordId {
+    final $$CurriculumWordsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.curriculumWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumWordsTableOrderingComposer(
+            $db: $db,
+            $table: $db.curriculumWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CurriculumQuestionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CurriculumQuestionsTable> {
+  $$CurriculumQuestionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => column,
+  );
+
+  $$CurriculumWordsTableAnnotationComposer get wordId {
+    final $$CurriculumWordsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.curriculumWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumWordsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.curriculumWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CurriculumQuestionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CurriculumQuestionsTable,
+          CurriculumQuestion,
+          $$CurriculumQuestionsTableFilterComposer,
+          $$CurriculumQuestionsTableOrderingComposer,
+          $$CurriculumQuestionsTableAnnotationComposer,
+          $$CurriculumQuestionsTableCreateCompanionBuilder,
+          $$CurriculumQuestionsTableUpdateCompanionBuilder,
+          (CurriculumQuestion, $$CurriculumQuestionsTableReferences),
+          CurriculumQuestion,
+          PrefetchHooks Function({bool wordId})
+        > {
+  $$CurriculumQuestionsTableTableManager(
+    _$AppDatabase db,
+    $CurriculumQuestionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CurriculumQuestionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CurriculumQuestionsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CurriculumQuestionsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> wordId = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<String> payloadJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CurriculumQuestionsCompanion(
+                id: id,
+                wordId: wordId,
+                position: position,
+                payloadJson: payloadJson,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String wordId,
+                required int position,
+                required String payloadJson,
+                Value<int> rowid = const Value.absent(),
+              }) => CurriculumQuestionsCompanion.insert(
+                id: id,
+                wordId: wordId,
+                position: position,
+                payloadJson: payloadJson,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CurriculumQuestionsTable, CurriculumQuestion>(
+                    table,
+                  ),
+                  $$CurriculumQuestionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({wordId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (wordId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.wordId,
+                        referencedTable: $$CurriculumQuestionsTableReferences
+                            ._wordIdTable(db),
+                        referencedColumn: $$CurriculumQuestionsTableReferences
+                            ._wordIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$CurriculumQuestionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CurriculumQuestionsTable,
+      CurriculumQuestion,
+      $$CurriculumQuestionsTableFilterComposer,
+      $$CurriculumQuestionsTableOrderingComposer,
+      $$CurriculumQuestionsTableAnnotationComposer,
+      $$CurriculumQuestionsTableCreateCompanionBuilder,
+      $$CurriculumQuestionsTableUpdateCompanionBuilder,
+      (CurriculumQuestion, $$CurriculumQuestionsTableReferences),
+      CurriculumQuestion,
+      PrefetchHooks Function({bool wordId})
+    >;
+typedef $$CurriculumInstallsTableCreateCompanionBuilder =
+    CurriculumInstallsCompanion Function({
+      Value<int> id,
+      required int revision,
+      required String digest,
+    });
+typedef $$CurriculumInstallsTableUpdateCompanionBuilder =
+    CurriculumInstallsCompanion Function({
+      Value<int> id,
+      Value<int> revision,
+      Value<String> digest,
+    });
+
+class $$CurriculumInstallsTableFilterComposer
+    extends Composer<_$AppDatabase, $CurriculumInstallsTable> {
+  $$CurriculumInstallsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get digest => $composableBuilder(
+    column: $table.digest,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CurriculumInstallsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CurriculumInstallsTable> {
+  $$CurriculumInstallsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get digest => $composableBuilder(
+    column: $table.digest,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CurriculumInstallsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CurriculumInstallsTable> {
+  $$CurriculumInstallsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get revision =>
+      $composableBuilder(column: $table.revision, builder: (column) => column);
+
+  GeneratedColumn<String> get digest =>
+      $composableBuilder(column: $table.digest, builder: (column) => column);
+}
+
+class $$CurriculumInstallsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CurriculumInstallsTable,
+          CurriculumInstall,
+          $$CurriculumInstallsTableFilterComposer,
+          $$CurriculumInstallsTableOrderingComposer,
+          $$CurriculumInstallsTableAnnotationComposer,
+          $$CurriculumInstallsTableCreateCompanionBuilder,
+          $$CurriculumInstallsTableUpdateCompanionBuilder,
+          (
+            CurriculumInstall,
+            BaseReferences<
+              _$AppDatabase,
+              $CurriculumInstallsTable,
+              CurriculumInstall
+            >,
+          ),
+          CurriculumInstall,
+          PrefetchHooks Function()
+        > {
+  $$CurriculumInstallsTableTableManager(
+    _$AppDatabase db,
+    $CurriculumInstallsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CurriculumInstallsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CurriculumInstallsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CurriculumInstallsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<String> digest = const Value.absent(),
+              }) => CurriculumInstallsCompanion(
+                id: id,
+                revision: revision,
+                digest: digest,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int revision,
+                required String digest,
+              }) => CurriculumInstallsCompanion.insert(
+                id: id,
+                revision: revision,
+                digest: digest,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CurriculumInstallsTable, CurriculumInstall>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $CurriculumInstallsTable,
+                    CurriculumInstall
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CurriculumInstallsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CurriculumInstallsTable,
+      CurriculumInstall,
+      $$CurriculumInstallsTableFilterComposer,
+      $$CurriculumInstallsTableOrderingComposer,
+      $$CurriculumInstallsTableAnnotationComposer,
+      $$CurriculumInstallsTableCreateCompanionBuilder,
+      $$CurriculumInstallsTableUpdateCompanionBuilder,
+      (
+        CurriculumInstall,
+        BaseReferences<
+          _$AppDatabase,
+          $CurriculumInstallsTable,
+          CurriculumInstall
+        >,
+      ),
+      CurriculumInstall,
+      PrefetchHooks Function()
+    >;
+typedef $$LearningQueueTableCreateCompanionBuilder =
+    LearningQueueCompanion Function({
+      required int profileId,
+      required String wordId,
+      required int position,
+      Value<int> rowid,
+    });
+typedef $$LearningQueueTableUpdateCompanionBuilder =
+    LearningQueueCompanion Function({
+      Value<int> profileId,
+      Value<String> wordId,
+      Value<int> position,
+      Value<int> rowid,
+    });
+
+final class $$LearningQueueTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $LearningQueueTable, LearningQueueData> {
+  $$LearningQueueTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ProfilesTable _profileIdTable(_$AppDatabase db) =>
+      db.profiles.createAlias('learning_queue__profile_id__profiles__id');
+
+  $$ProfilesTableProcessedTableManager get profileId {
+    final $_column = $_itemColumn<int>('profile_id')!;
+
+    final manager = $$ProfilesTableTableManager(
+      $_db,
+      $_db.profiles,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_profileIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $CurriculumWordsTable _wordIdTable(_$AppDatabase db) => db
+      .curriculumWords
+      .createAlias('learning_queue__word_id__curriculum_words__id');
+
+  $$CurriculumWordsTableProcessedTableManager get wordId {
+    final $_column = $_itemColumn<String>('word_id')!;
+
+    final manager = $$CurriculumWordsTableTableManager(
+      $_db,
+      $_db.curriculumWords,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_wordIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$LearningQueueTableFilterComposer
+    extends Composer<_$AppDatabase, $LearningQueueTable> {
+  $$LearningQueueTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ProfilesTableFilterComposer get profileId {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CurriculumWordsTableFilterComposer get wordId {
+    final $$CurriculumWordsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.curriculumWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumWordsTableFilterComposer(
+            $db: $db,
+            $table: $db.curriculumWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LearningQueueTableOrderingComposer
+    extends Composer<_$AppDatabase, $LearningQueueTable> {
+  $$LearningQueueTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ProfilesTableOrderingComposer get profileId {
+    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableOrderingComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CurriculumWordsTableOrderingComposer get wordId {
+    final $$CurriculumWordsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.curriculumWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumWordsTableOrderingComposer(
+            $db: $db,
+            $table: $db.curriculumWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LearningQueueTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LearningQueueTable> {
+  $$LearningQueueTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  $$ProfilesTableAnnotationComposer get profileId {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CurriculumWordsTableAnnotationComposer get wordId {
+    final $$CurriculumWordsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.curriculumWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumWordsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.curriculumWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LearningQueueTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LearningQueueTable,
+          LearningQueueData,
+          $$LearningQueueTableFilterComposer,
+          $$LearningQueueTableOrderingComposer,
+          $$LearningQueueTableAnnotationComposer,
+          $$LearningQueueTableCreateCompanionBuilder,
+          $$LearningQueueTableUpdateCompanionBuilder,
+          (LearningQueueData, $$LearningQueueTableReferences),
+          LearningQueueData,
+          PrefetchHooks Function({bool profileId, bool wordId})
+        > {
+  $$LearningQueueTableTableManager(_$AppDatabase db, $LearningQueueTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LearningQueueTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LearningQueueTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LearningQueueTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> profileId = const Value.absent(),
+                Value<String> wordId = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LearningQueueCompanion(
+                profileId: profileId,
+                wordId: wordId,
+                position: position,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int profileId,
+                required String wordId,
+                required int position,
+                Value<int> rowid = const Value.absent(),
+              }) => LearningQueueCompanion.insert(
+                profileId: profileId,
+                wordId: wordId,
+                position: position,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$LearningQueueTable, LearningQueueData>(table),
+                  $$LearningQueueTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({profileId = false, wordId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (profileId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.profileId,
+                        referencedTable: $$LearningQueueTableReferences
+                            ._profileIdTable(db),
+                        referencedColumn: $$LearningQueueTableReferences
+                            ._profileIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+                    if (wordId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.wordId,
+                        referencedTable: $$LearningQueueTableReferences
+                            ._wordIdTable(db),
+                        referencedColumn: $$LearningQueueTableReferences
+                            ._wordIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$LearningQueueTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LearningQueueTable,
+      LearningQueueData,
+      $$LearningQueueTableFilterComposer,
+      $$LearningQueueTableOrderingComposer,
+      $$LearningQueueTableAnnotationComposer,
+      $$LearningQueueTableCreateCompanionBuilder,
+      $$LearningQueueTableUpdateCompanionBuilder,
+      (LearningQueueData, $$LearningQueueTableReferences),
+      LearningQueueData,
+      PrefetchHooks Function({bool profileId, bool wordId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -7063,4 +12023,18 @@ class $AppDatabaseManager {
       $$ContentExamplesTableTableManager(_db, _db.contentExamples);
   $$ContentExercisesTableTableManager get contentExercises =>
       $$ContentExercisesTableTableManager(_db, _db.contentExercises);
+  $$CurriculumWordsTableTableManager get curriculumWords =>
+      $$CurriculumWordsTableTableManager(_db, _db.curriculumWords);
+  $$CurriculumSentencesTableTableManager get curriculumSentences =>
+      $$CurriculumSentencesTableTableManager(_db, _db.curriculumSentences);
+  $$CurriculumExamplesTableTableManager get curriculumExamples =>
+      $$CurriculumExamplesTableTableManager(_db, _db.curriculumExamples);
+  $$CurriculumAudioTableTableManager get curriculumAudio =>
+      $$CurriculumAudioTableTableManager(_db, _db.curriculumAudio);
+  $$CurriculumQuestionsTableTableManager get curriculumQuestions =>
+      $$CurriculumQuestionsTableTableManager(_db, _db.curriculumQuestions);
+  $$CurriculumInstallsTableTableManager get curriculumInstalls =>
+      $$CurriculumInstallsTableTableManager(_db, _db.curriculumInstalls);
+  $$LearningQueueTableTableManager get learningQueue =>
+      $$LearningQueueTableTableManager(_db, _db.learningQueue);
 }

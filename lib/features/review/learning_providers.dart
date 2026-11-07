@@ -13,6 +13,7 @@ final learningRepositoryProvider = Provider<LearningRepository>(
     ref.watch(appDatabaseProvider),
     now: ref.watch(learningClockProvider),
     catalogue: () => ref.read(vocabularyCatalogueProvider.future),
+    lookup: (id) => ref.read(vocabularyLessonProvider(id).future),
   ),
 );
 final learningProgressProvider = FutureProvider.family<List<WordProgress>, int>(

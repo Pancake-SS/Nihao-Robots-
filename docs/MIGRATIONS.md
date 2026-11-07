@@ -1,5 +1,13 @@
 # Local database migrations and recovery
 
+## Version 1/2/3/4 to 5 (2026-11-07)
+
+Schema 5 adds curriculum words, sentences, word/example links, audio, questions, install markers and per-profile learning queues. Existing content tables, profiles, introduction state, attempts, progress and due dates are preserved. Historical snapshots 1-4 are unchanged; `drift_schema_v5.json` is separate.
+
+The bundled curriculum installs transactionally after a digest/integrity check. UPSERT preserves parent identities and saved queue foreign keys; child content updates do not erase learner history. Same-revision digest changes are rejected. `test/curriculum_repository_test.dart` covers a real v4 fixture, old two-question attempts, migration/reopen, queue persistence, a content revision update, closed-file backup restoration, checksum rejection and injected-write rollback/retry. All fixtures use temporary databases.
+
+Before opening this version on real learner data, follow the closed-app backup procedure below. Do not run schema-v4 or older executables against a schema-v5 database.
+
 ## Version 1/2/3 → 4 (2026-11-06)
 
 Schema v4 adds `content_packs`, `content_words`, `content_examples` and `content_exercises`. Historical snapshots v1–v3 remain unchanged and v4 is exported separately. The migration creates missing earlier-version tables where needed, then the new content tables. Existing profiles, introduction state, progress, attempts and due dates are preserved.

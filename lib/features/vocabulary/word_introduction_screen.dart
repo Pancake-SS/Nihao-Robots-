@@ -71,6 +71,10 @@ class WordIntroductionScreen extends ConsumerWidget {
                           'Pilot lesson · source-checked; independent teacher review pending.',
                         ),
                       ],
+                      if (entry.reviewStatus == 'source-imported')
+                        const Text(
+                          'Imported lesson · examples and questions await independent language review.',
+                        ),
                       const SizedBox(height: 20),
                       Text(
                         audioSession == null
@@ -82,9 +86,15 @@ class WordIntroductionScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Five examples',
+                  entry.examples.length == 5
+                      ? 'Five examples'
+                      : 'Available examples (${entry.examples.length})',
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
+                if (entry.examples.length < 5)
+                  const Text(
+                    'The source does not yet provide five matching examples. You can study the word and take its quiz; missing examples have not been invented.',
+                  ),
                 for (var i = 0; i < entry.examples.length; i++) ...[
                   const SizedBox(height: 12),
                   LearningCard(

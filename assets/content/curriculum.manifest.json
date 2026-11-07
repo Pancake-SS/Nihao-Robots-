@@ -1,0 +1,11 @@
+{
+  "revision": 1,
+  "sha256": "6da5e345ca615d130d9b65707466879af54cb75b155fd83462aeacfa9e5f0c09",
+  "counts": {
+    "words": 11147,
+    "questions": 82595,
+    "withExamples": 4601,
+    "withFiveExamples": 541,
+    "withBundledAudio": 4600
+  }
+}

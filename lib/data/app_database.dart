@@ -151,6 +151,91 @@ class ContentExercises extends Table {
   ];
 }
 
+class CurriculumWords extends Table {
+  TextColumn get id => text()();
+  TextColumn get packId => text()();
+  IntColumn get revision => integer()();
+  IntColumn get contentSchema => integer()();
+  TextColumn get hanzi => text()();
+  TextColumn get pinyin => text()();
+  TextColumn get meaning => text()();
+  TextColumn get searchText => text()();
+  IntColumn get defaultPosition => integer()();
+  TextColumn get metadataJson => text()();
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class CurriculumSentences extends Table {
+  TextColumn get id => text()();
+  TextColumn get payloadJson => text()();
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class CurriculumExamples extends Table {
+  TextColumn get wordId => text().references(CurriculumWords, #id)();
+  TextColumn get sentenceId => text().references(CurriculumSentences, #id)();
+  IntColumn get position => integer()();
+  @override
+  Set<Column> get primaryKey => {wordId, position};
+  @override
+  List<String> get customConstraints => [
+    'UNIQUE(word_id, sentence_id)',
+    'CHECK(position BETWEEN 0 AND 4)',
+  ];
+}
+
+@TableIndex.sql(
+  'CREATE INDEX curriculum_audio_sentence ON curriculum_audio(sentence_id)',
+)
+class CurriculumAudio extends Table {
+  TextColumn get id => text()();
+  TextColumn get sentenceId => text().references(CurriculumSentences, #id)();
+  TextColumn get payloadJson => text()();
+  BoolColumn get localAvailable => boolean()();
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@TableIndex.sql(
+  'CREATE INDEX curriculum_question_word ON curriculum_questions(word_id, position)',
+)
+class CurriculumQuestions extends Table {
+  TextColumn get id => text()();
+  TextColumn get wordId => text().references(CurriculumWords, #id)();
+  IntColumn get position => integer()();
+  TextColumn get payloadJson => text()();
+  @override
+  Set<Column> get primaryKey => {id};
+  @override
+  List<String> get customConstraints => [
+    'UNIQUE(word_id, position)',
+    'CHECK(position BETWEEN 0 AND 23)',
+  ];
+}
+
+class CurriculumInstalls extends Table {
+  IntColumn get id => integer()();
+  IntColumn get revision => integer()();
+  TextColumn get digest => text()();
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@TableIndex.sql(
+  'CREATE INDEX queue_profile_position ON learning_queue(profile_id, position, word_id)',
+)
+class LearningQueue extends Table {
+  IntColumn get profileId => integer().references(Profiles, #id)();
+  TextColumn get wordId => text().references(CurriculumWords, #id)();
+  IntColumn get position => integer()();
+  @override
+  Set<Column> get primaryKey => {profileId, wordId};
+  @override
+  List<String> get customConstraints => ['CHECK(position >= 0)'];
+}
+
 @DriftDatabase(
   tables: [
     Profiles,
@@ -162,19 +247,26 @@ class ContentExercises extends Table {
     ContentWords,
     ContentExamples,
     ContentExercises,
+    CurriculumWords,
+    CurriculumSentences,
+    CurriculumExamples,
+    CurriculumAudio,
+    CurriculumQuestions,
+    CurriculumInstalls,
+    LearningQueue,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (migrator) => migrator.createAll(),
     onUpgrade: (migrator, from, to) async {
-      if (from < 1 || from > 3 || to != 4) {
+      if (from < 1 || from > 4 || to != 5) {
         throw StateError('No migration from schema $from to $to.');
       }
       // Additive migration: existing profiles and selection are never rewritten.
@@ -184,14 +276,40 @@ class AppDatabase extends _$AppDatabase {
           await migrator.createTable(vocabularyProgress);
           await migrator.createTable(vocabularyAttempts);
         }
-        await migrator.createTable(contentPacks);
-        await migrator.createTable(contentWords);
-        await migrator.createTable(contentExamples);
-        await migrator.createTable(contentExercises);
+        if (from < 4) {
+          await migrator.createTable(contentPacks);
+          await migrator.createTable(contentWords);
+          await migrator.createTable(contentExamples);
+          await migrator.createTable(contentExercises);
+        }
+        for (final table in <TableInfo>[
+          curriculumWords,
+          curriculumSentences,
+          curriculumExamples,
+          curriculumAudio,
+          curriculumQuestions,
+          curriculumInstalls,
+          learningQueue,
+        ]) {
+          await migrator.createTable(table);
+        }
+        await _curriculumIndexes();
       });
     },
     beforeOpen: (_) async {
       await customStatement('PRAGMA foreign_keys = ON');
     },
   );
+
+  Future<void> _curriculumIndexes() async {
+    await customStatement(
+      'CREATE INDEX curriculum_question_word ON curriculum_questions(word_id, position)',
+    );
+    await customStatement(
+      'CREATE INDEX curriculum_audio_sentence ON curriculum_audio(sentence_id)',
+    );
+    await customStatement(
+      'CREATE INDEX queue_profile_position ON learning_queue(profile_id, position, word_id)',
+    );
+  }
 }

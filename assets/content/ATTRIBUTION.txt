@@ -1,4 +1,4 @@
-Ni Hao Robot! starter content
+Ni Hao Robot! vocabulary content
 
 Word records: HearMandarin (https://hearmandarin.com).
 Source: https://hearmandarin.com/datasets/hsk-3-0-words.json
@@ -13,11 +13,11 @@ Per-word meanings and Pinyin include contributions derived from CC-CEDICT:
 https://www.mdbg.net/chinese/dictionary?page=cc-cedict (CC BY-SA 4.0).
 Upstream uses pypinyin and jieba (MIT), OpenCC (Apache-2.0), and
 complete-hsk-vocabulary (MIT) for annotation/grading. No upstream code is bundled here.
-88 original normal-speed sentence MP3 recordings from the pinned repository
+4,118 original normal-speed sentence MP3 recordings from the pinned repository
 are bundled, unmodified, under CC BY-SA 4.0. The source identifies them as
 synthetic CosyVoice2 recordings, voice zh-female-studio. Model licensing
 does not replace the distributed dataset/recording license.
-Exact recording URLs, hashes and sizes are in content/audio.lock.json.
+Exact recording URLs, hashes and sizes are in content/audio.lock.json and content/curriculum_audio.lock.json.
 
 Changes by Ni Hao Robot!: selected 20 beginner entries and 5 examples each;
 added stable sense IDs and question records; corrected selected sentence Pinyin;
@@ -34,7 +34,7 @@ Source comparison and editorial checks are not independent teacher approval.
 These starter lessons remain marked source-checked-pilot pending teacher review.
 HearMandarin word bands follow the 2025 exam list; sentence levels follow
 GF0025-2021. These level systems are retained separately, not equated.
-Sentence audio is available offline for the 20 imported lessons. Standalone
+Sentence audio is available offline for 4,600 words. Standalone
 word audio and audio for the original greeting examples are unavailable.
 Recording presence and checksums do not establish pronunciation quality;
 independent listening/teacher review remains pending.
@@ -48,3 +48,12 @@ The complete 11,147-entry HearMandarin word list is included in the offline
 dictionary under CC BY 4.0. Ni Hao Robot! adds an editorial starting order
 and band-based priorities; missing source bands remain unranked. Source
 bands/sequence do not claim measured individual word difficulty.
+
+Full curriculum expansion (2026-11-07): all 11,147 dictionary senses have
+82,595 deterministic questions. Examples are selected by matching source-token
+Hanzi and pronunciation; up to five examples per word, with 4,601 words covered.
+4,600 words have linked normal-speed sentence recordings. Missing examples
+or audio are not fabricated. New bulk lessons are marked source-imported,
+not teacher-approved. The 21 prepared lessons and their corrections remain.
+Word, example and audio provenance is retained in curriculum.sqlite;
+question/example adaptations are shared under CC BY-SA 4.0.

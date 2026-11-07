@@ -16,6 +16,7 @@ windows/flutter/ephemeral/
 .env.*
 !.env.example
 *.sqlite
+!assets/content/curriculum.sqlite
 *.sqlite3
 *.db
 *.db-shm

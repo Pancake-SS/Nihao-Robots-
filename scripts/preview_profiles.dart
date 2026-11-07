@@ -16,15 +16,15 @@ import 'package:ni_hao_robot/features/profiles/sqlite_profile_repository.dart';
 import 'package:ni_hao_robot/features/review/learning_providers.dart';
 import 'package:ni_hao_robot/features/vocabulary/vocabulary_repository.dart';
 import 'package:ni_hao_robot/features/vocabulary/sqlite_vocabulary_repository.dart';
-import 'package:ni_hao_robot/features/vocabulary/word_library.dart';
+import 'package:ni_hao_robot/features/vocabulary/curriculum_repository.dart';
+
+import '../test/curriculum_fixture.dart';
+
 import 'package:ni_hao_robot/shared/robot_art.dart';
 
 import '../test/imported_fixture.dart';
 
 void main() {
-  final library = WordLibrary.parse(
-    File('assets/content/dictionary_v1.json').readAsStringSync(),
-  );
   testWidgets('render profile entry for visual inspection', (tester) async {
     await tester.runAsync(() async {
       for (final font in {
@@ -57,6 +57,30 @@ void main() {
     );
     final words = await content.load();
     final book = words.firstWhere((w) => w.entry.hanzi == '书');
+    late _PreviewQueue queue;
+    await tester.runAsync(() async {
+      final source = fullCurriculum(database);
+      await source.ready();
+      final rows = await database
+          .customSelect(
+            'SELECT id,hanzi,pinyin,meaning FROM curriculum_words ORDER BY default_position,id LIMIT 40',
+          )
+          .get();
+      queue = _PreviewQueue(
+        database,
+        rows
+            .map(
+              (r) => QueueWord(
+                r.read<String>('id'),
+                r.read<String>('hanzi'),
+                r.read<String>('pinyin'),
+                r.read<String>('meaning'),
+              ),
+            )
+            .toList(),
+        book,
+      );
+    });
     addTearDown(() async {
       await tester.pumpWidget(const SizedBox.shrink());
       await database.close();
@@ -70,7 +94,7 @@ void main() {
         overrides: [
           appDatabaseProvider.overrideWithValue(database),
           vocabularyRepositoryProvider.overrideWithValue(content),
-          wordLibraryProvider.overrideWith((ref) async => library),
+          curriculumRepositoryProvider.overrideWithValue(queue),
           learningClockProvider.overrideWithValue(() => clock),
         ],
         child: RepaintBoundary(key: key, child: const NiHaoRobotApp()),
@@ -124,22 +148,26 @@ void main() {
     await capture('vocabulary');
     await tester.tap(find.text('Browse words'));
     await tester.pumpAndSettle();
-    await capture('catalogue-pilot');
-    await tester.tap(find.text('Browse full imported word library'));
+    await capture('learning-queue');
+    await tester.scrollUntilVisible(
+      find.text('See 20 more'),
+      600,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('See 20 more'));
     await tester.pumpAndSettle();
-    await capture('word-library');
-    await tester.enterText(
-      find.byKey(const ValueKey('dictionary-search')),
-      'shu1',
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('queue-search')),
+      -900,
+      scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
-    await capture('word-library-search');
-    await tester.pageBack();
+    await capture('learning-queue-40');
+    await tester.enterText(find.byKey(const ValueKey('queue-search')), 'book');
+    await tester.tap(find.byTooltip('Search queue'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byKey(const ValueKey('word-search')), 'book');
-    await tester.pumpAndSettle();
-    await capture('catalogue-search');
-    await tester.tap(find.text('Explore word'));
+    await capture('learning-queue-search');
+    await tester.tap(find.byKey(const ValueKey('learn-selected')));
     await tester.pumpAndSettle();
     await capture('pilot-lesson');
     await tester.ensureVisible(find.text('Continue to Quiz'));
@@ -196,4 +224,37 @@ void main() {
     await capture('foundation-pinyin');
     expect(tester.takeException(), isNull);
   });
+}
+
+// Rendering uses real imported rows captured before fake widget time begins.
+// SQL paging, mutation, migration and restart are covered by repository tests.
+class _PreviewQueue extends CurriculumRepository {
+  _PreviewQueue(super.database, this.rows, this.book);
+  final List<QueueWord> rows;
+  final CatalogueWord book;
+  @override
+  Future<QueuePage> page(
+    int profile, {
+    int offset = 0,
+    String search = '',
+  }) async {
+    final matches = search.isEmpty
+        ? rows
+        : [
+            QueueWord(
+              book.entry.id,
+              book.entry.hanzi,
+              book.entry.pinyin,
+              book.entry.meaning,
+            ),
+          ];
+    return QueuePage(
+      matches.skip(offset).take(20).toList(),
+      matches.length > offset + 20,
+    );
+  }
+
+  @override
+  Future<CatalogueWord?> lesson(String id) async =>
+      id == book.entry.id ? book : null;
 }

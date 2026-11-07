@@ -22,6 +22,9 @@ import 'package:ni_hao_robot/features/review/sqlite_learning_repository.dart';
 
 import 'pilot_fixture.dart';
 import 'imported_fixture.dart';
+import 'curriculum_fixture.dart';
+
+import 'package:ni_hao_robot/features/vocabulary/curriculum_repository.dart';
 
 Future<void> press(WidgetTester tester, Finder target) async {
   await tester.ensureVisible(target);
@@ -193,6 +196,8 @@ void main() {
               learningRepositoryProvider.overrideWithValue(repo),
               learningClockProvider.overrideWithValue(() => clock),
               vocabularyCatalogueProvider.overrideWith((ref) async => []),
+              vocabularyLessonProvider(word.entry.id)
+                  .overrideWith((ref) async => null),
             ],
             child: MaterialApp(
               theme: buildTheme(),
@@ -243,6 +248,15 @@ void main() {
           ProviderScope(
             overrides: [
               appDatabaseProvider.overrideWithValue(db!),
+              curriculumRepositoryProvider.overrideWithValue(
+                StarterQueueFixture(
+                  db!,
+                  BundledVocabularyRepository(
+                    ContentTestBundle(),
+                    starterPaths,
+                  ),
+                ),
+              ),
               vocabularyRepositoryProvider.overrideWithValue(
                 SqliteVocabularyRepository(
                   db!,
@@ -265,7 +279,7 @@ void main() {
         await press(tester, find.text('Continue'));
         await press(tester, find.byKey(const ValueKey('destination-1')));
         await press(tester, find.text('Browse words'));
-        await press(tester, find.text('Explore word').first);
+        await press(tester, find.text('Learn 你好'));
         expect(find.text('Example 5'), findsOneWidget);
         expect(find.textContaining('teacher review pending'), findsWidgets);
         await press(tester, find.text('Continue to Quiz'));

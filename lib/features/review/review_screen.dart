@@ -109,13 +109,10 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen>
                         padding: const EdgeInsets.all(20),
                         child: Builder(
                           builder: (context) {
-                            final word = catalogue.asData?.value
-                                .where(
-                                  (w) =>
-                                      w.entry.id == progress.wordId &&
-                                      w.entry.questions.isNotEmpty,
-                                )
-                                .firstOrNull;
+                            final lesson = ref.watch(
+                              vocabularyLessonProvider(progress.wordId),
+                            );
+                            final word = lesson.asData?.value;
                             final due = progress.dueAt.toLocal();
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +133,16 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen>
                                   'Successful delayed reviews: ${progress.successfulReviews}',
                                 ),
                                 const SizedBox(height: 12),
-                                if (word == null)
+                                if (lesson.isLoading)
+                                  const LinearProgressIndicator()
+                                else if (lesson.hasError)
+                                  TextButton(
+                                    onPressed: () => ref.invalidate(
+                                      vocabularyLessonProvider(progress.wordId),
+                                    ),
+                                    child: const Text('Reload lesson content'),
+                                  )
+                                else if (word == null)
                                   const Text(
                                     'Your progress is retained. Reload the lesson content to review it.',
                                   )

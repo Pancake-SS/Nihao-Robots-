@@ -28,7 +28,7 @@ class VocabularyPack {
     }
     final pack = _record(decoded, {'schemaVersion', 'id', 'revision', 'words'});
     final schema = pack['schemaVersion'];
-    if (schema is! int || !{1, 2, 3}.contains(schema)) {
+    if (schema is! int || !{1, 2, 3, 4}.contains(schema)) {
       throw const FormatException('Unsupported content schema.');
     }
     final revision = pack['revision'];
@@ -55,12 +55,13 @@ class VocabularyPack {
         'reviewStatus',
         'audio',
         if (schema >= 2) 'questions',
-        if (schema == 3) 'details',
+        if (schema >= 3) 'details',
       });
       final id = _id(word['id']);
       if (!ids.add(id)) throw const FormatException('Duplicate word ID.');
       if (word['reviewStatus'] != 'approved' &&
-          !(schema >= 2 && word['reviewStatus'] == 'source-checked-pilot')) {
+          !(schema >= 2 && word['reviewStatus'] == 'source-checked-pilot') &&
+          !(schema == 4 && word['reviewStatus'] == 'source-imported')) {
         throw const FormatException('Word review is incomplete.');
       }
       // Standalone word audio is unavailable; schema 3 supports example audio.
@@ -75,7 +76,8 @@ class VocabularyPack {
         throw const FormatException('Invalid review date.');
       }
       final examples = word['examples'];
-      if (examples is! List || examples.length != 5) {
+      if (examples is! List ||
+          (schema == 4 ? examples.length > 5 : examples.length != 5)) {
         throw const FormatException(
           'Each word requires exactly five examples.',
         );
@@ -87,7 +89,7 @@ class VocabularyPack {
           'hanzi',
           'pinyin',
           'meaning',
-          if (schema == 3) ...{
+          if (schema >= 3) ...{
             'traditional',
             'sourceId',
             'sourceUrl',
@@ -104,12 +106,12 @@ class VocabularyPack {
             hanzi,
             _text(example, 'pinyin', 1000),
             _text(example, 'meaning', 1000),
-            traditional: schema == 3
+            traditional: schema >= 3
                 ? _text(example, 'traditional', 500)
                 : null,
-            sourceId: schema == 3 ? _id(example['sourceId']) : null,
-            sourceUrl: schema == 3 ? _https(example, 'sourceUrl') : null,
-            grammarTags: schema == 3 ? _tags(example['grammarTags']) : const [],
+            sourceId: schema >= 3 ? _id(example['sourceId']) : null,
+            sourceUrl: schema >= 3 ? _https(example, 'sourceUrl') : null,
+            grammarTags: schema >= 3 ? _tags(example['grammarTags']) : const [],
             audio: example['audio'] == null
                 ? null
                 : SentenceAudio.parse(example['audio']),
@@ -129,7 +131,7 @@ class VocabularyPack {
           date,
           word['reviewStatus'] as String,
           schema >= 2 ? _questions(word['questions'], schema) : const [],
-          schema == 3 ? WordDetails.parse(word['details']) : null,
+          schema >= 3 ? WordDetails.parse(word['details']) : null,
         ),
       );
     }
@@ -181,7 +183,7 @@ class VocabularyEntry {
     'reviewStatus': reviewStatus,
     'audio': null,
     if (schema >= 2) 'questions': questions.map((q) => q.toJson()).toList(),
-    if (schema == 3) 'details': details!.toJson(),
+    if (schema >= 3) 'details': details!.toJson(),
   };
 }
 
@@ -268,7 +270,7 @@ class VocabularyExample {
     'hanzi': hanzi,
     'pinyin': pinyin,
     'meaning': meaning,
-    if (schema == 3) ...{
+    if (schema >= 3) ...{
       'traditional': traditional,
       'sourceId': sourceId,
       'sourceUrl': sourceUrl,
@@ -442,7 +444,7 @@ List<VocabularyQuestion> _questions(Object? value, int schema) {
         );
       })
       .toList(growable: false);
-  if (schema == 3 &&
+  if (schema >= 3 &&
       !kinds.containsAll({'meaning', 'hanzi', 'pinyin', 'pinyin_hanzi'})) {
     throw const FormatException(
       'A lesson requires meaning, Hanzi and both Pinyin directions.',

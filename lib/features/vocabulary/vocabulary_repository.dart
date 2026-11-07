@@ -5,6 +5,7 @@ import '../../data/database_provider.dart';
 import 'content_pack.dart';
 import 'sqlite_vocabulary_repository.dart';
 import 'learning_priority.dart';
+import 'curriculum_repository.dart';
 
 class CatalogueWord {
   const CatalogueWord(this.packId, this.revision, this.entry);
@@ -15,6 +16,21 @@ class CatalogueWord {
 
 abstract interface class VocabularyRepository {
   Future<List<CatalogueWord>> load();
+}
+
+abstract interface class WordLookupRepository {
+  Future<CatalogueWord?> lookup(String id);
+}
+
+class FullVocabularyRepository
+    implements VocabularyRepository, WordLookupRepository {
+  FullVocabularyRepository(this.starter, this.curriculum);
+  final VocabularyRepository starter;
+  final CurriculumRepository curriculum;
+  @override
+  Future<List<CatalogueWord>> load() => starter.load();
+  @override
+  Future<CatalogueWord?> lookup(String id) => curriculum.lesson(id);
 }
 
 class BundledVocabularyRepository implements VocabularyRepository {
@@ -54,14 +70,27 @@ class BundledVocabularyRepository implements VocabularyRepository {
 }
 
 final vocabularyRepositoryProvider = Provider<VocabularyRepository>(
-  (ref) => SqliteVocabularyRepository(
-    ref.watch(appDatabaseProvider),
-    BundledVocabularyRepository(rootBundle, const [
-      'assets/content/starter_greeting_v2.json',
-      'assets/content/starter_imported_v1.json',
-    ]),
+  (ref) => FullVocabularyRepository(
+    SqliteVocabularyRepository(
+      ref.watch(appDatabaseProvider),
+      BundledVocabularyRepository(rootBundle, const [
+        'assets/content/starter_greeting_v2.json',
+        'assets/content/starter_imported_v1.json',
+      ]),
+    ),
+    ref.watch(curriculumRepositoryProvider),
   ),
 );
+
+final vocabularyLessonProvider = FutureProvider.family<CatalogueWord?, String>((
+  ref,
+  id,
+) async {
+  final repository = ref.watch(vocabularyRepositoryProvider);
+  if (repository is WordLookupRepository)
+    return (repository as WordLookupRepository).lookup(id);
+  return (await repository.load()).where((w) => w.entry.id == id).firstOrNull;
+}, retry: (_, _) => null);
 
 final vocabularyCatalogueProvider = FutureProvider<List<CatalogueWord>>((
   ref,

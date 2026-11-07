@@ -16,6 +16,40 @@ Zhongdex declares CC BY-SA 4.0 for data, but its NOTICE identifies unresolved up
 
 HearMandarin's exam bands and the sentence source's GF0025-2021 levels describe different lists. Store both, never silently equate them. The source includes synthetic speech; importing existing recordings does not imply human-recorded pronunciation.
 
+## Full learning queue and relational curriculum (2026-11-07)
+
+Vocabulary > Browse words opens a per-profile learning queue. The first word is selected by default; click any row to highlight it, then use the shared Learn button. Move up/down/to front changes the saved queue; Restore priority order preserves progress. Search covers the full queue. Completing the initial quiz removes the word from this queue and leaves it available in scheduled reviews.
+
+SQL returns 20 rows plus one look-ahead row; See 20 more requests the next page. Only the selected lesson's examples and questions are reconstructed. The initial one-time install verifies and copies a 74,285,056-byte bundled SQLite database; this is separate from paginated screen loading. SHA-256 calculation runs in a background isolate, and the production database uses a background executor.
+
+| Bundle coverage | Count |
+|---|---:|
+| Learnable words | 11,147 |
+| Deterministic questions | 82,595 |
+| Words with at least one sourced example | 4,601 |
+| Words with five examples | 541 |
+| Words with bundled sentence audio | 4,600 |
+| Unique normal-speed MP3 files | 4,118 |
+| MP3 bytes | 68,938,102 |
+
+All words have seven core questions; eligible sourced cloze adds an eighth. The 21 prepared lessons retain their five examples and eight questions. The remaining lessons are explicitly source-imported, pending sense/context/teacher review. Content schema 4 permits zero to five sourced examples; older content schemas still require exactly five. No examples/audio are invented to fill gaps. The user's explicit request to make every word learnable supersedes the earlier 21-lesson-only scope.
+
+```mermaid
+erDiagram
+    curriculum_words ||--o{ curriculum_questions : word_id
+    curriculum_words ||--o{ curriculum_examples : word_id
+    curriculum_sentences ||--o{ curriculum_examples : sentence_id
+    curriculum_sentences ||--o{ curriculum_audio : sentence_id
+    profiles ||--o{ learning_queue : profile_id
+    curriculum_words ||--o{ learning_queue : word_id
+```
+
+Schema 5 adds these normalized tables plus a curriculum install marker. Primary and foreign keys connect every question to its word and every recording to its sentence; the word/sentence join supports sentence reuse. Indexes cover queue order, question lookup and sentence audio lookup. The old content tables and immutable learner history remain. The original greeting uses `starter.greeting.nihao.1`, avoiding a duplicate queue item and preserving old attempts.
+
+`scripts/build_curriculum.py` builds the offline seed from checksum-pinned sources, priorities and existing prepared packs. Sentence selection matches Hanzi AND normalized pronunciation, not Hanzi alone. A bounded deterministic distractor pool per band/part of speech makes bulk question generation practical. Exact source-level/word-band provenance is retained; those systems are not interchangeable. Sense matching and semantic ambiguity still need editorial review.
+
+Runtime installation verifies the manifest digest, checks SQLite integrity/foreign keys, and installs all content in one transaction. Parent rows use UPSERT to preserve queue relationships. Failure rolls back; a later retry works. Same-revision changes are rejected and older bundled revisions cannot downgrade installed content. Increase the builder's manifest revision when publishing a changed seed. Never delete a learner database to refresh content.
+
 ## Storage boundaries
 
 The developer staging database `.content-cache/content_staging.sqlite` holds bulk data and candidates. It is ignored by Git and is not a learner database. Tables include:
@@ -26,11 +60,11 @@ The developer staging database `.content-cache/content_staging.sqlite` holds bul
 - `exercises`, `exercise_options`: the 160 questions selected for the 20 imported lessons.
 - `draft_exercises`: 2,349 generated questions for 300 band-one words, explicitly draft. Missing source examples reduce the available patterns; no sentences are invented.
 - `external_words`, `external_sentences`, `word_crosswalk`: quarantined Zhongdex records and candidate identity mappings.
-- `audio_assets`: 8,708 source references; 88 selected normal-speed recordings are bundled, the rest remain references.
+- `audio_assets`: 8,708 source references; the original starter lock covers 88 normal-speed recordings; the full curriculum adds 4,030 through a separate lock. Unselected/slow recordings remain references.
 
 Staging uses bound SQL values, integrity/foreign-key checks and atomic file replacement. Invalid inputs leave the previous staging database intact. This database can be rebuilt without touching learner history.
 
-The app's additive Drift schema **4** holds `content_packs → content_words → content_examples/content_exercises`. Packs retain a canonical validated JSON copy, revision and content-schema version; lesson rows are reconstructed and checked against it on load. Both bundles are validated before a transaction installs them. Repeated imports are idempotent; changed content at the same revision is rejected; older bundles cannot downgrade an installed pack.
+The retained Drift schema **4** content tables hold `content_packs → content_words → content_examples/content_exercises`. Packs retain a canonical validated JSON copy, revision and content-schema version; lesson rows are reconstructed and checked against it on load. Both bundles are validated before a transaction installs them. Repeated imports are idempotent; changed content at the same revision is rejected; older bundles cannot downgrade an installed pack.
 
 `vocabulary_progress` and `review_attempts` remain separate. Content replacement cascades only through content children. Stable sense IDs and historical question snapshots preserve existing attempts, including old two-question greeting attempts. Never delete or reset a learner database to refresh content. See [migration and backup procedures](MIGRATIONS.md).
 
@@ -53,13 +87,13 @@ Multiple-choice distractors are other imported words at or below the target band
 
 ## Published starter lessons and audio
 
-The app contains **21 lessons, five examples each, eight questions each: 168 questions**. Twenty lessons use HearMandarin words and selected no7z examples. The original greeting retains stable ID `starter.greeting.nihao.1` at revision 3. The imported lesson pack is revision 2. Asset filenames remain stable; the JSON envelope carries the authoritative revision. `starter_greeting_v1.json` remains a legacy test/migration fixture and is not bundled.
+The prepared subset contains **21 lessons, five examples each, eight questions each: 168 questions** within the full curriculum above. Twenty lessons use HearMandarin words and selected no7z examples. The original greeting retains stable ID `starter.greeting.nihao.1` at revision 3. The imported lesson pack is revision 2. Asset filenames remain stable; the JSON envelope carries the authoritative revision. `starter_greeting_v1.json` remains a legacy test/migration fixture and is not bundled.
 
 `content/starter_selection.json` identifies every selected example and six explicit Pinyin corrections: one copula reading and five occurrences of the dictionary reading for 学生. Source recordings remain unmodified. All lessons display `source-checked-pilot`; independent teacher and listening review are pending. The draft bank is not automatically published as approved curriculum.
 
 The 20 imported lessons have 100 example links to **88 distinct MP3s**, totaling **1,234,848 bytes**. `content/audio.lock.json` records each original URL, hash, size, voice and synthetic status. The files are bundled in `assets/audio/`; playback never fetches a remote URL. There is one active sentence player, explicit stop, completion handling and retry on errors. Entering a quiz stops playback. Reading and quizzes remain usable if playback fails. Standalone word audio and original greeting-example audio are unavailable.
 
-The distributed adaptations and recordings retain CC BY-SA 4.0 attribution, HearMandarin CC BY 4.0 attribution and CC-CEDICT contributor credit. Notices and complete license texts ship under `assets/content/` and are accessible from the catalogue. The source repository's speech-model license does not replace its recording/data license.
+The distributed adaptations and recordings retain CC BY-SA 4.0 attribution, HearMandarin CC BY 4.0 attribution and CC-CEDICT contributor credit. Notices and complete license texts ship under `assets/content/` and are accessible from the queue information button. The source repository's speech-model license does not replace its recording/data license.
 
 ## Reproduce and extend
 
@@ -70,6 +104,10 @@ From the repository root:
 .venv\Scripts\python.exe scripts\import_content.py --fetch
 # Subsequent imports work offline from the checksum-verified cache.
 .venv\Scripts\python.exe scripts\import_content.py
+# Build the full curriculum, fetch missing pinned normal recordings, then relink.
+.venv\Scripts\python.exe scripts\build_curriculum.py
+.venv\Scripts\python.exe scripts\fetch_curriculum_audio.py --fetch
+.venv\Scripts\python.exe scripts\build_curriculum.py
 .venv\Scripts\python.exe -m unittest discover -s scripts -p "test_*.py"
 ```
 
@@ -79,7 +117,7 @@ Future work: independent content/listening review, richer sense disambiguation, 
 
 ## Full in-app dictionary and learning priority
 
-All **11,147 HearMandarin entries** also ship in `assets/content/dictionary_v1.json` (4,381,129 bytes). This read-only offline library is separate from the 21 prepared lessons installed in the learner SQLite database. Vocabulary → Browse words → Browse full imported word library displays/searches every imported word, including Traditional Hanzi, marked/numbered Pinyin, English, source band and part of speech. Available full lessons link by stable sense ID; other entries honestly say the example lesson is pending review. Opening a dictionary entry does not create a completed attempt or mastery.
+All **11,147 HearMandarin entries** remain in `assets/content/dictionary_v1.json` as the rebuild source. The production Learn route uses the relational curriculum and paginated queue above. Every entry now has a lesson and question bank; this replaces the previous read-only catalogue/pending-lesson split. Opening a lesson alone does not create a completed attempt or mastery.
 
 `learning_priority.py` assigns transparent versioned priorities, persisted in staging and bundled metadata. The app's `LearningPriority` model applies the same ordering: tier, source band, within-band order, stable ID. Catalogue lessons sort by this priority too. Priorities guide the list without locking access.
 
@@ -91,4 +129,4 @@ All **11,147 HearMandarin entries** also ship in `assets/content/dictionary_v1.j
 | Advanced | Source bands 5–7 | 9,000 |
 | Unranked | Missing HSK 3.0 band/sequence, retained without inventing a level | 147 |
 
-The starting order begins 你好, 我, 你, 他, 她, 我们. The editorial starter list is not a corpus frequency measurement; HSK bands are a coarse curriculum guide, and source sequence is only a stable tie-breaker. Individual difficulty depends on the learner. Dictionary filters let users inspect each priority; no AI ranks or generates the words.
+The starting order begins 你好, 我, 你, 他, 她, 我们. The editorial starter list is not a corpus frequency measurement; HSK bands are a coarse curriculum guide, and source sequence is only a stable tie-breaker. Individual difficulty depends on the learner. The queue follows these defaults until the learner changes its order; no AI ranks or generates the words.

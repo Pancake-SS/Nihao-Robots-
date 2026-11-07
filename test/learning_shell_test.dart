@@ -16,6 +16,9 @@ import 'package:ni_hao_robot/shared/robot_art.dart';
 
 import 'foundation_test_repository.dart';
 import 'imported_fixture.dart';
+import 'curriculum_fixture.dart';
+
+import 'package:ni_hao_robot/features/vocabulary/curriculum_repository.dart';
 
 Future<void> mountShell(
   WidgetTester tester,
@@ -36,6 +39,12 @@ Future<void> mountShell(
     ProviderScope(
       overrides: [
         foundationRepositoryProvider.overrideWithValue(repository),
+        curriculumRepositoryProvider.overrideWithValue(
+          StarterQueueFixture(
+            contentDb,
+            BundledVocabularyRepository(ContentTestBundle(), starterPaths),
+          ),
+        ),
         vocabularyRepositoryProvider.overrideWithValue(
           SqliteVocabularyRepository(
             contentDb,
@@ -188,7 +197,8 @@ void main() {
       expect(find.text('Close tutorial'), findsNothing);
       await navigate(tester, 1);
       await press(tester, 'Browse words');
-      expect(find.text('你好'), findsOneWidget);
+      expect(find.text('Learning queue'), findsOneWidget);
+      expect(find.text('Learn 你好'), findsOneWidget);
       expect(find.byKey(const ValueKey('destination-0')), findsNothing);
       await tester.pageBack();
       await tester.pumpAndSettle();

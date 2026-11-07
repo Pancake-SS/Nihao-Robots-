@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../shared/learning_card.dart';
 import '../../shared/robot_art.dart';
-import 'vocabulary_catalogue_screen.dart';
+import 'learning_queue_screen.dart';
 import '../review/review_screen.dart';
 
 class VocabularyLanding extends StatelessWidget {
@@ -26,7 +26,7 @@ class VocabularyLanding extends StatelessWidget {
       ),
       const SizedBox(height: 12),
       const Text(
-        'Explore starter lessons, try eight varied questions, and return when your review is due.',
+        'Choose your next word, practise its meaning and reading, and return when your review is due.',
       ),
       const SizedBox(height: 24),
       LayoutBuilder(
@@ -40,10 +40,10 @@ class VocabularyLanding extends StatelessWidget {
               title: 'Learn',
               artwork: RobotArtwork.hoverOnPaper,
               description: 'Meet new words through characters, meaning and checked examples.',
-              status: 'Source-checked starter lessons',
+              status: 'Your learning queue · 20 words at a time',
               action: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
-                  builder: (_) => VocabularyCatalogueScreen(
+                  builder: (_) => LearningQueueScreen(
                     showPinyin: showPinyin,
                     profileId: profileId,
                   ),

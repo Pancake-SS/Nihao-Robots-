@@ -10,6 +10,7 @@ class SqliteLearningRepository implements LearningRepository {
   SqliteLearningRepository(
     this.database, {
     required this.catalogue,
+    this.lookup,
     DateTime Function()? now,
     String Function()? eventId,
     EarlyReviewPolicy? policy,
@@ -18,6 +19,7 @@ class SqliteLearningRepository implements LearningRepository {
        policy = policy ?? EarlyReviewPolicy();
   final AppDatabase database;
   final Future<List<CatalogueWord>> Function() catalogue;
+  final Future<CatalogueWord?> Function(String)? lookup;
   final DateTime Function() now;
   final String Function() eventId;
   final EarlyReviewPolicy policy;
@@ -32,6 +34,13 @@ class SqliteLearningRepository implements LearningRepository {
   }
 
   Future<CatalogueWord> _word(String id) async {
+    if (lookup != null) {
+      final word = await lookup!(id);
+      if (word != null && word.entry.questions.isNotEmpty) return word;
+      throw const LearningConflict(
+        'This lesson is not currently available. Your saved history is retained.',
+      );
+    }
     for (final word in await catalogue()) {
       if (word.entry.id == id && word.entry.questions.isNotEmpty) return word;
     }

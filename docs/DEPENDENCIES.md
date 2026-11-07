@@ -1,5 +1,9 @@
 # Application dependency record
 
+## Curriculum checksums - 2026-11-07
+
+`crypto 3.0.8` is now a pinned direct dependency for verifying the bundled curriculum SHA-256. It was already resolved transitively at this exact version; no package versions changed. The previous dated advisory review below is not a new scan. No runtime network service was added.
+
 ## Sentence audio checkpoint — 2026-11-06
 
 Added pinned `audioplayers 6.8.1`, with `audioplayers_windows 4.4.1`. The [official package documentation](https://pub.dev/packages/audioplayers) documents Windows asset playback. The native adapter uses local bundled paths and is created lazily when playback is requested. No microphone permission or streaming endpoint is introduced.

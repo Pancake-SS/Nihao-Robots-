@@ -579,3 +579,9 @@ _No notes part; no speaker-note body._
 **Implementation decision:** Store stable identity plus name, meaning, structure, rules, examples and prerequisites. Support A + 不 + A and special 有没有 form as one reviewed starter pattern, not the entire syllabus. Validate source Pinyin, translations and acceptable variants before shipping; preserve separate grammar progress.
 
 **Deferred / unclear:** The deck designs an explanation page but not the complete exercise/review flow. Build incrementally with tested records. The source text is not automatic curriculum approval.
+
+## User-directed learning queue update - 2026-11-07
+
+Latest explicit instructions refine slide 16 into a per-profile priority queue: 20 rows per request, See 20 more, highlighted row selection, shared Learn action and persisted move up/down/to front controls. All 11,147 imported words now have linked questions and a lesson. This replaces the earlier prepared-lessons-only route.
+
+For slide 19, the 21 prepared lessons retain exactly five examples. To honor the explicit all-words request without fabricating source content, bulk lessons allow zero to five sourced examples and disclose gaps; source-imported status is not teacher approval. Questions link directly to word IDs; audio links to source sentence IDs through the word/example join. Audio recognition and sentence ordering remain separate future exercise families.
