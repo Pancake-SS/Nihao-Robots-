@@ -9,6 +9,7 @@ import sqlite3
 import tempfile
 
 from question_generation import Word, Example, QuestionBankGenerator, normalized
+from corpus_examples import CorpusExamples
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -35,6 +36,7 @@ def encode(v):
 
 
 def build(destination=ROOT/'assets/content/curriculum.sqlite'):
+    corpus = CorpusExamples()
     library = json.loads((ROOT/'assets/content/dictionary_v1.json').read_bytes())
     raw_sentences = json.loads((ROOT/'.content-cache/sentences.json').read_bytes())
     lock = json.loads((ROOT/'content/sources.lock.json').read_bytes())
@@ -92,6 +94,7 @@ def build(destination=ROOT/'assets/content/curriculum.sqlite'):
                         if s['id'] in audio: example['audio'] = audio[s['id']]
                         examples.append(example)
                         if len(examples) == 5: break
+                    examples.extend(corpus.examples(row['hanzi'], row['pinyin'], examples))
                     details = dict(traditional=row['traditional'], pinyinNumbered=row['pinyinNumbered'],
                         partOfSpeech=row['partOfSpeech'], band=row['band'] or 0, sourceId=row['id'].split('.')[1],
                         sourceVersion=library['source']['version'], sourceUrl=library['source']['url'],
@@ -99,15 +102,15 @@ def build(destination=ROOT/'assets/content/curriculum.sqlite'):
                     word = dict(id=row['id'], hanzi=row['hanzi'], pinyin=row['pinyin'], meaning=row['meaning'],
                         details=details, examples=examples, audio=None, reviewStatus='source-imported',
                         reviewedBy='Automated source import; independent language review pending', reviewedOn='2026-11-07',
-                        source='HearMandarin word data. Available examples matched by source token and pronunciation from no7z/hsk-sentences-audio; sense suitability has not been independently reviewed.',
-                        license='Word data: HearMandarin CC BY 4.0. Examples/audio and question adaptations: CC BY-SA 4.0; CC-CEDICT contributors credited in bundled ATTRIBUTION.txt.')
+                        source='HearMandarin word data. Examples: no7z/hsk-sentences-audio, supplemented by traceable Tatoeba pairs from Roxaleen/hsk-annotated-corpus. Pinyin on supplemental examples is locally annotated; independent language review pending.',
+                        license='HearMandarin: CC BY 4.0. no7z examples/recordings and question adaptations: CC BY-SA 4.0. Supplemental Tatoeba sentences/translations: CC BY 2.0 FR. See per-example credits and bundled ATTRIBUTION.txt.')
                     target = Word.from_lesson(word)
                     # Unranked words remain visibly unranked; band 7 is only a pool bound.
                     generator = pools[(row['band'] or 7, row['partOfSpeech'])]
                     if target.band == 0:
                         target = Word(target.id,target.hanzi,target.pinyin,target.meaning,7,target.part_of_speech,target.examples)
                     word['questions'] = generator.generate(target)
-                    pack = dict(id='curriculum.imported', revision=1, schemaVersion=4)
+                    pack = dict(id='curriculum.imported', revision=2, schemaVersion=4)
                 examples, questions = word.pop('examples'), word.pop('questions')
                 search = ' '.join((row['hanzi'],row['traditional'],row['pinyin'],row['pinyinNumbered'],row['meaning'],
                     ''.join(c for c in row['pinyinNumbered'] if c not in '12345 '))).lower()
@@ -141,7 +144,7 @@ def build(destination=ROOT/'assets/content/curriculum.sqlite'):
         assert not db.execute('SELECT w.id FROM curriculum_words w LEFT JOIN curriculum_questions q ON q.word_id=w.id GROUP BY w.id HAVING count(q.id)<7').fetchall()
         db.close()
         temporary.replace(destination)
-        manifest = dict(revision=1, sha256=hashlib.sha256(destination.read_bytes()).hexdigest(), counts=counts)
+        manifest = dict(revision=2, sha256=hashlib.sha256(destination.read_bytes()).hexdigest(), counts=counts)
         destination.with_suffix('.manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
         return manifest
     finally:

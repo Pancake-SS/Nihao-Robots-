@@ -57,3 +57,23 @@ or audio are not fabricated. New bulk lessons are marked source-imported,
 not teacher-approved. The 21 prepared lessons and their corrections remain.
 Word, example and audio provenance is retained in curriculum.sqlite;
 question/example adaptations are shared under CC BY-SA 4.0.
+
+Supplemental examples and TTS (curriculum revision 2, 2026-11-07):
+Roxaleen/hsk-annotated-corpus:
+https://github.com/Roxaleen/hsk-annotated-corpus
+Pinned revision: dd6bc245038fdb0c93f7a29e380be15be671848b.
+13,846 distinct Tatoeba sentence/translation pairs add 15,609 word/example
+links. Only pairs matching original Chinese and English sentence IDs are used.
+Tatoeba contributors: https://tatoeba.org
+Text license: CC BY 2.0 FR, https://creativecommons.org/licenses/by/2.0/fr/
+Original sentence and translation links are retained with each example.
+Changes: Simplified conversion from the corpus, deterministic example selection,
+local Pinyin annotation using pypinyin 0.55.0, and generated cloze questions.
+No blanket license is asserted for the mixed-source corpus; its Wiktionary and
+Leipzig subsets are not redistributed in this bundle. Their source lineage,
+quotation rights and translation provenance need separate review.
+The expanded curriculum has 85,118 questions, 7,099 words with examples and
+3,365 words with five examples. Imported examples are not teacher-approved.
+Device Mandarin TTS now reads words and examples without bundled recordings.
+TTS is generated speech, not an original corpus recording; pronunciation can
+be imperfect. Existing 4,118 bundled recordings remain preferred and unchanged.

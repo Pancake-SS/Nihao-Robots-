@@ -44,7 +44,7 @@ void main() {
     expect(words, hasLength(11147));
     expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
     final questions = await db.select(db.curriculumQuestions).get();
-    expect(questions, hasLength(82595));
+    expect(questions, hasLength(85118));
     final byWord = <String, List<Map<String, dynamic>>>{};
     for (final q in questions) {
       byWord.putIfAbsent(q.wordId, () => []).add(jsonDecode(q.payloadJson));
@@ -199,7 +199,7 @@ void main() {
     final updated = CurriculumRepository(
       db,
       seedFile: File('assets/content/curriculum.sqlite'),
-      manifest: {...manifest, 'revision': 2},
+      manifest: {...manifest, 'revision': (manifest['revision'] as int) + 1},
     );
     await updated.ready();
     expect((await updated.page(profile)).words.first.id, page.words[5].id);

@@ -16,23 +16,41 @@ Zhongdex declares CC BY-SA 4.0 for data, but its NOTICE identifies unresolved up
 
 HearMandarin's exam bands and the sentence source's GF0025-2021 levels describe different lists. Store both, never silently equate them. The source includes synthetic speech; importing existing recordings does not imply human-recorded pronunciation.
 
+## Supplemental corpus and device speech (revision 2)
+
+The user requested [Roxaleen/hsk-annotated-corpus](https://github.com/Roxaleen/hsk-annotated-corpus). `content/roxaleen.lock.json` pins commit `dd6bc245038fdb0c93f7a29e380be15be671848b` and exact data hashes. The selected subset adds 15,609 example links from 13,846 distinct Tatoeba sentence/translation pairs. Original Chinese and English IDs/links, attribution and annotation status are retained in each sentence record. [Tatoeba's reuse guidance](https://en.wiki.tatoeba.org/articles/show/using-the-tatoeba-corpus) identifies CC BY 2.0 FR for sentence text.
+
+`CorpusExamples` matches tagged words and pronunciation, confirms the original text/translation pair, checks generated contextual Pinyin against the target reading, ranks by source level/length, and fills only empty slots up to five. Existing examples, prepared lessons and all MP3s remain unchanged. Pinyin uses pinned pypinyin 0.55.0; this is an automatic annotation, not independent pronunciation review. Corpus tags do not establish semantic sense equivalence. The Wiktionary/Leipzig subsets are not published: record-level quotation rights and translated web-text provenance need separate resolution. No blanket license is invented for the repository.
+
+Coverage is now 7,099 words with examples, 3,365 with five, and 4,048 with none. All 11,147 words remain quiz-able, with 85,118 questions. Curriculum/pack revision 2 triggers a transactional update while preserving IDs, saved queues, progress and old attempt snapshots; Drift schema remains 5.
+
+Every word has Play word using an installed offline Mandarin TTS voice. Examples use their existing recording first, otherwise Read sentence invokes TTS. No generated MP3 or fabricated recording row is stored: speech text comes directly from the selected word/example record. One shared session controls both engines, prevents overlap, stops before quizzes/on route disposal, and handles missing voices and asynchronous failures. The app refuses English/Cantonese defaults and network-required voices. Generated speech can choose an incorrect reading; the displayed lesson Pinyin remains the guide. Device speech installation may require a one-time Windows download; subsequent speech uses the installed voice.
+
+Reproduce supplemental imports (development only):
+
+```powershell
+.venv\Scripts\python.exe -m pip install -r scripts\requirements-content.txt
+.venv\Scripts\python.exe scripts\fetch_corpus.py --fetch
+.venv\Scripts\python.exe scripts\build_curriculum.py
+```
+
 ## Full learning queue and relational curriculum (2026-11-07)
 
 Vocabulary > Browse words opens a per-profile learning queue. The first word is selected by default; click any row to highlight it, then use the shared Learn button. Move up/down/to front changes the saved queue; Restore priority order preserves progress. Search covers the full queue. Completing the initial quiz removes the word from this queue and leaves it available in scheduled reviews.
 
-SQL returns 20 rows plus one look-ahead row; See 20 more requests the next page. Only the selected lesson's examples and questions are reconstructed. The initial one-time install verifies and copies a 74,285,056-byte bundled SQLite database; this is separate from paginated screen loading. SHA-256 calculation runs in a background isolate, and the production database uses a background executor.
+SQL returns 20 rows plus one look-ahead row; See 20 more requests the next page. Only the selected lesson's examples and questions are reconstructed. The initial one-time install verifies and copies a 88,731,648-byte bundled SQLite database; this is separate from paginated screen loading. SHA-256 calculation runs in a background isolate, and the production database uses a background executor.
 
 | Bundle coverage | Count |
 |---|---:|
 | Learnable words | 11,147 |
-| Deterministic questions | 82,595 |
-| Words with at least one sourced example | 4,601 |
-| Words with five examples | 541 |
+| Deterministic questions | 85,118 |
+| Words with at least one sourced example | 7,099 |
+| Words with five examples | 3,365 |
 | Words with bundled sentence audio | 4,600 |
 | Unique normal-speed MP3 files | 4,118 |
 | MP3 bytes | 68,938,102 |
 
-All words have seven core questions; eligible sourced cloze adds an eighth. The 21 prepared lessons retain their five examples and eight questions. The remaining lessons are explicitly source-imported, pending sense/context/teacher review. Content schema 4 permits zero to five sourced examples; older content schemas still require exactly five. No examples/audio are invented to fill gaps. The user's explicit request to make every word learnable supersedes the earlier 21-lesson-only scope.
+All words have seven core questions; eligible sourced cloze adds an eighth. The 21 prepared lessons retain their five examples and eight questions. The remaining lessons are explicitly source-imported, pending sense/context/teacher review. Content schema 4 permits zero to five sourced examples; older content schemas still require exactly five. No example sentences are fabricated; missing recordings use labelled device TTS. The user's explicit request to make every word learnable supersedes the earlier 21-lesson-only scope.
 
 ```mermaid
 erDiagram

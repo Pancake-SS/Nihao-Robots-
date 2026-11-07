@@ -20,9 +20,7 @@ class WordIntroductionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final entry = word.entry;
-    final audioSession = entry.examples.any((e) => e.audio != null)
-        ? ref.watch(sentenceAudioSessionProvider)
-        : null;
+    final audioSession = ref.watch(sentenceAudioSessionProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Meet a word')),
       body: SingleChildScrollView(
@@ -76,10 +74,14 @@ class WordIntroductionScreen extends ConsumerWidget {
                           'Imported lesson · examples and questions await independent language review.',
                         ),
                       const SizedBox(height: 20),
-                      Text(
-                        audioSession == null
-                            ? 'Audio unavailable for this word.'
-                            : 'Sentence recordings are available below. Standalone word audio is not included.',
+                      SpeechAudioControls(
+                        session: audioSession,
+                        id: 'word:${entry.id}',
+                        text: entry.hanzi,
+                        word: true,
+                      ),
+                      const Text(
+                        'Generated pronunciation can be imperfect, especially for words with multiple readings. Use the displayed Pinyin as a guide.',
                       ),
                     ],
                   ),
@@ -118,8 +120,15 @@ class WordIntroductionScreen extends ConsumerWidget {
                         if (entry.examples[i].audio case final clip?) ...[
                           const SizedBox(height: 12),
                           SentenceAudioControls(
-                            session: audioSession!,
+                            session: audioSession,
                             clip: clip,
+                          ),
+                        ] else ...[
+                          const SizedBox(height: 12),
+                          SpeechAudioControls(
+                            session: audioSession,
+                            id: 'example:${entry.id}:$i',
+                            text: entry.examples[i].hanzi,
                           ),
                         ],
                         if (entry.examples[i].sourceId != null) ...[
@@ -129,6 +138,18 @@ class WordIntroductionScreen extends ConsumerWidget {
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
+                        if (entry.examples[i].credit case final credit?)
+                          ExpansionTile(
+                            title: const Text('Example source and annotation'),
+                            children: [
+                              SelectableText(credit),
+                              SelectableText(entry.examples[i].sourceUrl!),
+                              if (entry.examples[i].translationSourceUrl
+                                  case final url?)
+                                SelectableText(url),
+                              Text(entry.examples[i].annotation ?? ''),
+                            ],
+                          ),
                       ],
                     ),
                   ),
@@ -139,7 +160,7 @@ class WordIntroductionScreen extends ConsumerWidget {
                     profileId: profileId,
                     wordId: entry.id,
                     questionCount: entry.questions.length,
-                    beforeQuiz: audioSession?.stop,
+                    beforeQuiz: audioSession.stop,
                   )
                 else
                   const Text(

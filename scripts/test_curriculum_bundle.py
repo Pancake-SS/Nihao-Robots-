@@ -17,7 +17,7 @@ class CurriculumBundleTests(unittest.TestCase):
             self.assertEqual(db.execute('PRAGMA integrity_check').fetchone()[0],'ok')
             self.assertEqual(db.execute('PRAGMA foreign_key_check').fetchall(),[])
             self.assertEqual(db.execute('SELECT count(*) FROM curriculum_words').fetchone()[0],11147)
-            self.assertEqual(db.execute('SELECT count(*) FROM curriculum_questions').fetchone()[0],82595)
+            self.assertEqual(db.execute('SELECT count(*) FROM curriculum_questions').fetchone()[0],85118)
             missing=db.execute('SELECT w.id FROM curriculum_words w LEFT JOIN curriculum_questions q ON q.word_id=w.id GROUP BY w.id HAVING count(q.id)<7').fetchall()
             self.assertEqual(missing,[])
 

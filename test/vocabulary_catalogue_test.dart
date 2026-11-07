@@ -136,7 +136,7 @@ void main() {
         await tester.tap(find.text('Explore word'));
         await tester.pumpAndSettle();
         expect(find.text('Meet a word'), findsOneWidget);
-        expect(find.text('Audio unavailable for this word.'), findsOneWidget);
+        expect(find.text('Play word'), findsOneWidget);
         for (var i = 0; i < 5; i++) {
           final example = find.byKey(ValueKey('word-example-$i'));
           await tester.ensureVisible(example);

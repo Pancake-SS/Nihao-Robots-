@@ -64,7 +64,7 @@ class VocabularyPack {
           !(schema == 4 && word['reviewStatus'] == 'source-imported')) {
         throw const FormatException('Word review is incomplete.');
       }
-      // Standalone word audio is unavailable; schema 3 supports example audio.
+      // This field is reserved for recorded word audio; device TTS uses Hanzi by ID.
       if (word['audio'] != null) {
         throw const FormatException('Audio import is not supported yet.');
       }
@@ -95,6 +95,14 @@ class VocabularyPack {
             'sourceUrl',
             'grammarTags',
             if (value is Map && value.containsKey('audio')) 'audio',
+            if (schema == 4 && value is Map) ...[
+              for (final key in [
+                'credit',
+                'translationSourceUrl',
+                'annotation',
+              ])
+                if (value.containsKey(key)) key,
+            ],
           },
         });
         final hanzi = _text(example, 'hanzi', 500);
@@ -115,6 +123,15 @@ class VocabularyPack {
             audio: example['audio'] == null
                 ? null
                 : SentenceAudio.parse(example['audio']),
+            credit: example['credit'] == null
+                ? null
+                : _text(example, 'credit', 1000),
+            translationSourceUrl: example['translationSourceUrl'] == null
+                ? null
+                : _https(example, 'translationSourceUrl'),
+            annotation: example['annotation'] == null
+                ? null
+                : _text(example, 'annotation', 1000),
           ),
         );
       }
@@ -260,12 +277,16 @@ class VocabularyExample {
     this.sourceId,
     this.sourceUrl,
     this.audio,
+    this.credit,
+    this.translationSourceUrl,
+    this.annotation,
     List<String> grammarTags = const [],
   }) : grammarTags = List.unmodifiable(grammarTags);
   final String hanzi, pinyin, meaning;
   final String? traditional, sourceId, sourceUrl;
   final List<String> grammarTags;
   final SentenceAudio? audio;
+  final String? credit, translationSourceUrl, annotation;
   Map<String, Object?> toJson(int schema) => {
     'hanzi': hanzi,
     'pinyin': pinyin,
@@ -276,6 +297,10 @@ class VocabularyExample {
       'sourceUrl': sourceUrl,
       'grammarTags': grammarTags,
       if (audio != null) 'audio': audio!.toJson(),
+      if (credit != null) 'credit': credit,
+      if (translationSourceUrl != null)
+        'translationSourceUrl': translationSourceUrl,
+      if (annotation != null) 'annotation': annotation,
     },
   };
 }

@@ -51,3 +51,7 @@ The repository exposes no attempt update/delete operation. It inserts history an
 Before upgrading, extend the checks above to compare attempt counts and due dates if the installation already has learning records. Downgrading to v1/v2 from a v3 file is unsupported; use the matching closed-file backup and keep the newer history for recovery. No live learner database was migrated during development.
 
 Additional checks cover foreign keys, invalid positions, early-completion rejection, transactional rollback on an injected SQLite write failure, retry and monotonic completion. The widget/database restart test advances the introduction through the UI, closes/reopens SQLite, and resumes at the saved page. Full native-process smoke testing remains blocked by the Windows toolchain.
+
+## Curriculum revision 1 to 2 (2026-11-07)
+
+The supplemental examples/TTS change keeps Drift schema 5 and stable word IDs. It updates the seed manifest and bulk lesson revision to 2; old attempts keep their original question snapshots. The existing transactional installer preserves queue foreign keys and history. Direct before/after comparison confirmed all previous sentence records, audio rows and word/example links are retained unchanged. New optional example credit/translation-source/annotation fields use content schema 4. Run the matching new app binary after importing revision 2; an old parser may not understand these additional fields.

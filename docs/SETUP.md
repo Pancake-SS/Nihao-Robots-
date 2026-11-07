@@ -100,3 +100,15 @@ Use the executable path printed by the current build helper. Keep its adjacent D
 Verified 2026-11-07: debug build PASS (275.1 seconds). Current executable:
 `%TEMP%\nihao-windows-6e38076c4fe14c9995c39c4a387c63b5\build\windows\x64\runner\Debug\ni_hao_robot.exe`.
 Compiled curriculum, all 4,118 audio hashes and the native audio plugin were checked. Close the old app and back up learner data before first launch. This build was not launched against real learner data during development.
+
+## Mandarin word and sentence speech
+
+The app uses bundled recordings when available and an installed offline Mandarin voice otherwise. Every word has Play word. On Windows, add Chinese (Simplified, China) under Settings > Time & language > Speech > Add voices, then retry. The app will not use an English or Cantonese voice as a substitute.
+
+For the already-authorized setup on this PC, `scripts/install_mandarin_voice.ps1` installs only `Language.TextToSpeech~~~zh-CN~0.0.1.0` when run as administrator. It records state/restart requirements in `.dart_tool/mandarin-voice-install.json`; it does not restart Windows or change the display language. Voice installation requires Windows Update access; using an installed voice is local.
+
+The Windows build helper now prepares a pinned, Microsoft-signed NuGet CLI for flutter_tts automatically. The first build downloads the tool and the plugin's C++/WinRT package; later builds reuse the cache. It changes PATH only inside the build process. A NuGet signature/checksum failure stops the build rather than executing an unverified download.
+
+Latest TTS/corpus build verified 2026-11-07 (176.1 seconds):
+`%TEMP%\nihao-windows-88a776f0c1894fa385ff402db2cba783\build\windows\x64\runner\Debug\ni_hao_robot.exe`.
+Keep its DLLs/data directory together. The native TTS/audio plugins, revision-2 curriculum and all 4,118 recording hashes match the source. The user-approved Windows Mandarin voice download was still running at this checkpoint; check `.dart_tool/mandarin-voice-install.json` before starting another installation. App compilation does not establish audible pronunciation quality.

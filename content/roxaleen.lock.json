@@ -1,0 +1,37 @@
+{
+  "commit": "dd6bc245038fdb0c93f7a29e380be15be671848b",
+  "files": {
+    "README.md": {
+      "url": "https://raw.githubusercontent.com/Roxaleen/hsk-annotated-corpus/dd6bc245038fdb0c93f7a29e380be15be671848b/README.md",
+      "sha256": "5550b3a2e98121108085da8d56ca915a8a5ce4ba4362328c07de3bba2420af3d",
+      "bytes": 5821,
+      "cache": ".content-cache/roxaleen/README.md"
+    },
+    "export/README.md": {
+      "url": "https://raw.githubusercontent.com/Roxaleen/hsk-annotated-corpus/dd6bc245038fdb0c93f7a29e380be15be671848b/export/README.md",
+      "sha256": "73298d98717de356928ae274964c22e14fe398a8ab30d6173f4bbcd95bc1d960",
+      "bytes": 3411,
+      "cache": ".content-cache/roxaleen/export__README.md"
+    },
+    "export/json/words.json": {
+      "url": "https://raw.githubusercontent.com/Roxaleen/hsk-annotated-corpus/dd6bc245038fdb0c93f7a29e380be15be671848b/export/json/words.json",
+      "sha256": "9337ff6fc6b8c53d757f1d662bd6aa9631a8968b48aff98fe914174a5a97a521",
+      "bytes": 2804280,
+      "cache": ".content-cache/roxaleen/export__json__words.json"
+    },
+    "data/tagged/sentences_tatoeba.json": {
+      "url": "https://raw.githubusercontent.com/Roxaleen/hsk-annotated-corpus/dd6bc245038fdb0c93f7a29e380be15be671848b/data/tagged/sentences_tatoeba.json",
+      "sha256": "026bd79e4b08e384d1702a29ac8ff67a98fd4fc23bcbb6c6562f621ed43c258e",
+      "bytes": 15689746,
+      "cache": ".content-cache/roxaleen/data__tagged__sentences_tatoeba.json"
+    },
+    "data/raw/sentences/tatoeba_cmn_sentence-pairs.tsv": {
+      "url": "https://raw.githubusercontent.com/Roxaleen/hsk-annotated-corpus/dd6bc245038fdb0c93f7a29e380be15be671848b/data/raw/sentences/tatoeba_cmn_sentence-pairs.tsv",
+      "sha256": "af90d4eeffe6d460414c287901a0ccf6640be7dbc09207e6f2e2380b12198333",
+      "bytes": 6406669,
+      "cache": ".content-cache/roxaleen/data__raw__sentences__tatoeba_cmn_sentence-pairs.tsv"
+    }
+  },
+  "selection": "Tatoeba sentence/translation pairs with original IDs; Wiktionary and Leipzig subsets are not published.",
+  "license": "Original Tatoeba sentence text: CC BY 2.0 FR. No blanket repository license asserted."
+}

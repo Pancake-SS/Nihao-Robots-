@@ -1,5 +1,11 @@
 # Application dependency record
 
+## Device speech and corpus annotation - 2026-11-07
+
+Added pinned `flutter_tts 4.2.5` (MIT, Daniel Lutton); installed source/license inspected. It supports Windows speech/voice selection using the native speech engine. Existing resolved versions are unchanged. [Official package documentation](https://pub.dev/packages/flutter_tts) and its Windows implementation were reviewed; use explicit voice selection because language-only selection can silently retain a default voice. The app filters for offline Mandarin locales.
+
+Import-only Python dependencies are pinned in `scripts/requirements-content.txt`: pypinyin 0.55.0 (MIT) and opencc-python-reimplemented 0.1.7 (Apache license). They annotate Pinyin and match original Traditional Chinese sentence IDs to Simplified corpus text. Python is not required by the distributed app. OSV batch queries for these three exact new package/version pairs on 2026-11-07 returned three results with no matching advisories. This is a dated check, not a security guarantee.
+
 ## Curriculum checksums - 2026-11-07
 
 `crypto 3.0.8` is now a pinned direct dependency for verifying the bundled curriculum SHA-256. It was already resolved transitively at this exact version; no package versions changed. The previous dated advisory review below is not a new scan. No runtime network service was added.
@@ -25,3 +31,5 @@ Recorded 2026-11-04; resolution and package/advisory checks performed 2026-11-03
 - drift_flutter currently brings the publisher's end-of-life compatibility packages `sqlite3_flutter_libs` and `sqlcipher_flutter_libs` transitively. No encryption feature or deprecated direct API was adopted. Recheck the native packaging path when Windows compilation becomes available; do not arbitrarily override transitive versions.
 
 Core profile creation, selection and persistence have no network dependency. SDK/package downloads, code generation and advisory queries are development-only operations.
+
+Windows TTS build prerequisite: `ensure_nuget.ps1` installs official NuGet CLI 7.9.0 from the versioned dist.nuget.org URL into LocalAppData/NihaoRobotTools/nuget/7.9.0. Its Microsoft Authenticode signature and SHA-256 `992d70cac5b06c38efec91806caba64cdcc07e6d963a0959dbbbaf264d33b800` are checked. `build_windows.ps1` adds only this build process's PATH entry; user/machine PATH is unchanged. The pinned flutter_tts plugin restores Microsoft.Windows.CppWinRT 2.0.210503.1 during CMake configuration. These are build tools, not runtime network dependencies.

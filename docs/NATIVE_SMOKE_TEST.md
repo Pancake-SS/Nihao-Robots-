@@ -1,5 +1,17 @@
 # Native Windows smoke test
 
+## Word/example TTS and supplemental examples - 2026-11-07
+
+Native build PASS in 176.1 seconds; compiled curriculum, original recordings and both speech/audio DLLs verified. Windows Mandarin voice installation is still downloading at this checkpoint, so native audible TTS acceptance remains NOT RUN. See SETUP.md for the latest executable and installer status file.
+
+1. Use the latest build containing flutter_tts and curriculum revision 2; older builds lack these changes.
+2. In a lesson, Play word should use a Mandarin voice. Confirm generated speech against displayed Pinyin, especially polyphonic words. No English default should be used.
+3. Existing recorded examples should retain Play sentence. Missing recordings should show Read sentence; starting either should stop the previous recording/TTS. Stop, route exit and Continue to Quiz must stop speech.
+4. With no offline Mandarin voice, verify the explicit setup/retry message. After installing a voice, retry without resetting learner data.
+5. Inspect a supplemental Tatoeba example: source and translation URLs, credits and Pinyin annotation notes must be present. All old recordings and progress should survive the curriculum update.
+
+Native audible listening is still manual; successful compilation or generating a speech stream does not establish pronunciation quality.
+
 ## Queue and full curriculum acceptance - 2026-11-07
 
 Windows debug build PASS in 275.1 seconds; seed checksum, all 4,118 audio hashes and audio plugin DLL verified. Use the newest build path recorded in PROJECT_MEMORY.md. Full native interaction/listening checks for this revision are NOT RUN; automated tests and widget screenshots do not replace them.

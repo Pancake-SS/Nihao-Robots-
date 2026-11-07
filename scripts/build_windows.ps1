@@ -9,6 +9,8 @@ $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $stageRoot = Join-Path ([System.IO.Path]::GetTempPath()) ('nihao-windows-' + [guid]::NewGuid().ToString('N'))
 $wrapper = Join-Path $PSScriptRoot 'flutter.ps1'
+$nugetExecutable = & (Join-Path $PSScriptRoot 'ensure_nuget.ps1')
+$env:PATH = (Split-Path -Parent $nugetExecutable) + ';' + $env:PATH
 New-Item -ItemType Directory -Path $stageRoot | Out-Null
 foreach ($entry in @('lib', 'assets', 'windows', 'pubspec.yaml', 'pubspec.lock', '.metadata')) {
     Copy-Item -LiteralPath (Join-Path $projectRoot $entry) -Destination $stageRoot -Recurse
