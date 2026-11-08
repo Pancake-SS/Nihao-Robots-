@@ -10,6 +10,7 @@ import tempfile
 
 from question_generation import Word, Example, QuestionBankGenerator, normalized
 from corpus_examples import CorpusExamples
+from fmld_dictionary import enrich
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -138,13 +139,16 @@ def build(destination=ROOT/'assets/content/curriculum.sqlite'):
                 counts['withExamples'] += bool(examples)
                 counts['withFiveExamples'] += len(examples)==5
                 counts['withBundledAudio'] += any(e['sourceId'] in audio for e in examples)
+        with db:
+            counts.update(enrich(db))
+        db.execute('VACUUM')
         assert not db.execute('PRAGMA foreign_key_check').fetchall()
         assert db.execute('PRAGMA integrity_check').fetchone()[0] == 'ok'
         assert counts['words'] == 11147
         assert not db.execute('SELECT w.id FROM curriculum_words w LEFT JOIN curriculum_questions q ON q.word_id=w.id GROUP BY w.id HAVING count(q.id)<7').fetchall()
         db.close()
         temporary.replace(destination)
-        manifest = dict(revision=2, sha256=hashlib.sha256(destination.read_bytes()).hexdigest(), counts=counts)
+        manifest = dict(revision=4, sha256=hashlib.sha256(destination.read_bytes()).hexdigest(), counts=counts)
         destination.with_suffix('.manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
         return manifest
     finally:

@@ -585,3 +585,11 @@ _No notes part; no speaker-note body._
 Latest explicit instructions refine slide 16 into a per-profile priority queue: 20 rows per request, See 20 more, highlighted row selection, shared Learn action and persisted move up/down/to front controls. All 11,147 imported words now have linked questions and a lesson. This replaces the earlier prepared-lessons-only route.
 
 For slide 19, the 21 prepared lessons retain exactly five examples. To honor the explicit all-words request without fabricating source content, bulk lessons allow zero to five sourced examples and disclose gaps; source-imported status is not teacher approval. Questions link directly to word IDs; audio links to source sentence IDs through the word/example join. Audio recognition and sentence ordering remain separate future exercise families.
+
+
+### 2026-11-09 user override: word browser and teaching detail
+The user's newer request supersedes the append-only queue and move controls:
+show separate pages of 20 selectable words, a persistent Learn button, search,
+priority and word-category filters. Keep the lesson focused on educational
+content; retain provenance/review details behind an info action. FMLD enriches
+word explanations without replacing existing questions or source examples.

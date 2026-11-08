@@ -20,6 +20,14 @@ class CurriculumBundleTests(unittest.TestCase):
             self.assertEqual(db.execute('SELECT count(*) FROM curriculum_questions').fetchone()[0],85118)
             missing=db.execute('SELECT w.id FROM curriculum_words w LEFT JOIN curriculum_questions q ON q.word_id=w.id GROUP BY w.id HAVING count(q.id)<7').fetchall()
             self.assertEqual(missing,[])
+            teaching = [json.loads(row[0]).get('teaching', []) for row in db.execute('SELECT metadata_json FROM curriculum_words')]
+            self.assertEqual(sum(bool(senses) for senses in teaching), manifest['counts']['withTeaching'])
+            self.assertEqual(sum(len(senses) for senses in teaching), manifest['counts']['teachingSenses'])
+            for senses in teaching:
+                self.assertEqual(len({sense['id'] for sense in senses}), len(senses))
+                for sense in senses:
+                    self.assertTrue(sense['meaning'])
+                    self.assertNotIn('#D', sense['meaning'])
 
     def test_every_linked_local_audio_record_has_matching_file_and_pinned_source(self):
         with closing(sqlite3.connect(f'{(ROOT/"assets/content/curriculum.sqlite").as_uri()}?mode=ro',uri=True)) as db:

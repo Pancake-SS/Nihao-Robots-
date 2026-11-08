@@ -25,6 +25,9 @@ class _QueueViewFixture extends CurriculumRepository {
     int profile, {
     int offset = 0,
     String search = '',
+    int? priority,
+    WordCategory? category,
+    bool priorityOrder = false,
   }) async {
     offsets.add(offset);
     return QueuePage(
@@ -47,7 +50,7 @@ class _QueueViewFixture extends CurriculumRepository {
 
 void main() {
   testWidgets(
-    'queue requests 20 at a time, highlights, reorders and opens the selected lesson at large text',
+    'queue requests 20 at a time, replaces pages, highlights and opens the selected lesson at large text',
     (tester) async {
       final db = AppDatabase(NativeDatabase.memory());
       final storage = fullCurriculum(db);
@@ -86,42 +89,45 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.text('20 words shown · 20 at a time'), findsOneWidget);
-      await tester.scrollUntilVisible(
-        find.text('See 20 more'),
-        600,
-        scrollable: find.byType(Scrollable).first,
-        maxScrolls: 40,
-      );
+      expect(find.text('Page 1'), findsOneWidget);
+      await tester.tap(find.byTooltip('Filter words'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('See 20 more'));
+      expect(find.text('Word filters'), findsOneWidget);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.text('Move up'), findsNothing);
+      await tester.tap(find.byTooltip('Next 20 words'));
       await tester.pumpAndSettle();
       expect(repo.offsets.take(2), [0, 20]);
+      expect(find.text('Page 2'), findsOneWidget);
+      expect(find.byKey(ValueKey('queue-${repo.rows.first.id}')), findsNothing);
+      await tester.tap(find.byTooltip('Previous 20 words'));
+      await tester.pumpAndSettle();
+      expect(find.text('Page 1'), findsOneWidget);
+      await tester.tap(find.byTooltip('Next 20 words'));
+      await tester.pumpAndSettle();
       final more = await repo.page(profile, offset: 20);
       final selected = more.words[3];
       final row = find.byKey(ValueKey('queue-${selected.id}'));
       await tester.scrollUntilVisible(
         row,
         400,
-        scrollable: find.byType(Scrollable).first,
+        scrollable: find.descendant(
+          of: find.byType(GridView),
+          matching: find.byType(Scrollable),
+        ),
         maxScrolls: 40,
       );
       await tester.pumpAndSettle();
       await tester.tap(row);
       await tester.pumpAndSettle();
-      expect(tester.widget<ListTile>(row).selected, isTrue);
-      await tester.scrollUntilVisible(
-        find.text('Move to front'),
-        -800,
-        scrollable: find.byType(Scrollable).first,
-        maxScrolls: 40,
+      expect(find.text('Learn ${selected.hanzi}'), findsOneWidget);
+      // Footer remains reachable even at 200% text without scrolling back.
+      expect(
+        find.byKey(const ValueKey('learn-selected')).hitTestable(),
+        findsOneWidget,
       );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Move to front'));
-      await tester.pumpAndSettle();
-      expect((await repo.page(profile)).words.first.id, selected.id);
-      await tester.ensureVisible(find.byKey(const ValueKey('learn-selected')));
-      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('learn-selected')));
       await tester.pumpAndSettle();
       expect(find.text('Meet a word'), findsOneWidget);

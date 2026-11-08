@@ -148,3 +148,52 @@ All **11,147 HearMandarin entries** remain in `assets/content/dictionary_v1.json
 | Unranked | Missing HSK 3.0 band/sequence, retained without inventing a level | 147 |
 
 The starting order begins 你好, 我, 你, 他, 她, 我们. The editorial starter list is not a corpus frequency measurement; HSK bands are a coarse curriculum guide, and source sequence is only a stable tie-breaker. Individual difficulty depends on the learner. The queue follows these defaults until the learner changes its order; no AI ranks or generates the words.
+
+
+## FMLD teaching enrichment (2026-11-09)
+
+Source: https://github.com/jiong3/fmld, pinned commit
+`de1a3c543fb35ede7f46e335d12f28572578c2b6`, CC BY-SA 4.0.
+`content/fmld.lock.json` records exact paths, URLs, sizes and SHA-256 hashes.
+Download only those data/documentation files into their listed cache paths;
+no upstream code is executed. `scripts/fmld_dictionary.py` validates the pinned
+text and enriches a staging copy of the seed. `build_curriculum.py` also invokes
+the same importer on a complete rebuild. The current manifest is authoritative
+for counts, revision and digest.
+
+Matching requires exact simplified Hanzi and the numbered pronunciation, ignoring
+spacing/apostrophes and normalizing u:/ü to v. Multiple readings are not merged
+by Hanzi alone. Definitions retain stable FMLD entry hashes and local sense IDs.
+Parent definition text is included for nested senses. Historical, obsolete,
+literary and explicitly excluded senses, blank meanings, developer comments and
+FMLD sentences are omitted. At most four references per relationship/sense are
+included. FMLD's a/A flags for AI-assisted relationships remain attached;
+sense prioritization may also be AI-assisted upstream. The source reports that
+definition and note wording is not LLM-written. This is not teacher approval.
+
+Teaching is an optional `teaching` payload in `curriculum_words.metadata_json`,
+owned by the existing word primary key. The lesson repository removes it before
+validating the unchanged lesson/quiz contract and constructs separate teaching
+objects. Existing normalized example/audio/question tables and their foreign keys
+are unchanged. No learner schema migration is necessary (schema 5). Seed upgrades
+use the existing checksum-verified transactional installation and preserve attempts,
+profiles, progress, queues and old question snapshots. Only the selected word's
+teaching is decoded at runtime. Missing dictionary matches retain their existing
+lesson; no explanations are invented. Rights/source details are in the lesson info
+dialog and bundled ATTRIBUTION.txt rather than repeated in the teaching flow.
+
+The browser requests at most 21 SQL rows (20 visible + has-next flag) per page,
+replacing the prior page. Search, priority and POS filters combine in SQL before
+pagination; multi-POS values match complete labels, so verbs do not match adverbs.
+Priority uses the existing editorial-foundations/source-band order. The old queue
+editing API remains for compatibility, but the new UI has no move controls and
+always displays priority order. Completed words remain in scheduled reviews.
+
+
+Verified enrichment result: revision 4, 10,810 matched words, 25,674 sense records,
+337 words retaining their original lesson without FMLD enrichment. Existing
+11,147 words, 85,118 questions, 17,974 sentences, 24,126 example links and 4,123
+audio records are preserved. Seed size is 104,525,824 bytes (99.68 MiB); future
+expansion will need a separate teaching asset or normalized storage to remain
+under repository single-file limits. Actual seed SHA-256:
+`da6b844521678a107b16ea063d22d72d16bdddba49c2e24bd3f1338db51fc00f`.

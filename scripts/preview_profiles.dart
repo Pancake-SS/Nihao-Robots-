@@ -56,11 +56,12 @@ void main() {
       ]),
     );
     final words = await content.load();
-    final book = words.firstWhere((w) => w.entry.hanzi == '书');
+    var book = words.firstWhere((w) => w.entry.hanzi == '书');
     late _PreviewQueue queue;
     await tester.runAsync(() async {
       final source = fullCurriculum(database);
       await source.ready();
+      book = (await source.lesson(book.entry.id))!;
       final rows = await database
           .customSelect(
             'SELECT id,hanzi,pinyin,meaning FROM curriculum_words ORDER BY default_position,id LIMIT 40',
@@ -149,20 +150,14 @@ void main() {
     await tester.tap(find.text('Browse words'));
     await tester.pumpAndSettle();
     await capture('learning-queue');
-    await tester.scrollUntilVisible(
-      find.text('See 20 more'),
-      600,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(find.text('See 20 more'));
+    await tester.tap(find.byTooltip('Next 20 words'));
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(
-      find.byKey(const ValueKey('queue-search')),
-      -900,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await capture('learning-queue-page-2');
+    await tester.tap(find.byTooltip('Filter words'));
     await tester.pumpAndSettle();
-    await capture('learning-queue-40');
+    await capture('word-filters');
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
     await tester.enterText(find.byKey(const ValueKey('queue-search')), 'book');
     await tester.tap(find.byTooltip('Search queue'));
     await tester.pumpAndSettle();
@@ -237,6 +232,9 @@ class _PreviewQueue extends CurriculumRepository {
     int profile, {
     int offset = 0,
     String search = '',
+    int? priority,
+    WordCategory? category,
+    bool priorityOrder = false,
   }) async {
     final matches = search.isEmpty
         ? rows

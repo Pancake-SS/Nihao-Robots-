@@ -22,6 +22,9 @@ class StarterQueueFixture extends CurriculumRepository {
     int profile, {
     int offset = 0,
     String search = '',
+    int? priority,
+    WordCategory? category,
+    bool priorityOrder = false,
   }) async {
     final words = (await starter.load())
         .where(

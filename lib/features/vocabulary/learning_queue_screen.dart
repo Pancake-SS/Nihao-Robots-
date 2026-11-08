@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'curriculum_repository.dart';
+import 'learning_priority.dart';
 import 'word_introduction_screen.dart';
 
 class LearningQueueScreen extends ConsumerStatefulWidget {
@@ -25,12 +26,14 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
   String? _selected, _error;
   String _query = '';
   bool _busy = true, _more = false;
-  int _request = 0;
+  int _request = 0, _page = 0;
+  int? _priority;
+  WordCategory? _category;
   CurriculumRepository get repository => ref.read(curriculumRepositoryProvider);
   @override
   void initState() {
     super.initState();
-    _load(reset: true);
+    _load();
   }
 
   @override
@@ -40,58 +43,136 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
     super.dispose();
   }
 
-  Future<void> _load({bool reset = false, int? pages}) async {
+  Future<void> _load({int page = 0}) async {
     final request = ++_request;
     setState(() {
       _busy = true;
       _error = null;
     });
     try {
-      final result = reset ? <QueueWord>[] : [..._words];
-      var more = false;
-      for (var page = 0; page < (pages ?? 1); page++) {
-        final next = await repository.page(
+      var target = page;
+      var result = await repository.page(
+        widget.profileId,
+        offset: target * 20,
+        search: _query,
+        priority: _priority,
+        category: _category,
+        priorityOrder: true,
+      );
+      // Completing the final word on a page can leave that page empty.
+      while (target > 0 && result.words.isEmpty) {
+        target--;
+        result = await repository.page(
           widget.profileId,
-          offset: result.length,
+          offset: target * 20,
           search: _query,
+          priority: _priority,
+          category: _category,
+          priorityOrder: true,
         );
-        result.addAll(next.words);
-        more = next.hasMore;
-        if (!more) break;
       }
       if (!mounted || request != _request) return;
       setState(() {
-        _words = result;
-        _more = more;
-        if (!_words.any((w) => w.id == _selected))
+        _words = result.words;
+        _more = result.hasMore;
+        if (_page != target || !_words.any((w) => w.id == _selected)) {
           _selected = _words.firstOrNull?.id;
+        }
+        _page = target;
       });
+      if (_scroll.hasClients) _scroll.jumpTo(0);
     } catch (_) {
-      if (mounted && request == _request)
-        setState(
-          () => _error = 'Could not load the queue. Your saved order and progress are retained.',
-        );
+      if (mounted && request == _request) {
+        setState(() => _error = 'Could not load words. Please try again.');
+      }
     } finally {
       if (mounted && request == _request) setState(() => _busy = false);
     }
   }
 
-  Future<void> _move(String direction) async {
-    if (_selected == null || _busy) return;
+  Future<void> _filters() async {
+    var priority = _priority;
+    var category = _category;
+    final apply = await showDialog<bool>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, update) => AlertDialog(
+          title: const Text('Word filters'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                DropdownButtonFormField<int>(
+                  key: const ValueKey('priority-filter'),
+                  initialValue: priority ?? -1,
+                  isExpanded: true,
+                  decoration: const InputDecoration(labelText: 'Priority'),
+                  items: [
+                    const DropdownMenuItem(
+                      value: -1,
+                      child: Text('All priorities'),
+                    ),
+                    for (var i = 0; i < LearningPriority.labels.length; i++)
+                      DropdownMenuItem(
+                        value: i,
+                        child: Text(LearningPriority.labels[i]),
+                      ),
+                  ],
+                  onChanged: (value) =>
+                      update(() => priority = value == -1 ? null : value),
+                ),
+                const SizedBox(height: 20),
+                DropdownButtonFormField<int>(
+                  key: const ValueKey('category-filter'),
+                  initialValue: category?.index ?? -1,
+                  isExpanded: true,
+                  decoration: const InputDecoration(labelText: 'Category'),
+                  items: [
+                    const DropdownMenuItem(
+                      value: -1,
+                      child: Text('All categories'),
+                    ),
+                    for (final c in WordCategory.values)
+                      DropdownMenuItem(value: c.index, child: Text(c.label)),
+                  ],
+                  onChanged: (value) => update(
+                    () => category = value == null || value == -1
+                        ? null
+                        : WordCategory.values[value],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                update(() {
+                  priority = null;
+                  category = null;
+                });
+              },
+              child: const Text('Clear'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Apply'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (!mounted || apply != true) return;
     setState(() {
-      _busy = true;
-      _error = null;
+      _priority = priority;
+      _category = category;
     });
-    try {
-      await repository.move(widget.profileId, _selected!, direction);
-      await _load(reset: true, pages: (_words.length / 20).ceil());
-    } catch (_) {
-      if (mounted)
-        setState(() {
-          _busy = false;
-          _error = 'Could not change the queue. Please retry.';
-        });
-    }
+    await _load();
   }
 
   Future<void> _learn() async {
@@ -114,7 +195,7 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
           ),
         ),
       );
-      if (mounted) await _load(reset: true, pages: (_words.length / 20).ceil());
+      if (mounted) await _load(page: _page);
     } catch (_) {
       if (mounted)
         setState(() {
@@ -145,10 +226,13 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
   @override
   Widget build(BuildContext context) {
     final selected = _words.where((w) => w.id == _selected).firstOrNull;
-    final index = _words.indexWhere((w) => w.id == _selected);
+    final filterLabel = [
+      if (_priority != null) LearningPriority.labels[_priority!],
+      if (_category != null) _category!.label,
+    ].join(' / ');
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Learning queue'),
+        title: const Text('Learn words'),
         actions: [
           IconButton(
             tooltip: 'Content attribution',
@@ -159,27 +243,22 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
       ),
       body: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 960),
-          child: CustomScrollView(
-            controller: _scroll,
-            slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Basics come first. Select a word to learn it now, or move it in your queue.',
-                      ),
-                      const SizedBox(height: 12),
-                      TextField(
+          constraints: const BoxConstraints(maxWidth: 1400),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
                         controller: _search,
                         key: const ValueKey('queue-search'),
                         maxLength: 100,
                         decoration: InputDecoration(
-                          labelText: 'Search Hanzi, Pinyin or meaning',
+                          labelText: 'Search words',
                           counterText: '',
+                          hintText: 'Hanzi, Pinyin or meaning',
                           suffixIcon: IconButton(
                             tooltip: 'Search queue',
                             icon: const Icon(Icons.search),
@@ -187,155 +266,210 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
                                 ? null
                                 : () {
                                     _query = _search.text;
-                                    _load(reset: true);
+                                    _load();
                                   },
                           ),
                         ),
                         onSubmitted: (value) {
                           _query = value;
-                          _load(reset: true);
+                          _load();
                         },
                       ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          FilledButton(
-                            key: const ValueKey('learn-selected'),
-                            onPressed: _busy || selected == null
-                                ? null
-                                : _learn,
-                            child: Text(
-                              selected == null
-                                  ? 'Learn selected word'
-                                  : 'Learn ${selected.hanzi}',
-                            ),
-                          ),
-                          OutlinedButton(
-                            onPressed: _busy || index < 1
-                                ? null
-                                : () => _move('up'),
-                            child: const Text('Move up'),
-                          ),
-                          OutlinedButton(
-                            onPressed:
-                                _busy || index < 0 || index == _words.length - 1
-                                ? null
-                                : () => _move('down'),
-                            child: const Text('Move down'),
-                          ),
-                          OutlinedButton(
-                            onPressed: _busy || selected == null
-                                ? null
-                                : () => _move('front'),
-                            child: const Text('Move to front'),
-                          ),
-                          TextButton(
-                            onPressed: _busy
-                                ? null
-                                : () async {
-                                    setState(() {
-                                      _busy = true;
-                                      _error = null;
-                                    });
-                                    try {
-                                      await repository.reset(widget.profileId);
-                                      if (mounted) await _load(reset: true);
-                                    } catch (_) {
-                                      if (mounted)
-                                        setState(() {
-                                          _busy = false;
-                                          _error = 'Could not restore the default order.';
-                                        });
-                                    }
-                                  },
-                            child: const Text('Restore priority order'),
-                          ),
-                        ],
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton.filledTonal(
+                      tooltip: filterLabel.isEmpty
+                          ? 'Filter words'
+                          : 'Filter words: $filterLabel',
+                      onPressed: _busy ? null : _filters,
+                      icon: Icon(
+                        filterLabel.isEmpty
+                            ? Icons.filter_list
+                            : Icons.filter_alt,
                       ),
-                      const SizedBox(height: 12),
-                      Text('${_words.length} words shown · 20 at a time'),
-                      if (_busy) const LinearProgressIndicator(),
-                      if (_error != null) ...[
-                        Text(_error!, semanticsLabel: _error),
-                        TextButton(
-                          onPressed: _busy ? null : () => _load(reset: true),
-                          child: const Text('Try again'),
-                        ),
-                      ],
-                      if (!_busy && _words.isEmpty && _error == null)
-                        Text(
-                          _query.isEmpty
-                              ? 'Your queue is complete. Open Vocabulary Practice for scheduled reviews.'
-                              : 'No matching words.',
-                        ),
+                    ),
+                  ],
+                ),
+              ),
+              if (filterLabel.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(filterLabel),
+                ),
+              if (_busy) const LinearProgressIndicator(),
+              if (_error != null)
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(_error!),
+                      TextButton(
+                        onPressed: _busy ? null : () => _load(page: _page),
+                        child: const Text('Try again'),
+                      ),
                     ],
                   ),
                 ),
-              ),
-              SliverList.builder(
-                itemCount: _words.length,
-                itemBuilder: (context, index) {
-                  final word = _words[index];
-                  final selected = word.id == _selected;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 3,
-                    ),
-                    child: Material(
-                      color: selected
-                          ? Theme.of(context).colorScheme.primaryContainer
-                          : Theme.of(context).colorScheme.surface,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(
-                          color: selected
-                              ? Theme.of(context).colorScheme.primary
-                              : Theme.of(context).dividerColor,
-                          width: selected ? 2 : 1,
-                        ),
-                      ),
-                      child: ListTile(
-                        key: ValueKey('queue-${word.id}'),
-                        selected: selected,
-                        leading: Icon(
-                          selected
-                              ? Icons.radio_button_checked
-                              : Icons.radio_button_unchecked,
-                        ),
-                        title: Text('${index + 1}. ${word.hanzi}'),
-                        subtitle: Text(
-                          '${widget.showPinyin ? '${word.pinyin} · ' : ''}${word.meaning}',
-                        ),
-                        onTap: _busy
-                            ? null
-                            : () => setState(() => _selected = word.id),
-                      ),
-                    ),
-                  );
-                },
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      if (_more)
-                        OutlinedButton(
-                          onPressed: _busy ? null : () => _load(),
-                          child: const Text('See 20 more'),
-                        ),
-                      if (selected != null)
-                        TextButton(
-                          onPressed: () => _scroll.animateTo(
-                            0,
-                            duration: const Duration(milliseconds: 200),
-                            curve: Curves.easeOut,
+              Expanded(
+                child: _words.isEmpty && !_busy
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Text(
+                            _query.isEmpty && filterLabel.isEmpty
+                                ? 'All words learned. Return to Vocabulary for reviews.'
+                                : 'No matching words. Try another search or filter.',
                           ),
-                          child: Text('Back to Learn ${selected.hanzi}'),
                         ),
+                      )
+                    : LayoutBuilder(
+                        builder: (context, size) {
+                          final scale =
+                              MediaQuery.textScalerOf(context).scale(14) / 14;
+                          final columns =
+                              (size.maxWidth / (220 * scale.clamp(1, 1.5)))
+                                  .floor()
+                                  .clamp(1, 5);
+                          final rows = (20 / columns).ceil();
+                          final height =
+                              ((size.maxHeight - 32 - (rows - 1) * 10) / rows)
+                                  .clamp(110 * scale, 230 * scale);
+                          return GridView.builder(
+                            controller: _scroll,
+                            padding: const EdgeInsets.all(16),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: columns,
+                                  mainAxisExtent: height,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                ),
+                            itemCount: _words.length,
+                            itemBuilder: (context, index) {
+                              final word = _words[index];
+                              final active = word.id == _selected;
+                              final colors = Theme.of(context).colorScheme;
+                              return Semantics(
+                                selected: active,
+                                button: true,
+                                child: Material(
+                                  color: active
+                                      ? colors.primaryContainer
+                                      : colors.surface,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    side: BorderSide(
+                                      color: active
+                                          ? colors.primary
+                                          : colors.outlineVariant,
+                                      width: active ? 2 : 1,
+                                    ),
+                                  ),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: InkWell(
+                                    key: ValueKey('queue-${word.id}'),
+                                    onTap: _busy
+                                        ? null
+                                        : () => setState(
+                                            () => _selected = word.id,
+                                          ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  word.hanzi,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge,
+                                                ),
+                                              ),
+                                              if (active)
+                                                Icon(
+                                                  Icons.check_circle,
+                                                  size: 20,
+                                                  color: colors.primary,
+                                                ),
+                                            ],
+                                          ),
+                                          if (widget.showPinyin)
+                                            Text(
+                                              word.pinyin,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          const SizedBox(height: 4),
+                                          Expanded(
+                                            child: Tooltip(
+                                              message: word.meaning,
+                                              child: Text(
+                                                word.meaning,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+              ),
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            tooltip: 'Previous 20 words',
+                            onPressed: _busy || _page == 0
+                                ? null
+                                : () => _load(page: _page - 1),
+                            icon: const Icon(Icons.chevron_left),
+                          ),
+                          Text('Page ${_page + 1}'),
+                          IconButton(
+                            tooltip: 'Next 20 words',
+                            onPressed: _busy || !_more
+                                ? null
+                                : () => _load(page: _page + 1),
+                            icon: const Icon(Icons.chevron_right),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton(
+                          key: const ValueKey('learn-selected'),
+                          onPressed: _busy || selected == null ? null : _learn,
+                          child: Text(
+                            selected == null
+                                ? 'Learn selected word'
+                                : 'Learn ${selected.hanzi}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

@@ -6,12 +6,19 @@ import 'content_pack.dart';
 import 'sqlite_vocabulary_repository.dart';
 import 'learning_priority.dart';
 import 'curriculum_repository.dart';
+import 'word_teaching.dart';
 
 class CatalogueWord {
-  const CatalogueWord(this.packId, this.revision, this.entry);
+  const CatalogueWord(
+    this.packId,
+    this.revision,
+    this.entry, {
+    this.teaching = const [],
+  });
   final String packId;
   final int revision;
   final VocabularyEntry entry;
+  final List<TeachingSense> teaching;
 }
 
 abstract interface class VocabularyRepository {

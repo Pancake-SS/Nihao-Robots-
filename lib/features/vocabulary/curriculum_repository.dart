@@ -11,6 +11,7 @@ import '../../data/app_database.dart';
 import '../../data/database_provider.dart';
 import 'content_pack.dart';
 import 'vocabulary_repository.dart';
+import 'word_teaching.dart';
 
 String _curriculumDigest(Uint8List bytes) => sha256.convert(bytes).toString();
 
@@ -23,6 +24,23 @@ class QueuePage {
   const QueuePage(this.words, this.hasMore);
   final List<QueueWord> words;
   final bool hasMore;
+}
+
+enum WordCategory {
+  measureWords('Measure words', ['measure word']),
+  numbers('Numbers', ['numeral', 'quantity']),
+  nouns('Nouns', ['noun']),
+  verbs('Verbs', ['verb']),
+  adjectives('Adjectives', ['adjective']),
+  pronouns('Pronouns', ['pronoun']),
+  adverbs('Adverbs', ['adverb']),
+  particles('Particles', ['particle']),
+  prepositions('Prepositions', ['preposition']),
+  conjunctions('Conjunctions', ['conjunction']);
+
+  const WordCategory(this.label, this.partsOfSpeech);
+  final String label;
+  final List<String> partsOfSpeech;
 }
 
 class CurriculumRepository {
@@ -163,6 +181,9 @@ class CurriculumRepository {
               ..orderBy([(q) => OrderingTerm.asc(q.position)]))
             .get();
     final word = jsonDecode(row.metadataJson) as Map<String, dynamic>;
+    final teaching = (word.remove('teaching') as List? ?? [])
+        .map((sense) => TeachingSense(sense as Map<String, dynamic>))
+        .toList();
     word['examples'] = examples
         .map(
           (r) => <String, dynamic>{
@@ -184,7 +205,12 @@ class CurriculumRepository {
         'words': [word],
       }),
     );
-    return CatalogueWord(pack.id, pack.revision, pack.entries.single);
+    return CatalogueWord(
+      pack.id,
+      pack.revision,
+      pack.entries.single,
+      teaching: teaching,
+    );
   }
 
   Future<void> _queue(int profile) async {
@@ -213,8 +239,14 @@ class CurriculumRepository {
     int profile, {
     int offset = 0,
     String search = '',
+    int? priority,
+    WordCategory? category,
+    bool priorityOrder = false,
   }) async {
-    if (offset < 0 || offset > 20000 || search.length > 100)
+    if (offset < 0 ||
+        offset > 20000 ||
+        search.length > 100 ||
+        (priority != null && (priority < 0 || priority > 4)))
       throw ArgumentError('Invalid queue page.');
     await _queue(profile);
     final rows = await database
@@ -223,12 +255,17 @@ class CurriculumRepository {
       SELECT w.id,w.hanzi,w.pinyin,w.meaning FROM learning_queue q
       JOIN curriculum_words w ON w.id=q.word_id
       WHERE q.profile_id=? AND instr(w.search_text,?)>0
+      ${priority == null ? '' : "AND COALESCE(json_extract(w.metadata_json,'\$.details.learningPriority.tier'),4)=?"}
+      ${category == null ? '' : "AND (${category.partsOfSpeech.map((_) => "instr(';' || replace(COALESCE(json_extract(w.metadata_json,'\$.details.partOfSpeech'),''),'; ',';') || ';', ?) > 0").join(' OR ')})"}
       AND NOT EXISTS (SELECT 1 FROM vocabulary_progress p WHERE p.profile_id=q.profile_id AND p.word_id=q.word_id)
-      ORDER BY q.position,q.word_id LIMIT 21 OFFSET ?
+      ORDER BY ${priorityOrder ? 'w.default_position' : 'q.position'},q.word_id LIMIT 21 OFFSET ?
     ''',
           variables: [
             Variable(profile),
             Variable(search.trim().toLowerCase()),
+            if (priority != null) Variable(priority),
+            if (category != null)
+              ...category.partsOfSpeech.map((part) => Variable(';$part;')),
             Variable(offset),
           ],
         )

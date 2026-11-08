@@ -146,11 +146,14 @@ void main() {
           );
         }
         expect(find.text('Example 6'), findsNothing);
-        await tester.ensureVisible(find.text('Content source and review'));
-        await tester.tap(find.text('Content source and review'));
+        await tester.tap(
+          find.byTooltip('Sources and pronunciation information'),
+        );
         await tester.pumpAndSettle();
         expect(find.text('Content revision: 1'), findsOneWidget);
         expect(tester.takeException(), isNull);
+        await tester.tap(find.text('Close'));
+        await tester.pumpAndSettle();
         await tester.pageBack();
         await tester.pumpAndSettle();
         expect(find.text('Learn a word'), findsOneWidget);

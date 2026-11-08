@@ -281,7 +281,14 @@ void main() {
         await press(tester, find.text('Browse words'));
         await press(tester, find.text('Learn 你好'));
         expect(find.text('Example 5'), findsOneWidget);
+        expect(find.textContaining('teacher review pending'), findsNothing);
+        await tester.tap(
+          find.byTooltip('Sources and pronunciation information'),
+        );
+        await tester.pumpAndSettle();
         expect(find.textContaining('teacher review pending'), findsWidgets);
+        await tester.tap(find.text('Close'));
+        await tester.pumpAndSettle();
         await press(tester, find.text('Continue to Quiz'));
         await answerQuiz(tester, word: loadExpandedGreeting());
         expect(find.text('Attempt saved'), findsOneWidget);

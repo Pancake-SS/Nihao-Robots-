@@ -34,6 +34,52 @@ class _V4 extends AppDatabase {
 }
 
 void main() {
+  test('priority/category filters combine with search and dictionary meanings use the word key', () async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final profile = (await SqliteProfileRepository(
+      db,
+    ).create(const ProfileDraft(name: 'Filters'))).selected!.id;
+    final repo = fullCurriculum(db);
+    for (final category in [
+      WordCategory.measureWords,
+      WordCategory.numbers,
+      WordCategory.verbs,
+    ]) {
+      final page = await repo.page(
+        profile,
+        category: category,
+        priorityOrder: true,
+      );
+      expect(page.words, isNotEmpty);
+      for (final word in page.words) {
+        final lesson = (await repo.lesson(word.id))!;
+        final parts = lesson.entry.details!.partOfSpeech.split('; ');
+        expect(parts.any(category.partsOfSpeech.contains), isTrue);
+      }
+      final match = page.words.last;
+      final lesson = (await repo.lesson(match.id))!;
+      final filtered = await repo.page(
+        profile,
+        category: category,
+        priority: lesson.entry.details!.learningPriority!.tier,
+        search: match.hanzi,
+      );
+      expect(filtered.words.map((w) => w.id), contains(match.id));
+    }
+    final first = await repo.page(profile, priorityOrder: true);
+    await repo.move(profile, first.words.last.id, 'front');
+    expect(
+      (await repo.page(profile, priorityOrder: true)).words.first.id,
+      first.words.first.id,
+    );
+    final hello = (await repo.lesson('starter.greeting.nihao.1'))!;
+    expect(hello.teaching.first.meaning, 'hello; hi');
+    expect(hello.teaching.first.id, startsWith('fmld.'));
+    expect(hello.entry.questions, isNotEmpty);
+    await expectLater(repo.page(profile, priority: 5), throwsArgumentError);
+  });
+
   test('all words have linked valid questions, source examples and correctly joined audio', () async {
     final db = AppDatabase(NativeDatabase.memory());
     addTearDown(db.close);
@@ -66,6 +112,7 @@ void main() {
     for (final row in words) {
       // Validate every complete lesson using the same linked payloads as runtime.
       final metadata = jsonDecode(row.metadataJson) as Map<String, dynamic>;
+      metadata.remove('teaching');
       metadata['examples'] = examples[row.id] ?? [];
       metadata['questions'] = byWord[row.id];
       final pack = VocabularyPack.parse(

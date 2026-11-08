@@ -1,0 +1,42 @@
+{
+  "repository": "https://github.com/jiong3/fmld",
+  "commit": "de1a3c543fb35ede7f46e335d12f28572578c2b6",
+  "license": "CC BY-SA 4.0",
+  "files": [
+    {
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/jiong3/fmld/de1a3c543fb35ede7f46e335d12f28572578c2b6/README.md",
+      "cache": ".content-cache/fmld/README.md",
+      "sha256": "ca2980ed1875b1c6072e9b711bbc369321f5189c9a41c25b99d0c6f20fdc6a27",
+      "bytes": 15844
+    },
+    {
+      "path": "dict/LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/jiong3/fmld/de1a3c543fb35ede7f46e335d12f28572578c2b6/dict/LICENSE.txt",
+      "cache": ".content-cache/fmld/dict__LICENSE.txt",
+      "sha256": "28a9529c7d0bb4dc51f4bf5c116a3d16ef247a052f7591466768ddf563fd1cf5",
+      "bytes": 20138
+    },
+    {
+      "path": "dict/fmld.en.txt",
+      "url": "https://raw.githubusercontent.com/jiong3/fmld/de1a3c543fb35ede7f46e335d12f28572578c2b6/dict/fmld.en.txt",
+      "cache": ".content-cache/fmld/dict__fmld.en.txt",
+      "sha256": "adffa622f223b33b03e76fd1d8f7c57cd90f6491cd5e9cec69a984ec1b3bc1ad",
+      "bytes": 26295163
+    },
+    {
+      "path": "dict/fmld.meta.json",
+      "url": "https://raw.githubusercontent.com/jiong3/fmld/de1a3c543fb35ede7f46e335d12f28572578c2b6/dict/fmld.meta.json",
+      "cache": ".content-cache/fmld/dict__fmld.meta.json",
+      "sha256": "edb0b725c62e72f91ce087fd6ce9841d0ddc9fbb756cdda917b9215a622564ec",
+      "bytes": 122
+    },
+    {
+      "path": "rust/src/config.rs",
+      "url": "https://raw.githubusercontent.com/jiong3/fmld/de1a3c543fb35ede7f46e335d12f28572578c2b6/rust/src/config.rs",
+      "cache": ".content-cache/fmld/rust__src__config.rs",
+      "sha256": "4af8ccc61ed479a4e941db53e34599d1e5483b7fffb0a3fcd99fdd1c8fee3e8b",
+      "bytes": 20821
+    }
+  ]
+}

@@ -93,7 +93,7 @@ Update `docs/PROJECT_MEMORY.md` first; the Word file is its generated mirror. Th
 
 The original PPTX stays local and outside Git because it contains illustrative credentials. Do not copy those values into code, curriculum, logs or reports. Do not commit `.venv`, learner databases, secrets or generated QA images.
 
-## Current Windows build
+## Windows build history
 
 Use the executable path printed by the current build helper. Keep its adjacent DLLs and data directory together; do not copy only the EXE. Older Nov 6 builds do not include the queue. The new bundle includes curriculum.sqlite, 82,595 questions and 4,118 MP3s. MSB8029 Temp-directory warnings are nonfatal for these fresh snapshots. See PROJECT_MEMORY.md for the latest build result; native audible playback remains a manual checklist item.
 
@@ -112,3 +112,32 @@ The Windows build helper now prepares a pinned, Microsoft-signed NuGet CLI for f
 Latest TTS/corpus build verified 2026-11-07 (176.1 seconds):
 `%TEMP%\nihao-windows-88a776f0c1894fa385ff402db2cba783\build\windows\x64\runner\Debug\ni_hao_robot.exe`.
 Keep its DLLs/data directory together. The native TTS/audio plugins, revision-2 curriculum and all 4,118 recording hashes match the source. The user-approved Windows Mandarin voice download was still running at this checkpoint; check `.dart_tool/mandarin-voice-install.json` before starting another installation. App compilation does not establish audible pronunciation quality.
+
+
+## Paged vocabulary and FMLD (2026-11-09)
+
+Browse words now opens a grid of 20 words. Select a card, then press Learn.
+Use the arrows beside the page number for the previous/next 20. The filter
+button beside search combines a priority level with a word category (including
+measure words and numbers). Basics are first by default. The Learn button stays
+below the grid, so it remains available when a small window needs scrolling.
+
+10,810 words have FMLD dictionary enrichment; 337 retain the existing lesson
+without an FMLD match. Source/review details are available through the lesson's
+info icon. Existing recordings remain, with device Mandarin speech for words
+and examples without a recording. The speech installer retry is still active;
+check its status file before starting another installer.
+
+Verification commands for this content size:
+`powershell -NoProfile -ExecutionPolicy Bypass -File scripts\flutter.ps1 test --no-pub --concurrency 1 --timeout 2m`
+and `.venv\Scripts\python.exe -m unittest discover -s scripts -p "test_*.py"`.
+Final results: 84 Flutter tests and 23 Python tests pass. See PROJECT_MEMORY.md
+for the latest executable path and native-build result.
+
+
+Latest Windows build verified 2026-11-09 (236.1 seconds):
+`%TEMP%\nihao-windows-83855b4a1c394c1281e0a55005bb3cac\build\windows\x64\runner\Debug\ni_hao_robot.exe`.
+This includes the paged browser and FMLD dictionary teaching. All 4,132 declared
+source assets match the compiled bundle; TTS and recording plugin DLLs are present.
+Keep the executable beside its DLLs and data folder. Mandarin speech installation
+is still pending; the app remains usable with existing recordings and reading.

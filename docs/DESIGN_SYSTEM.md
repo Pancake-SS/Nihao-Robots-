@@ -69,3 +69,18 @@ All introduction pages and tours are tested at 360 × 640 with 200% text; keyboa
 The pilot lesson, quiz, saved result and review list use back-header subpages without the primary sidebar. Choice buttons expose selected semantics and visible radio indicators. Submitted choices freeze so a retry preserves the original payload; saving blocks duplicate submission, then exposes retry or a recoverable conflict message. Feedback appears only after the transaction succeeds. Due counts and dates come from the active profile's records; missing content retains progress and explains why reviewing is unavailable. No additional artwork or duplicate mascot was added. Desktop renders and a narrow 200%-text quiz/retry flow were checked.
 
 The production learning list is now a priority queue. It fetches 20 rows at a time and appends another 20 with See 20 more. Clicking a row sets a visible border, background and radio indicator; one shared Learn button opens that lesson. Move up/down/to front and Restore priority order are explicit controls. Headers scroll with the list to remain usable at 200% text; the bottom link returns to the Learn button. The queue has a back header and source-attribution action, with no primary sidebar. Lesson pages disclose source-imported review status and missing examples/audio.
+
+
+## Word learning pages (2026-11-09)
+
+The word browser uses up to 20 selectable cards per page. Desktop layouts fit
+five columns; narrower windows and large text use fewer columns with a bounded
+page scroll. Search and a filter dialog remain available. Previous/Next and the
+selected word's Learn button stay outside the scrolling grid. Priority ordering
+replaces manual move controls. Selected cards use the primary-container fill,
+stronger border and a check icon, with selected semantics for assistive tools.
+
+Lessons lead with Hanzi, optional Pinyin, a short gloss and word audio. FMLD
+meaning/usage sections show three senses initially and expand further meanings.
+Example cards show Chinese, optional Pinyin, translation and audio. Attribution,
+review status, identifiers and speech caveats belong in the app-bar info dialog.

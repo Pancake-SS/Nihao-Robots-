@@ -77,3 +77,23 @@ The expanded curriculum has 85,118 questions, 7,099 words with examples and
 Device Mandarin TTS now reads words and examples without bundled recordings.
 TTS is generated speech, not an original corpus recording; pronunciation can
 be imperfect. Existing 4,118 bundled recordings remain preferred and unchanged.
+
+
+FMLD dictionary enrichment (2026-11-09)
+Free Mandarin Learner's Dictionary by jiong3 and contributors.
+https://github.com/jiong3/fmld
+Pinned commit: de1a3c543fb35ede7f46e335d12f28572578c2b6
+Based on English Wiktionary (https://en.wiktionary.org/, via https://kaikki.org/)
+and CC-CEDICT/MDBG (https://www.mdbg.net/chinese/dictionary?page=cc-cedict).
+License: CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/
+Full license: LICENSE-CC-BY-SA-4.0.txt, bundled with this application.
+Adaptations: modern senses matched to existing words by simplified Hanzi and
+numbered Pinyin; definition hierarchy flattened with parent context; simplified
+characters displayed in inline references; usage notes resolved; up to four
+related words per relationship per sense retained. Stable FMLD entry/sense IDs
+and original reference targets are preserved. Editorial comments and FMLD
+example sentences are excluded. FMLD sense prioritization may be AI-assisted. Related-word suggestions may be partially
+or entirely AI-assisted (source a/A flags retained). Definitions and notes are
+reported by FMLD as not LLM-authored; independent language review is pending.
+FMLD teaching adaptations retain CC BY-SA 4.0. Existing quiz answers, sentence
+recordings, examples and their separate credits/licenses are unchanged.

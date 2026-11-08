@@ -181,7 +181,6 @@ class SpeechAudioControls extends StatelessWidget {
                 : 'Read sentence',
           ),
         ),
-        const Text('Device Mandarin voice · generated speech'),
         if (session.errorAsset == 'tts:$id')
           Text(session.errorMessage ?? 'Speech unavailable. Please retry.'),
       ],
@@ -220,7 +219,6 @@ class SentenceAudioControls extends StatelessWidget {
             session.activeAsset == clip.asset ? 'Stop audio' : 'Play sentence',
           ),
         ),
-        const Text('Synthetic voice · normal speed · offline'),
         if (session.errorAsset == clip.asset)
           const Text(
             'Could not play this recording. You can retry or continue reading.',

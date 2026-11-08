@@ -197,7 +197,7 @@ void main() {
       expect(find.text('Close tutorial'), findsNothing);
       await navigate(tester, 1);
       await press(tester, 'Browse words');
-      expect(find.text('Learning queue'), findsOneWidget);
+      expect(find.text('Learn words'), findsOneWidget);
       expect(find.text('Learn 你好'), findsOneWidget);
       expect(find.byKey(const ValueKey('destination-0')), findsNothing);
       await tester.pageBack();

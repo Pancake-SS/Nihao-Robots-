@@ -5,6 +5,7 @@ import '../../shared/learning_card.dart';
 import '../review/word_quiz_entry.dart';
 import 'vocabulary_repository.dart';
 import 'sentence_audio.dart';
+import 'word_teaching.dart';
 
 class WordIntroductionScreen extends ConsumerWidget {
   const WordIntroductionScreen({
@@ -22,7 +23,62 @@ class WordIntroductionScreen extends ConsumerWidget {
     final entry = word.entry;
     final audioSession = ref.watch(sentenceAudioSessionProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Meet a word')),
+      appBar: AppBar(
+        title: const Text('Meet a word'),
+        actions: [
+          IconButton(
+            tooltip: 'Sources and pronunciation information',
+            icon: const Icon(Icons.info_outline),
+            onPressed: () => showDialog<void>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('Sources and pronunciation'),
+                content: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(entry.source),
+                      Text(entry.license),
+                      if (word.teaching.isNotEmpty) ...[
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Dictionary: Free Mandarin Learner\'s Dictionary (FMLD), based on English Wiktionary and CC-CEDICT. CC BY-SA 4.0. Selected modern senses matched by Hanzi and pronunciation; simplified display and grouped meanings are adaptations. Related-word suggestions and sense prioritization may be AI-assisted in the source. Independent language review pending.',
+                        ),
+                        const SelectableText('https://github.com/jiong3/fmld'),
+                      ],
+                      Text('Review: ${entry.reviewedBy} / ${entry.reviewedOn}'),
+                      Text('Content revision: ${word.revision}'),
+                      const SizedBox(height: 12),
+                      const Text(
+                        'Word audio and examples without recordings use device Mandarin speech. Bundled sentence recordings are also synthesized speech. Generated pronunciation can be imperfect, especially for words with multiple readings. Pinyin shows dictionary tones; tones can change in connected speech.',
+                      ),
+                      for (final example in entry.examples) ...[
+                        const SizedBox(height: 12),
+                        if (example.sourceId != null)
+                          Text('Example: ${example.sourceId}'),
+                        if (example.credit != null) Text(example.credit!),
+                        if (example.sourceUrl != null)
+                          SelectableText(example.sourceUrl!),
+                        if (example.translationSourceUrl != null)
+                          SelectableText(example.translationSourceUrl!),
+                        if (example.annotation != null)
+                          Text(example.annotation!),
+                      ],
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Close'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Center(
@@ -49,30 +105,6 @@ class WordIntroductionScreen extends ConsumerWidget {
                         ),
                       const SizedBox(height: 12),
                       Text(entry.meaning),
-                      if (entry.details case final details?) ...[
-                        if (details.learningPriority case final priority?)
-                          Text('Learning priority: ${priority.label}'),
-                        const SizedBox(height: 8),
-                        Text(
-                          '${details.partOfSpeech} · Traditional: ${details.traditional}',
-                        ),
-                        if (details.band > 0)
-                          Text('HearMandarin HSK 3.0 band ${details.band}'),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Pinyin shows dictionary tones. In connected speech, tones can change.',
-                        ),
-                      ],
-                      if (entry.reviewStatus == 'source-checked-pilot') ...[
-                        const SizedBox(height: 12),
-                        const Text(
-                          'Pilot lesson · source-checked; independent teacher review pending.',
-                        ),
-                      ],
-                      if (entry.reviewStatus == 'source-imported')
-                        const Text(
-                          'Imported lesson · examples and questions await independent language review.',
-                        ),
                       const SizedBox(height: 20),
                       SpeechAudioControls(
                         session: audioSession,
@@ -80,23 +112,20 @@ class WordIntroductionScreen extends ConsumerWidget {
                         text: entry.hanzi,
                         word: true,
                       ),
-                      const Text(
-                        'Generated pronunciation can be imperfect, especially for words with multiple readings. Use the displayed Pinyin as a guide.',
-                      ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 20),
+                if (word.teaching.isNotEmpty) ...[
+                  WordTeaching(senses: word.teaching),
+                  const SizedBox(height: 20),
+                ],
                 Text(
                   entry.examples.length == 5
                       ? 'Five examples'
                       : 'Available examples (${entry.examples.length})',
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                if (entry.examples.length < 5)
-                  const Text(
-                    'The source does not yet provide five matching examples. You can study the word and take its quiz; missing examples have not been invented.',
-                  ),
                 for (var i = 0; i < entry.examples.length; i++) ...[
                   const SizedBox(height: 12),
                   LearningCard(
@@ -131,25 +160,6 @@ class WordIntroductionScreen extends ConsumerWidget {
                             text: entry.examples[i].hanzi,
                           ),
                         ],
-                        if (entry.examples[i].sourceId != null) ...[
-                          const SizedBox(height: 8),
-                          Text(
-                            'Example source ID: ${entry.examples[i].sourceId}',
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                        if (entry.examples[i].credit case final credit?)
-                          ExpansionTile(
-                            title: const Text('Example source and annotation'),
-                            children: [
-                              SelectableText(credit),
-                              SelectableText(entry.examples[i].sourceUrl!),
-                              if (entry.examples[i].translationSourceUrl
-                                  case final url?)
-                                SelectableText(url),
-                              Text(entry.examples[i].annotation ?? ''),
-                            ],
-                          ),
                       ],
                     ),
                   ),
@@ -166,32 +176,6 @@ class WordIntroductionScreen extends ConsumerWidget {
                   const Text(
                     'Quiz activities are not available for this word yet.',
                   ),
-                const SizedBox(height: 12),
-                const Text(
-                  'Reading this page does not record a learned word or mastery.',
-                ),
-                const SizedBox(height: 16),
-                ExpansionTile(
-                  title: const Text('Content source and review'),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(entry.source),
-                          const SizedBox(height: 8),
-                          Text(entry.license),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Review: ${entry.reviewedBy} · ${entry.reviewedOn}',
-                          ),
-                          Text('Content revision: ${word.revision}'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
