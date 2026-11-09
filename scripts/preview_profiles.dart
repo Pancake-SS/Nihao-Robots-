@@ -17,6 +17,8 @@ import 'package:ni_hao_robot/features/review/learning_providers.dart';
 import 'package:ni_hao_robot/features/vocabulary/vocabulary_repository.dart';
 import 'package:ni_hao_robot/features/vocabulary/sqlite_vocabulary_repository.dart';
 import 'package:ni_hao_robot/features/vocabulary/curriculum_repository.dart';
+import 'package:ni_hao_robot/features/vocabulary/pinyin_input.dart';
+import 'package:ni_hao_robot/features/vocabulary/word_library.dart';
 
 import '../test/curriculum_fixture.dart';
 
@@ -58,7 +60,13 @@ void main() {
     final words = await content.load();
     var book = words.firstWhere((w) => w.entry.hanzi == '书');
     late _PreviewQueue queue;
+    late PinyinInputEngine keyboard;
     await tester.runAsync(() async {
+      keyboard = PinyinInputEngine(
+        WordLibrary.parse(
+          await File('assets/content/dictionary_v1.json').readAsString(),
+        ).words,
+      );
       final source = fullCurriculum(database);
       await source.ready();
       book = (await source.lesson(book.entry.id))!;
@@ -96,6 +104,7 @@ void main() {
           appDatabaseProvider.overrideWithValue(database),
           vocabularyRepositoryProvider.overrideWithValue(content),
           curriculumRepositoryProvider.overrideWithValue(queue),
+          pinyinInputEngineProvider.overrideWith((ref) async => keyboard),
           learningClockProvider.overrideWithValue(() => clock),
         ],
         child: RepaintBoundary(key: key, child: const NiHaoRobotApp()),
@@ -177,9 +186,18 @@ void main() {
         await capture('quiz-${q.kind}');
       if (q.isTyped) {
         await tester.enterText(
-          find.byKey(ValueKey('typed-${q.id}')),
-          q.correctAnswer,
+          find.byKey(const ValueKey('pinyin-composition')),
+          'shu',
         );
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Show keys'));
+        await tester.tap(find.text('Show keys'));
+        await tester.pumpAndSettle();
+        await capture('quiz-chinese-keyboard');
+        await tester.ensureVisible(
+          find.byKey(ValueKey('candidate-${book.entry.hanzi}')),
+        );
+        await tester.tap(find.byKey(ValueKey('candidate-${book.entry.hanzi}')));
       } else {
         await tester.tap(find.byKey(ValueKey('answer-${q.correctOptionId}')));
       }

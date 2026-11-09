@@ -71,3 +71,18 @@ Connect the structurally validated content parser to an application-owned bundle
 The user explicitly requested continued import into the app, priorities and repair of the supplied CMake error. Bundle the full 11,147-word read-only dictionary alongside 21 prepared lessons rather than pretending all candidate examples are reviewed. Use an explicit foundation list followed by HSK bands; retain missing bands as unranked. Priorities guide ordering without locking harder words. Existing learner attempts remain untouched.
 
 The supplied VS Code command bypassed Flutter generation. Disable CMake auto-configuration in the previously user-owned workspace settings and add a Flutter build task; this targeted change is now authorized by the bug request. Keep generated files owned by Flutter. Restore the same pinned SDK in persistent LocalAppData because the Temp installation became incomplete; preserve the old installation and global PATH.
+
+
+## 2026-11-10: native Chinese input and GitHub backups
+
+The user suggested https://github.com/dusionlike/zh-keyboard. Its documented
+integration targets are Vue/React with a RIME WASM Pinyin engine. For this native
+Flutter application, implement Pinyin composition and candidate selection using
+the existing licensed offline word dictionary, with no web runtime or copied
+upstream code. Handwriting and unrestricted sentence prediction are not included.
+The input engine never receives the current quiz answer and does not change grading.
+
+User authorized project backups at https://github.com/Pancake-SS/Nihao-Robots-.
+Configure origin, align local/remote main branches, upload reviewed committed
+history, and provide a non-forcing backup helper with remote-hash verification.
+Learner data, caches and uncommitted edits remain local; no scheduled upload is added.

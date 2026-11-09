@@ -2,13 +2,25 @@
 
 A Windows-first, local-first Mandarin learning companion built toward Flutter + Dart, Riverpod and Drift/SQLite. Simplified Chinese, tone-marked Pinyin, English guidance, and the user's original robots.
 
-**Current status:** offline profiles, tours, introduction and Learn > Quiz > scheduled Review are implemented. The learning queue covers **11,147 words and 85,118 questions**, ordered from basics to harder source bands. It loads **20 words at a time**, supports selection and saved reordering, and opens the selected word's lesson. Questions and sentence audio are linked through SQLite keys. **7,099 words have sourced examples; 4,600 have recordings**, using 4,118 offline recordings. Every word has a Mandarin TTS button; examples without recordings use device TTS. An installed Mandarin voice is required. Missing example coverage is shown honestly. Pattern-based question generation uses existing word data without AI calls. Independent teacher/listening review remains pending. See [content/database design](docs/CONTENT_DATABASE.md) and [setup](docs/SETUP.md).
+**Current status:** offline profiles, tours, introduction and Learn > Quiz > scheduled Review are implemented. Browse **11,147 words and 85,118 questions** in separate pages of 20, with search, priority/category filters and a selected-word Learn button. **10,810 words** have FMLD meaning/usage enrichment. **7,099 words have sourced examples; 4,600 have recordings**, using 4,118 offline recordings. Words and unrecorded examples use installed device Mandarin TTS. Typed-answer questions include an offline **Pinyin-to-Hanzi keyboard** with candidate selection and optional on-screen keys. Question generation uses existing word data without AI calls. Independent teacher/listening review remains pending. See [content/database design](docs/CONTENT_DATABASE.md) and [setup](docs/SETUP.md).
+
+## GitHub backup
+
+Project source, bundled content, documentation and committed history are backed up to
+[Nihao-Robots-](https://github.com/Pancake-SS/Nihao-Robots-) on `main`.
+After reviewing and committing changes, run:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\backup_github.ps1
+```
+
+The helper checks the remote, pushes without forcing and verifies the remote commit.
+It does not stage files or create commits. Uncommitted changes, local learner data,
+SDKs, caches and build outputs are not included. See [backup details](docs/GITHUB_BACKUP.md).
 
 ## Source reconciliation
 
-Vocabulary > **Browse words** opens the learning queue. Select a row, use **Learn**, then **Continue to Quiz**. **See 20 more** adds the next page; Move up/down/to front and Restore priority order save changes per profile. Search covers all remaining words. **Open reviews** shows saved due dates. Initial checks and failed reviews schedule five minutes; successful due reviews schedule one day. This early-review policy does not award mastery.
-
-All words have seven or eight questions. The 21 prepared lessons retain five examples each; other lessons use zero to five available source examples and visibly remain source-imported, pending review. Zhongdex records remain separately quarantined.
+Vocabulary > **Browse words** opens the paged word browser. Select a card, use **Learn**, then **Continue to Quiz**. Previous/Next replaces the current page; filters combine priority with categories such as measure words and numbers. On typed questions, enter Pinyin in the built-in keyboard, choose a Hanzi candidate, then submit your answer. You can also type or paste Chinese directly. Each word has seven or eight questions. The 21 prepared lessons retain five examples each; other lessons use zero to five available source examples. Source and review details are accessible through the lesson info button. Zhongdex records remain separately quarantined.
 
 - Read the full Master Plan and Coding Standards under `reference/`, the implementation brief, and existing project memory.
 - Rendered/inspected all 27 original PPT slides; extracted actual notes with `python-pptx` and inspected OOXML comment parts/relationships. No true PowerPoint comments exist. Generic note template footers are separated from requirements.

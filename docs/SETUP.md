@@ -141,3 +141,32 @@ This includes the paged browser and FMLD dictionary teaching. All 4,132 declared
 source assets match the compiled bundle; TTS and recording plugin DLLs are present.
 Keep the executable beside its DLLs and data folder. Mandarin speech installation
 is still pending; the app remains usable with existing recordings and reading.
+
+
+## Built-in Chinese keyboard and voice status (2026-11-10)
+
+Typed quiz answers now include Chinese keyboard controls. Enter Pinyin (for
+example `nihao`), then select a Hanzi candidate. Tone marks/numbers are optional;
+use `v` for the umlaut vowel. More-candidate arrows expose additional matches.
+Show keys opens clickable letter keys, Pinyin backspace and Clear Pinyin. Selecting
+a candidate inserts it at the answer cursor or replaces the selected answer text.
+The ordinary answer field still accepts Chinese typing/paste. The keyboard uses
+the bundled curriculum dictionary, works offline and does not require a Windows
+Chinese input method. It covers curriculum words, not unrestricted sentence
+prediction or handwriting. Enter longer answers one word at a time.
+
+The Mandarin speech capability is now Installed with no restart required. Huihui,
+Yaoyao and Kangkang are available as zh-CN voices. Native greeting synthesis passed;
+actual listening remains a manual check. Do not rerun the installer on this PC.
+
+GitHub backup instructions: GITHUB_BACKUP.md. Run the backup helper after reviewing
+and committing intended changes. It never uploads uncommitted edits or learner data.
+
+
+Latest keyboard build verified 2026-11-10 (143.0 seconds):
+`%TEMP%\nihao-windows-2066a60f4254412dbcd3b0cc1b6d33b1\build\windows\x64\runner\Debug\ni_hao_robot.exe`.
+90 Flutter tests, static analysis and keyboard visual/quiz checks pass. All 4,132
+bundled assets match the source and both native audio plugins are present. Keep
+the executable beside its DLLs and data folder. Mandarin voices are installed;
+no additional Windows Chinese keyboard installation is needed for the built-in
+quiz input.

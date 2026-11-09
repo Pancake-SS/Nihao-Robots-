@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../shared/learning_card.dart';
 import '../vocabulary/content_pack.dart';
 import 'learning.dart';
+import 'chinese_answer_input.dart';
 import 'learning_providers.dart';
 
 class QuizScreen extends ConsumerStatefulWidget {
@@ -171,8 +172,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                             ),
                             const SizedBox(height: 24),
                             if (session.word.entry.questions[_index].isTyped)
-                              TextFormField(
+                              ChineseAnswerInput(
                                 key: ValueKey(
+                                  'input-${session.word.entry.questions[_index].id}',
+                                ),
+                                answerKey: ValueKey(
                                   'typed-${session.word.entry.questions[_index].id}',
                                 ),
                                 initialValue:
@@ -183,13 +187,6 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                                         .id] ??
                                     '',
                                 enabled: !_submitted && !_conflict,
-                                maxLength: 100,
-                                decoration: const InputDecoration(
-                                  labelText:
-                                      'Your answer in Simplified Chinese',
-                                  helperText: 'Use your Chinese keyboard or IME. Enter the word from this lesson.',
-                                  helperMaxLines: 4,
-                                ),
                                 onChanged: (value) => setState(
                                   () =>
                                       _answers[session

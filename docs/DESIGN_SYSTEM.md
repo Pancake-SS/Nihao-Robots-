@@ -84,3 +84,15 @@ Lessons lead with Hanzi, optional Pinyin, a short gloss and word audio. FMLD
 meaning/usage sections show three senses initially and expand further meanings.
 Example cards show Chinese, optional Pinyin, translation and audio. Attribution,
 review status, identifiers and speech caveats belong in the app-bar info dialog.
+
+
+## Chinese quiz input (2026-11-10)
+
+Typed questions retain the editable Hanzi answer field. A separate Pinyin
+composition field offers eight Hanzi candidates per page; selection inserts at
+the answer caret or replaces its selection. Candidate labels omit definitions
+and are ranked from the full curriculum without consulting the current question.
+Optional Show keys expands clickable QWERTY rows with Pinyin deletion/clear.
+Buttons wrap on narrow screens, and candidate navigation remains usable at 200%
+text. Submission locks both ordinary input and the built-in keyboard. Loading
+failures retain the answer field and expose explicit retry.

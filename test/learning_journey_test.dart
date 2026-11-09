@@ -19,12 +19,20 @@ import 'package:ni_hao_robot/features/vocabulary/vocabulary_repository.dart';
 import 'package:ni_hao_robot/features/vocabulary/sqlite_vocabulary_repository.dart';
 import 'package:ni_hao_robot/features/vocabulary/vocabulary_catalogue_screen.dart';
 import 'package:ni_hao_robot/features/review/sqlite_learning_repository.dart';
+import 'package:ni_hao_robot/features/vocabulary/pinyin_input.dart';
+import 'package:ni_hao_robot/features/vocabulary/word_library.dart';
 
 import 'pilot_fixture.dart';
 import 'imported_fixture.dart';
 import 'curriculum_fixture.dart';
 
 import 'package:ni_hao_robot/features/vocabulary/curriculum_repository.dart';
+
+final _keyboard = PinyinInputEngine(
+  WordLibrary.parse(
+    File('assets/content/dictionary_v1.json').readAsStringSync(),
+  ).words,
+);
 
 Future<void> press(WidgetTester tester, Finder target) async {
   await tester.ensureVisible(target);
@@ -108,6 +116,7 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
+              pinyinInputEngineProvider.overrideWith((ref) async => _keyboard),
               appDatabaseProvider.overrideWithValue(db),
               vocabularyRepositoryProvider.overrideWithValue(content),
             ],
@@ -193,6 +202,7 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
+              pinyinInputEngineProvider.overrideWith((ref) async => _keyboard),
               learningRepositoryProvider.overrideWithValue(repo),
               learningClockProvider.overrideWithValue(() => clock),
               vocabularyCatalogueProvider.overrideWith((ref) async => []),
@@ -247,6 +257,7 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
+              pinyinInputEngineProvider.overrideWith((ref) async => _keyboard),
               appDatabaseProvider.overrideWithValue(db!),
               curriculumRepositoryProvider.overrideWithValue(
                 StarterQueueFixture(
@@ -384,6 +395,7 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
+              pinyinInputEngineProvider.overrideWith((ref) async => _keyboard),
               learningRepositoryProvider.overrideWithValue(repository),
             ],
             child: MaterialApp(
