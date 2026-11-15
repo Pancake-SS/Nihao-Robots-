@@ -57,8 +57,9 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.enterText(find.byKey(const ValueKey('answer')), '书');
-      expect(answer, '书');
+      await tester.enterText(find.byKey(const ValueKey('answer')), '书shu');
+      expect(answer, '书shu');
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Retry keyboard'));
       await tester.pumpAndSettle();
       expect(attempts, 2);
@@ -67,14 +68,10 @@ void main() {
             .widget<TextFormField>(find.byKey(const ValueKey('answer')))
             .controller!
             .text,
-        '书',
-      );
-      await tester.enterText(
-        find.byKey(const ValueKey('pinyin-composition')),
-        'nihao',
+        '书shu',
       );
       await tester.pumpAndSettle();
-      expect(find.byKey(const ValueKey('candidate-你好')), findsOneWidget);
+      expect(find.byKey(const ValueKey('candidate-书')), findsOneWidget);
     },
   );
 
@@ -129,6 +126,17 @@ void main() {
     expect(engine.candidates('nihao').first.hanzi, '你好');
   });
 
+  test('alternate readings fill only the selected marked Pinyin', () {
+    expect(
+      engine.candidates('shei').firstWhere((c) => c.hanzi == '谁').pinyin,
+      'shéi',
+    );
+    expect(
+      engine.candidates('shui').firstWhere((c) => c.hanzi == '谁').pinyin,
+      'shuí',
+    );
+  });
+
   testWidgets(
     'keyboard composes, replaces selection, preserves edits and freezes after submission at 200% text',
     (tester) async {
@@ -169,14 +177,13 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      final composition = find.byKey(const ValueKey('pinyin-composition'));
-      await tester.enterText(composition, 'nihao');
+      final field = find.byKey(const ValueKey('answer'));
+      await tester.enterText(field, 'nihao');
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.byKey(const ValueKey('candidate-你好')));
       await tester.tap(find.byKey(const ValueKey('candidate-你好')));
       await tester.pumpAndSettle();
       expect(answer, '你好');
-      expect(tester.widget<TextField>(composition).controller!.text, '');
       final controller = tester
           .widget<TextFormField>(find.byKey(const ValueKey('answer')))
           .controller!;
@@ -184,26 +191,33 @@ void main() {
         baseOffset: 0,
         extentOffset: 2,
       );
-      await tester.enterText(composition, 'shu');
+      await tester.ensureVisible(find.text('Show keys'));
+      await tester.tap(find.text('Show keys'));
+      await tester.pumpAndSettle();
+      for (final letter in ['s', 'h', 'u']) {
+        await tester.ensureVisible(find.widgetWithText(OutlinedButton, letter));
+        await tester.tap(find.widgetWithText(OutlinedButton, letter));
+        await tester.pumpAndSettle();
+      }
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.byKey(const ValueKey('candidate-书')));
       await tester.tap(find.byKey(const ValueKey('candidate-书')));
       await tester.pumpAndSettle();
       expect(answer, '书');
-      await tester.ensureVisible(find.text('Show keys'));
-      await tester.tap(find.text('Show keys'));
-      await tester.pumpAndSettle();
       await tester.ensureVisible(find.widgetWithText(OutlinedButton, 'n'));
       await tester.tap(find.widgetWithText(OutlinedButton, 'n'));
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.widgetWithText(OutlinedButton, 'i'));
       await tester.tap(find.widgetWithText(OutlinedButton, 'i'));
       await tester.pumpAndSettle();
-      expect(tester.widget<TextField>(composition).controller!.text, 'ni');
-      await tester.ensureVisible(find.byTooltip('Delete Pinyin character'));
-      await tester.tap(find.byTooltip('Delete Pinyin character'));
+      expect(controller.text, '书ni');
+      await tester.ensureVisible(find.byTooltip('Delete character'));
+      await tester.tap(find.byTooltip('Delete character'));
       await tester.pumpAndSettle();
-      expect(tester.widget<TextField>(composition).controller!.text, 'n');
+      expect(controller.text, '书n');
+      await tester.tap(find.byTooltip('Delete character'));
+      await tester.pumpAndSettle();
+      expect(controller.text, '书');
       update(() => enabled = false);
       await tester.pumpAndSettle();
       expect(

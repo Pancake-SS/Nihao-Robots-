@@ -57,22 +57,27 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
-  testWidgets(
-    'welcome labels future learning honestly and uses distinct originals',
-    (tester) async {
-      await tester.pumpWidget(withProfiles(const NiHaoRobotApp()));
-      await tester.pumpAndSettle();
+  testWidgets('welcome uses the supplied reading robot in the dark panel', (
+    tester,
+  ) async {
+    await tester.pumpWidget(withProfiles(const NiHaoRobotApp()));
+    await tester.pumpAndSettle();
 
-      expect(find.text('NI HAO ROBOT!'), findsOneWidget);
-      expect(find.text('Create local profile'), findsOneWidget);
-      final robots = tester.widgetList<RobotArt>(find.byType(RobotArt));
-      expect(robots.map((robot) => robot.artwork).toSet(), {
-        RobotArtwork.wavingOnPaper,
-        RobotArtwork.orbOnNavy,
-      });
-      expect(tester.takeException(), isNull);
-    },
-  );
+    expect(find.text('NI HAO ROBOT!'), findsOneWidget);
+    expect(find.text('Create local profile'), findsOneWidget);
+    final robots = tester.widgetList<RobotArt>(find.byType(RobotArt));
+    expect(robots.map((robot) => robot.artwork).toSet(), {
+      RobotArtwork.wavingOnPaper,
+    });
+    final reading = tester.widget<Image>(
+      find.byKey(const ValueKey('welcome-reading-robot')),
+    );
+    expect(
+      (reading.image as AssetImage).assetName,
+      'assets/ui_art/welcome_reading_robot.png',
+    );
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('small window and large text scroll without overflow', (
     tester,
@@ -111,7 +116,11 @@ void main() {
       await tester.pumpWidget(withProfiles(const NiHaoRobotApp()));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
-      expect(find.byType(RobotArt), findsNWidgets(2));
+      expect(find.byType(RobotArt), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('welcome-reading-robot')),
+        findsOneWidget,
+      );
     });
   }
 }

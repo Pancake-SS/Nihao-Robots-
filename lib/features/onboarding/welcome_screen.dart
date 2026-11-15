@@ -63,13 +63,16 @@ class _StoryPanel extends StatelessWidget {
       height: tall ? 695 : 350,
       child: Stack(
         children: [
-          const Positioned.fill(child: NightStudyScene()),
+          const Positioned.fill(child: ColoredBox(color: Colors.black)),
           Positioned(
-            right: tall ? 26 : 8,
-            bottom: tall ? 28 : 7,
-            child: RobotArt(
-              artwork: RobotArtwork.orbOnNavy,
-              size: tall ? 160 : 105,
+            right: 0,
+            bottom: 0,
+            width: tall ? 420 : 200,
+            child: Image.asset(
+              'assets/ui_art/welcome_reading_robot.png',
+              key: const ValueKey('welcome-reading-robot'),
+              fit: BoxFit.contain,
+              filterQuality: FilterQuality.medium,
             ),
           ),
           Positioned(
@@ -80,7 +83,7 @@ class _StoryPanel extends StatelessWidget {
           ),
           Positioned(
             left: tall ? 45 : 24,
-            right: tall ? 40 : 150,
+            right: tall ? 240 : 150,
             top: tall ? 150 : 98,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

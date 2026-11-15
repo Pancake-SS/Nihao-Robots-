@@ -1,6 +1,10 @@
 # Original robot asset manifest
 
-Audit date: 2026-11-03 (Asia/Kuala_Lumpur). Status: all 20 supplied PNGs opened, measured, hashed, and visually inspected on cream and navy backgrounds. The source files remain unchanged. These are supplied project assets; no external artwork or generated replacement characters were added.
+Audit date: 2026-11-03 (Asia/Kuala_Lumpur). Status: all 20 original PNGs opened, measured, hashed, and visually inspected on cream and navy backgrounds. The source files remain unchanged. A later user-supplied login image is documented separately below.
+
+## Additional user-supplied login image (2026-11-15)
+
+`assets/ui_art/welcome_reading_robot.png` is a byte-identical copy of the user's `Cream Robot Reading with Books.png` (SHA-256 `7b346177226a57751d89ddc29d3bcc76cd91c9eec0a00e1a86a23d5fe7225ea0`). It appears in the bottom-right corner of the dark welcome panel. The original 20 `Robot images/` source files and their inventory hashes remain unchanged.
 
 ## Source and theme findings
 

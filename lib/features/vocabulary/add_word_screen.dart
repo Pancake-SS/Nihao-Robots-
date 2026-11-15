@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../review/chinese_answer_input.dart';
 import 'curriculum_repository.dart';
 import 'custom_word.dart';
+import 'learning_keyboard.dart';
 
 class AddedWordResult {
   const AddedWordResult(this.id, this.message, {this.alreadyStarted = false});
@@ -20,13 +20,15 @@ class AddWordScreen extends ConsumerStatefulWidget {
 }
 
 class _AddWordScreenState extends ConsumerState<AddWordScreen> {
+  final _hanzi = TextEditingController();
   final _pinyin = TextEditingController();
   final _meaning = TextEditingController();
-  String _hanzi = '', _error = '';
+  String _error = '';
   bool _busy = false;
 
   @override
   void dispose() {
+    _hanzi.dispose();
     _pinyin.dispose();
     _meaning.dispose();
     super.dispose();
@@ -38,11 +40,11 @@ class _AddWordScreenState extends ConsumerState<AddWordScreen> {
       _error = '';
     });
     try {
-      CustomWordDraft.validateWord(_hanzi, _pinyin.text, _meaning.text);
+      CustomWordDraft.validateWord(_hanzi.text, _pinyin.text, _meaning.text);
       final repo = ref.read(curriculumRepositoryProvider);
       final clash = await repo.findCustomClash(
         widget.profileId,
-        _hanzi,
+        _hanzi.text,
         _pinyin.text,
         _meaning.text,
       );
@@ -65,7 +67,7 @@ class _AddWordScreenState extends ConsumerState<AddWordScreen> {
         MaterialPageRoute(
           builder: (_) => AddWordExamplesScreen(
             profileId: widget.profileId,
-            hanzi: _hanzi.trim(),
+            hanzi: _hanzi.text.trim(),
             pinyin: _pinyin.text.trim(),
             meaning: _meaning.text.trim(),
           ),
@@ -96,28 +98,18 @@ class _AddWordScreenState extends ConsumerState<AddWordScreen> {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 16),
-            ChineseAnswerInput(
-              answerKey: const ValueKey('custom-word-hanzi'),
-              initialValue: '',
+            LearningKeyboard(
+              hanzi: _hanzi,
+              pinyin: _pinyin,
+              english: _meaning,
+              hanziKey: const ValueKey('custom-word-hanzi'),
+              pinyinKey: const ValueKey('custom-word-pinyin'),
+              englishKey: const ValueKey('custom-word-meaning'),
+              hanziLabel: 'Word in Hanzi',
+              pinyinLabel: 'Word Pinyin',
+              englishLabel: 'English meaning',
+              pinyinMaxLength: 300,
               enabled: !_busy,
-              onChanged: (value) => _hanzi = value,
-            ),
-            TextField(
-              key: const ValueKey('custom-word-pinyin'),
-              controller: _pinyin,
-              enabled: !_busy,
-              maxLength: 300,
-              decoration: const InputDecoration(
-                labelText: 'Word Pinyin',
-                hintText: 'For example: nǐ hǎo',
-              ),
-            ),
-            TextField(
-              key: const ValueKey('custom-word-meaning'),
-              controller: _meaning,
-              enabled: !_busy,
-              maxLength: 1000,
-              decoration: const InputDecoration(labelText: 'English meaning'),
             ),
             if (_error.isNotEmpty)
               Text(
@@ -153,16 +145,22 @@ class AddWordExamplesScreen extends ConsumerStatefulWidget {
 }
 
 class _AddWordExamplesScreenState extends ConsumerState<AddWordExamplesScreen> {
-  final _sentences = List<String>.filled(5, '');
+  final _sentences = List.generate(5, (_) => TextEditingController());
   final _pinyin = List.generate(5, (_) => TextEditingController());
   final _translations = List.generate(5, (_) => TextEditingController());
   final _explanation = TextEditingController();
   String _error = '';
+  LearningKeyboardMode _keyboardMode = LearningKeyboardMode.hanzi;
   bool _busy = false;
 
   @override
   void dispose() {
-    for (final controller in [..._pinyin, ..._translations, _explanation]) {
+    for (final controller in [
+      ..._sentences,
+      ..._pinyin,
+      ..._translations,
+      _explanation,
+    ]) {
       controller.dispose();
     }
     super.dispose();
@@ -181,7 +179,7 @@ class _AddWordExamplesScreenState extends ConsumerState<AddWordExamplesScreen> {
         examples: [
           for (var i = 0; i < 5; i++)
             CustomSentence(
-              _sentences[i],
+              _sentences[i].text,
               _pinyin[i].text,
               _translations[i].text,
             ),
@@ -243,29 +241,22 @@ class _AddWordExamplesScreenState extends ConsumerState<AddWordExamplesScreen> {
                 'Sentence ${i + 1}',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              ChineseAnswerInput(
+              LearningKeyboard(
                 key: ValueKey('custom-example-input-$i'),
-                answerKey: ValueKey('custom-example-hanzi-$i'),
-                initialValue: '',
+                hanzi: _sentences[i],
+                pinyin: _pinyin[i],
+                english: _translations[i],
+                initialMode: _keyboardMode,
+                onModeChanged: (mode) => setState(() => _keyboardMode = mode),
+                hanziKey: ValueKey('custom-example-hanzi-$i'),
+                pinyinKey: ValueKey('custom-example-pinyin-$i'),
+                englishKey: ValueKey('custom-example-english-$i'),
+                hanziLabel: 'Chinese sentence',
+                pinyinLabel: 'Sentence Pinyin',
+                englishLabel: 'English translation',
                 enabled: !_busy,
-                maxLength: 500,
-                onChanged: (value) => _sentences[i] = value,
-              ),
-              TextField(
-                key: ValueKey('custom-example-pinyin-$i'),
-                controller: _pinyin[i],
-                enabled: !_busy,
-                maxLength: 1000,
-                decoration: const InputDecoration(labelText: 'Sentence Pinyin'),
-              ),
-              TextField(
-                key: ValueKey('custom-example-english-$i'),
-                controller: _translations[i],
-                enabled: !_busy,
-                maxLength: 1000,
-                decoration: const InputDecoration(
-                  labelText: 'English translation',
-                ),
+                hanziMaxLength: 500,
+                hanziMaxLines: 2,
               ),
               const Divider(height: 32),
             ],

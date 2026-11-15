@@ -3,20 +3,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'word_library.dart';
 
 class PinyinCandidate {
-  const PinyinCandidate(this.hanzi, this.pinyin);
-  final String hanzi, pinyin;
+  const PinyinCandidate(this.hanzi, this.pinyin, this.meaning);
+  final String hanzi, pinyin, meaning;
 }
 
 /// An offline curriculum lexicon, independent of the current quiz or answer.
 class PinyinInputEngine {
   PinyinInputEngine(Iterable<DictionaryWord> words) {
     for (final word in words) {
-      for (final reading in word.pinyinNumbered.split('/')) {
+      final numbered = word.pinyinNumbered.split('/');
+      final marked = word.pinyin.split('/');
+      for (var i = 0; i < numbered.length; i++) {
+        final reading = numbered[i];
         final key = normalize(reading);
         if (key.isEmpty) continue;
         final entries = _index.putIfAbsent(key, () => []);
         if (!entries.any((candidate) => candidate.hanzi == word.hanzi)) {
-          entries.add(PinyinCandidate(word.hanzi, word.pinyin));
+          entries.add(
+            PinyinCandidate(
+              word.hanzi,
+              i < marked.length ? marked[i].trim() : word.pinyin,
+              word.meaning,
+            ),
+          );
         }
       }
     }
