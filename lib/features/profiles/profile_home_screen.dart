@@ -324,7 +324,15 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
         ),
       );
       return Scaffold(
-        drawer: wide ? null : Drawer(width: 244, child: _menu(wide: false)),
+        drawer: wide
+            ? null
+            : Drawer(
+                width: (MediaQuery.sizeOf(context).width * .9).clamp(
+                  244.0,
+                  360.0,
+                ),
+                child: _menu(wide: false),
+              ),
         appBar: wide
             ? null
             : AppBar(
@@ -341,7 +349,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
         body: wide
             ? Row(
                 children: [
-                  SizedBox(width: 108, child: _menu(wide: true)),
+                  SizedBox(width: 220, child: _menu(wide: true)),
                   Expanded(child: content),
                 ],
               )

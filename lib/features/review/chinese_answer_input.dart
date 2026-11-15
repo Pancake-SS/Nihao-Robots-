@@ -10,12 +10,14 @@ class ChineseAnswerInput extends ConsumerStatefulWidget {
     required this.initialValue,
     required this.enabled,
     required this.onChanged,
+    this.maxLength = 100,
     super.key,
   });
   final Key answerKey;
   final String initialValue;
   final bool enabled;
   final ValueChanged<String> onChanged;
+  final int maxLength;
 
   @override
   ConsumerState<ChineseAnswerInput> createState() => _ChineseAnswerInputState();
@@ -61,7 +63,7 @@ class _ChineseAnswerInputState extends ConsumerState<ChineseAnswerInput> {
     final start = selection.isValid ? selection.start : _answer.text.length;
     final end = selection.isValid ? selection.end : start;
     final result = _answer.text.replaceRange(start, end, hanzi);
-    if (result.characters.length > 100) return;
+    if (result.characters.length > widget.maxLength) return;
     _answer.value = TextEditingValue(
       text: result,
       selection: TextSelection.collapsed(offset: start + hanzi.length),
@@ -97,7 +99,7 @@ class _ChineseAnswerInputState extends ConsumerState<ChineseAnswerInput> {
           key: widget.answerKey,
           controller: _answer,
           enabled: widget.enabled,
-          maxLength: 100,
+          maxLength: widget.maxLength,
           decoration: const InputDecoration(
             labelText: 'Your answer in Simplified Chinese',
           ),

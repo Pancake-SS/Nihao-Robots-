@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'curriculum_repository.dart';
+import 'add_word_screen.dart';
 import 'learning_priority.dart';
 import 'word_introduction_screen.dart';
 
@@ -63,7 +64,7 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
         search: _query,
         priority: _priority,
         category: _category,
-        priorityOrder: true,
+        priorityOrder: false,
       );
       // Completing the final word on a page can leave that page empty.
       while (target > 0 && result.words.isEmpty) {
@@ -74,7 +75,7 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
           search: _query,
           priority: _priority,
           category: _category,
-          priorityOrder: true,
+          priorityOrder: false,
         );
       }
       if (!mounted || request != _request) return;
@@ -208,6 +209,32 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
           _busy = false;
           _error = 'Could not open this lesson. Please retry.';
         });
+    }
+  }
+
+  Future<void> _addWord() async {
+    final result = await Navigator.of(context).push<AddedWordResult>(
+      MaterialPageRoute(
+        builder: (_) => AddWordScreen(profileId: widget.profileId),
+      ),
+    );
+    if (!mounted || result == null) return;
+    _search.clear();
+    _query = '';
+    setState(() {
+      _priority = null;
+      _category = null;
+    });
+    await _load();
+    if (!mounted) return;
+    if (_words.any((word) => word.id == result.id)) {
+      setState(() => _selected = result.id);
+    }
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(result.message)));
+    if (result.alreadyStarted) {
+      _selected = result.id;
+      await _learn();
     }
   }
 
@@ -348,6 +375,18 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
                       ),
                     ),
                   ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton.icon(
+                    key: const ValueKey('add-custom-word'),
+                    onPressed: _busy ? null : _addWord,
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add word'),
+                  ),
                 ),
               ),
               if (filterLabel.isNotEmpty)

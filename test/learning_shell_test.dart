@@ -13,6 +13,7 @@ import 'package:ni_hao_robot/features/onboarding/foundation_repository.dart';
 import 'package:ni_hao_robot/features/profiles/profile.dart';
 import 'package:ni_hao_robot/features/profiles/profile_home_screen.dart';
 import 'package:ni_hao_robot/shared/robot_art.dart';
+import 'package:ni_hao_robot/shared/app_sidebar.dart';
 
 import 'foundation_test_repository.dart';
 import 'imported_fixture.dart';
@@ -90,6 +91,21 @@ Future<void> navigate(WidgetTester tester, int destination) async {
 }
 
 void main() {
+  testWidgets('desktop sidebar has room for visible navigation labels', (
+    tester,
+  ) async {
+    await mountShell(tester, TestFoundationRepository());
+    final sidebar = find.byType(AppSidebar);
+    expect(tester.getSize(sidebar).width, 220);
+    for (final label in AppSidebar.labels) {
+      expect(
+        find.descendant(of: sidebar, matching: find.text(label)),
+        findsOneWidget,
+      );
+    }
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets(
     'first visit, leave, resume, finish and replay preserve completion',
     (tester) async {

@@ -88,7 +88,13 @@ The retained Drift schema **4** content tables hold `content_packs → content_w
 
 ## Object-oriented question generator
 
-`scripts/question_generation.py` separates immutable `Word`, `Example`, `Choice` and `Question` models from `QuestionPattern` strategies. `QuestionBankGenerator` composes patterns; `DistractorSelector` indexes source words by band, prefers matching parts of speech and deterministically selects options. A new pattern can be registered without rewriting the importer.
+`scripts/question_generation.py` separates immutable `Word`, `Example`, `Choice` and `Question` models from `QuestionPattern` strategies. `QuestionBankGenerator` composes patterns; `DistractorSelector` indexes source words by band, prefers a shared meaning category (countries, family, colours, food, places and more), then matching parts of speech, and deterministically selects options. A new pattern can be registered without rewriting the importer. Curriculum revision 5 rebuilds the bundled questions with these choices. Category matching uses English gloss heuristics and still needs editorial review for ambiguous senses.
+
+## Learner-created words (2026-11-15)
+
+Learn > Add word checks Hanzi, normalized Pinyin and English meaning against the installed catalogue and this profile's custom words. If any field matches, it identifies the matching word and moves that word to the front of the saved queue. A new word opens a second page for five distinct Chinese sentences with Pinyin and English translations, plus an optional English explanation. The app validates the draft, generates linked questions, and saves it at queue position zero. Custom words appear in the Custom words category and priority tier zero. Other profiles do not see them.
+
+Custom lessons use content schema 5, `pack_id=custom.p<profile>`, and the existing `curriculum_words`, `curriculum_examples`, `curriculum_sentences`, `curriculum_questions`, and `learning_queue` tables. The owner profile ID is stored in the word metadata. The ordinary lesson reader reconstructs and validates the linked content. Word and sentence playback use the existing offline Mandarin device TTS fallback; no recorded audio file is claimed. Seed upgrades replace bundled child rows while preserving learner-created rows and their queue entries. User-written examples are labelled as learner content, not source-checked dictionary material.
 
 | Pattern | Prompt → answer |
 |---|---|

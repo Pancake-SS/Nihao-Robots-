@@ -8,7 +8,7 @@ from pathlib import Path
 import sqlite3
 import tempfile
 
-from question_generation import Word, Example, QuestionBankGenerator, normalized
+from question_generation import Word, Example, QuestionBankGenerator, normalized, semantic_category
 from corpus_examples import CorpusExamples
 from fmld_dictionary import enrich
 
@@ -65,10 +65,12 @@ def build(destination=ROOT/'assets/content/curriculum.sqlite'):
     # Bounded deterministic pools avoid sorting 11k candidates for every pattern.
     pools = {}
     for target in pool:
-        key = (target.band, target.part_of_speech)
+        category = semantic_category(target.meaning)
+        key = (target.band, target.part_of_speech, category)
         if key not in pools:
             eligible = [w for w in pool if w.band <= target.band]
-            eligible.sort(key=lambda w: (w.part_of_speech != target.part_of_speech,
+            eligible.sort(key=lambda w: (semantic_category(w.meaning) != category if category else False,
+                w.part_of_speech != target.part_of_speech,
                 hashlib.sha256(w.id.encode()).hexdigest()))
             pools[key] = QuestionBankGenerator(eligible[:128])
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -107,7 +109,7 @@ def build(destination=ROOT/'assets/content/curriculum.sqlite'):
                         license='HearMandarin: CC BY 4.0. no7z examples/recordings and question adaptations: CC BY-SA 4.0. Supplemental Tatoeba sentences/translations: CC BY 2.0 FR. See per-example credits and bundled ATTRIBUTION.txt.')
                     target = Word.from_lesson(word)
                     # Unranked words remain visibly unranked; band 7 is only a pool bound.
-                    generator = pools[(row['band'] or 7, row['partOfSpeech'])]
+                    generator = pools[(row['band'] or 7, row['partOfSpeech'], semantic_category(row['meaning']))]
                     if target.band == 0:
                         target = Word(target.id,target.hanzi,target.pinyin,target.meaning,7,target.part_of_speech,target.examples)
                     word['questions'] = generator.generate(target)
@@ -148,7 +150,7 @@ def build(destination=ROOT/'assets/content/curriculum.sqlite'):
         assert not db.execute('SELECT w.id FROM curriculum_words w LEFT JOIN curriculum_questions q ON q.word_id=w.id GROUP BY w.id HAVING count(q.id)<7').fetchall()
         db.close()
         temporary.replace(destination)
-        manifest = dict(revision=4, sha256=hashlib.sha256(destination.read_bytes()).hexdigest(), counts=counts)
+        manifest = dict(revision=5, sha256=hashlib.sha256(destination.read_bytes()).hexdigest(), counts=counts)
         destination.with_suffix('.manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
         return manifest
     finally:

@@ -2,6 +2,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import hashlib
+from functools import lru_cache
 import re
 import unicodedata
 
@@ -14,6 +15,36 @@ def meanings(text):
     # Conservative lexical overlap filter, not a claim of semantic equivalence.
     return {re.sub(r'^to\s+', '', part.strip().casefold())
             for part in re.split(r'[;/]', text) if part.strip()}
+
+
+@lru_cache(maxsize=None)
+def semantic_category(meaning):
+    """A conservative English gloss group for plausible wrong answers."""
+    senses = [re.sub(r'^(?:to|a|an|the)\s+', '', part.strip().casefold())
+              for part in re.split(r'[;/]', meaning)]
+    countries = {'united states', 'america', 'usa', 'china', 'japan', 'korea',
+                 'south korea', 'north korea', 'france', 'germany', 'russia',
+                 'india', 'canada', 'australia', 'brazil', 'england',
+                 'united kingdom', 'britain', 'italy', 'spain', 'singapore',
+                 'malaysia', 'thailand', 'vietnam'}
+    if any(sense in countries for sense in senses): return 'country'
+    groups = (
+        ('family', r'\b(father|mother|dad|mom|parent|brother|sister|son|daughter|grandfather|grandmother|grandpa|grandma|uncle|aunt|husband|wife|cousin)\b'),
+        ('color', r'\b(red|blue|green|yellow|orange|purple|pink|black|white|brown|gray|grey|color|colour)\b'),
+        ('fruit', r'\b(apple|banana|orange|pear|peach|grape|strawberry|watermelon|mango|pineapple|fruit)\b'),
+        ('animal', r'\b(dog|cat|bird|fish|horse|cow|pig|sheep|rabbit|tiger|lion|bear|panda|animal)\b'),
+        ('transport', r'\b(car|bus|train|subway|metro|airplane|plane|taxi|bicycle|bike|ship|boat|transport)\b'),
+        ('time', r'\b(today|tomorrow|yesterday|morning|afternoon|evening|night|week|month|year|hour|minute|day)\b'),
+        ('place', r'\b(country|nation|city|town|village|province|continent|island|river|mountain|sea|ocean)\b'),
+        ('school', r'\b(teacher|student|school|classroom|classmate|lesson|homework|exam|university|college)\b'),
+        ('food', r'\b(rice|noodle|bread|egg|meat|chicken|beef|pork|vegetable|soup|dumpling|food|meal)\b'),
+        ('drink', r'\b(water|tea|coffee|milk|juice|beer|wine|drink|beverage)\b'),
+        ('body', r'\b(head|face|eye|ear|nose|mouth|hand|arm|leg|foot|heart|body)\b'),
+        ('weather', r'\b(rain|snow|wind|sun|cloud|weather|storm|temperature)\b'),
+    )
+    for name, pattern in groups:
+        if any(re.search(pattern, sense) for sense in senses): return name
+    return ''
 
 
 @dataclass(frozen=True)
@@ -67,7 +98,7 @@ class InsufficientDistractors(ValueError):
 
 
 class DistractorSelector:
-    """Index by level, prefer matching POS, and retain source word identity."""
+    """Prefer related glosses at the same level, then safe POS fallbacks."""
     def __init__(self, words):
         self.by_band = {}
         seen = set()
@@ -85,6 +116,8 @@ class DistractorSelector:
                       and normalized(word.pinyin) != normalized(target.pinyin)
                       and not (meanings(word.meaning) & target_meanings)]
         candidates.sort(key=lambda word: (
+            semantic_category(word.meaning) != semantic_category(target.meaning)
+            if semantic_category(target.meaning) else False,
             word.part_of_speech != target.part_of_speech,
             hashlib.sha256(f'{target.id}|{kind}|{word.id}'.encode()).hexdigest()))
         chosen = []

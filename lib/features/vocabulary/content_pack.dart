@@ -28,7 +28,7 @@ class VocabularyPack {
     }
     final pack = _record(decoded, {'schemaVersion', 'id', 'revision', 'words'});
     final schema = pack['schemaVersion'];
-    if (schema is! int || !{1, 2, 3, 4}.contains(schema)) {
+    if (schema is! int || !{1, 2, 3, 4, 5}.contains(schema)) {
       throw const FormatException('Unsupported content schema.');
     }
     final revision = pack['revision'];
@@ -56,10 +56,16 @@ class VocabularyPack {
         'audio',
         if (schema >= 2) 'questions',
         if (schema >= 3) 'details',
+        if (schema == 5) 'customExplanation',
       });
       final id = _id(word['id']);
       if (!ids.add(id)) throw const FormatException('Duplicate word ID.');
-      if (word['reviewStatus'] != 'approved' &&
+      if (schema == 5 &&
+          (word['reviewStatus'] != 'user-created' || word['details'] != null)) {
+        throw const FormatException('Invalid custom word status.');
+      }
+      if (schema != 5 &&
+          word['reviewStatus'] != 'approved' &&
           !(schema >= 2 && word['reviewStatus'] == 'source-checked-pilot') &&
           !(schema == 4 && word['reviewStatus'] == 'source-imported')) {
         throw const FormatException('Word review is incomplete.');
@@ -95,7 +101,7 @@ class VocabularyPack {
             'sourceUrl',
             'grammarTags',
             if (value is Map && value.containsKey('audio')) 'audio',
-            if (schema == 4 && value is Map) ...[
+            if (schema >= 4 && value is Map) ...[
               for (final key in [
                 'credit',
                 'translationSourceUrl',
@@ -115,10 +121,16 @@ class VocabularyPack {
             _text(example, 'pinyin', 1000),
             _text(example, 'meaning', 1000),
             traditional: schema >= 3
-                ? _text(example, 'traditional', 500)
+                ? schema == 5 && example['traditional'] == null
+                      ? null
+                      : _text(example, 'traditional', 500)
                 : null,
             sourceId: schema >= 3 ? _id(example['sourceId']) : null,
-            sourceUrl: schema >= 3 ? _https(example, 'sourceUrl') : null,
+            sourceUrl: schema >= 3
+                ? schema == 5 && example['sourceUrl'] == null
+                      ? null
+                      : _https(example, 'sourceUrl')
+                : null,
             grammarTags: schema >= 3 ? _tags(example['grammarTags']) : const [],
             audio: example['audio'] == null
                 ? null
@@ -148,7 +160,12 @@ class VocabularyPack {
           date,
           word['reviewStatus'] as String,
           schema >= 2 ? _questions(word['questions'], schema) : const [],
-          schema >= 3 ? WordDetails.parse(word['details']) : null,
+          schema >= 3 && schema != 5
+              ? WordDetails.parse(word['details'])
+              : null,
+          schema == 5 && word['customExplanation'] != null
+              ? _text(word, 'customExplanation', 2000)
+              : null,
         ),
       );
     }
@@ -177,6 +194,7 @@ class VocabularyEntry {
     this.reviewStatus,
     List<VocabularyQuestion> questions,
     this.details,
+    this.customExplanation,
   ) : examples = List.unmodifiable(examples),
       questions = List.unmodifiable(questions);
   final String id, hanzi, pinyin, meaning;
@@ -186,6 +204,7 @@ class VocabularyEntry {
   final String source, license, reviewedBy, reviewedOn;
   final String reviewStatus;
   final WordDetails? details;
+  final String? customExplanation;
 
   Map<String, Object?> toJson(int schema) => {
     'id': id,
@@ -200,7 +219,8 @@ class VocabularyEntry {
     'reviewStatus': reviewStatus,
     'audio': null,
     if (schema >= 2) 'questions': questions.map((q) => q.toJson()).toList(),
-    if (schema >= 3) 'details': details!.toJson(),
+    if (schema >= 3) 'details': details?.toJson(),
+    if (schema == 5) 'customExplanation': customExplanation,
   };
 }
 

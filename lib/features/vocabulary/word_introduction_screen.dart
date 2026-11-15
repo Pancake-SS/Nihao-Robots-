@@ -150,6 +150,14 @@ class WordIntroductionScreen extends ConsumerWidget {
                           ),
                         const SizedBox(height: 12),
                         Text(entry.meaning),
+                        if (entry.customExplanation != null) ...[
+                          const SizedBox(height: 12),
+                          Text(
+                            'Your explanation',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          Text(entry.customExplanation!),
+                        ],
                         const SizedBox(height: 20),
                         SpeechAudioControls(
                           session: audioSession,

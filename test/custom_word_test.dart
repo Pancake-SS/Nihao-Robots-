@@ -1,0 +1,220 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:ni_hao_robot/data/app_database.dart';
+import 'package:ni_hao_robot/features/vocabulary/add_word_screen.dart';
+import 'package:ni_hao_robot/features/profiles/profile.dart';
+import 'package:ni_hao_robot/features/profiles/sqlite_profile_repository.dart';
+import 'package:ni_hao_robot/features/vocabulary/curriculum_repository.dart';
+import 'package:ni_hao_robot/features/vocabulary/custom_word.dart';
+import 'package:ni_hao_robot/features/vocabulary/pinyin_input.dart';
+
+import 'curriculum_fixture.dart';
+
+const draft = CustomWordDraft(
+  hanzi: '机器人咖啡馆',
+  pinyin: 'jī qì rén kā fēi guǎn',
+  meaning: 'robot cafe',
+  explanation: 'A cafe served by robots.',
+  examples: [
+    CustomSentence(
+      '这个机器人咖啡馆很大。',
+      'Zhège jīqìrén kāfēiguǎn hěn dà.',
+      'This robot cafe is big.',
+    ),
+    CustomSentence(
+      '我喜欢这个机器人咖啡馆。',
+      'Wǒ xǐhuan zhège jīqìrén kāfēiguǎn.',
+      'I like this robot cafe.',
+    ),
+    CustomSentence(
+      '那个机器人咖啡馆很远。',
+      'Nàge jīqìrén kāfēiguǎn hěn yuǎn.',
+      'That robot cafe is far away.',
+    ),
+    CustomSentence(
+      '机器人咖啡馆里有水。',
+      'Jīqìrén kāfēiguǎn lǐ yǒu shuǐ.',
+      'There is water in the robot cafe.',
+    ),
+    CustomSentence(
+      '这是新的机器人咖啡馆。',
+      'Zhè shì xīn de jīqìrén kāfēiguǎn.',
+      'This is a new robot cafe.',
+    ),
+  ],
+);
+
+void main() {
+  test(
+    'custom questions prefer related choices and reject missing examples',
+    () {
+      final country = CustomWordDraft(
+        hanzi: '美國',
+        pinyin: 'měi guó',
+        meaning: 'America',
+        examples: draft.examples,
+      );
+      final questions = CustomWordQuestions.build(
+        'custom.test',
+        country,
+        const [
+          CustomChoiceWord('中国', 'zhōng guó', 'China'),
+          CustomChoiceWord('日本', 'rì běn', 'Japan'),
+          CustomChoiceWord('韩国', 'hán guó', 'South Korea'),
+          CustomChoiceWord('苹果', 'píng guǒ', 'apple'),
+        ],
+      );
+      final meaning = questions.first;
+      final choices = (meaning['options'] as List)
+          .cast<Map<String, String>>()
+          .map((e) => e['text'])
+          .toSet();
+      expect(
+        choices,
+        containsAll(['America', 'China', 'Japan', 'South Korea']),
+      );
+      expect(choices, isNot(contains('apple')));
+      expect(
+        () => const CustomWordDraft(
+          hanzi: '机器人咖啡馆',
+          pinyin: 'jī qì rén kā fēi guǎn',
+          meaning: 'robot cafe',
+          examples: [],
+        ).validate(),
+        throwsFormatException,
+      );
+    },
+  );
+
+  test(
+    'saved custom lesson is linked, prioritized, private and detects clashes',
+    () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
+      final profiles = SqliteProfileRepository(db);
+      final first = (await profiles.create(const ProfileDraft(name: 'First')))
+          .selected!
+          .id;
+      final second = (await profiles.create(const ProfileDraft(name: 'Second')))
+          .selected!
+          .id;
+      final repo = fullCurriculum(db);
+      final saved = await repo.addCustomWord(first, draft);
+      expect((await repo.page(first)).words.first.id, saved.id);
+      expect((await repo.page(first, priority: 0)).words.first.id, saved.id);
+      expect(
+        (await repo.page(
+          first,
+          category: WordCategory.customWords,
+        )).words.single.id,
+        saved.id,
+      );
+      expect(
+        (await repo.page(second, category: WordCategory.customWords)).words,
+        isEmpty,
+      );
+      final lesson = (await repo.lesson(saved.id))!;
+      expect(lesson.entry.examples, hasLength(5));
+      expect(lesson.entry.questions.length, greaterThanOrEqualTo(7));
+      expect(lesson.entry.customExplanation, draft.explanation);
+      expect(lesson.entry.reviewStatus, 'user-created');
+      expect(lesson.entry.examples.every((e) => e.audio == null), isTrue);
+      expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
+      final clash = await repo.findCustomClash(
+        first,
+        draft.hanzi,
+        draft.pinyin,
+        draft.meaning,
+      );
+      expect(clash!.word.id, saved.id);
+      expect(clash.fields, containsAll(['Hanzi', 'Pinyin', 'English meaning']));
+      final pinyinClash = await repo.findCustomClash(
+        first,
+        '${draft.hanzi}甲',
+        draft.pinyin,
+        'made up learning term',
+      );
+      expect(pinyinClash!.word.id, saved.id);
+      expect(pinyinClash.fields, contains('Pinyin'));
+      final meaningClash = await repo.findCustomClash(
+        first,
+        '${draft.hanzi}乙',
+        'quán xīn cí',
+        draft.meaning,
+      );
+      expect(meaningClash!.word.id, saved.id);
+      expect(meaningClash.fields, contains('English meaning'));
+      await expectLater(
+        repo.addCustomWord(first, draft),
+        throwsA(isA<CustomWordConflict>()),
+      );
+      expect((await repo.lesson(saved.id))!.entry.questions, isNotEmpty);
+
+      // A later bundled curriculum revision must keep learner-written rows.
+      final manifest = jsonDecode(
+        File('assets/content/curriculum.manifest.json').readAsStringSync(),
+      ) as Map<String, dynamic>;
+      final upgraded = CurriculumRepository(
+        db,
+        seedFile: File('assets/content/curriculum.sqlite'),
+        manifest: {...manifest, 'revision': (manifest['revision'] as int) + 1},
+      );
+      await upgraded.ready();
+      expect((await upgraded.lesson(saved.id))!.entry.examples, hasLength(5));
+      expect((await upgraded.page(first)).words.first.id, saved.id);
+      expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
+    },
+  );
+
+  testWidgets('add word checks fields and opens the five-example page', (
+    tester,
+  ) async {
+    final db = AppDatabase(NativeDatabase.memory());
+    final profile = (await SqliteProfileRepository(
+      db,
+    ).create(const ProfileDraft(name: 'Editor'))).selected!.id;
+    final repo = fullCurriculum(db);
+    await tester.runAsync(repo.ready);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          curriculumRepositoryProvider.overrideWithValue(repo),
+          pinyinInputEngineProvider.overrideWith(
+            (ref) async => PinyinInputEngine([]),
+          ),
+        ],
+        child: MaterialApp(home: AddWordScreen(profileId: profile)),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('custom-word-hanzi')),
+      draft.hanzi,
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('custom-word-pinyin')),
+      draft.pinyin,
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('custom-word-meaning')),
+      draft.meaning,
+    );
+    await tester.ensureVisible(find.text('Check word and continue'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Check word and continue'));
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 500)),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Examples for ${draft.hanzi}'), findsOneWidget);
+    expect(find.textContaining('five different sentences'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+    await db.close();
+  }, timeout: const Timeout(Duration(minutes: 2)));
+}

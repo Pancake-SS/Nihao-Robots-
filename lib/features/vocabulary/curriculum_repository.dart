@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:drift/drift.dart';
@@ -10,6 +11,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/app_database.dart';
 import '../../data/database_provider.dart';
 import 'content_pack.dart';
+import 'custom_word.dart';
+import 'pinyin_input.dart';
 import 'vocabulary_repository.dart';
 import 'word_teaching.dart';
 
@@ -26,7 +29,20 @@ class QueuePage {
   final bool hasMore;
 }
 
+class CustomWordClash {
+  const CustomWordClash(this.word, this.fields, this.alreadyStarted);
+  final QueueWord word;
+  final List<String> fields;
+  final bool alreadyStarted;
+}
+
+class CustomWordConflict implements Exception {
+  const CustomWordConflict(this.clash);
+  final CustomWordClash clash;
+}
+
 enum WordCategory {
+  customWords('Custom words', []),
   measureWords('Measure words', ['measure word']),
   numbers('Numbers', ['numeral', 'quantity']),
   nouns('Nouns', ['noun']),
@@ -126,12 +142,25 @@ class CurriculumRepository {
         );
         await database.customStatement('''INSERT INTO curriculum_sentences SELECT * FROM curriculum_seed.curriculum_sentences WHERE true
           ON CONFLICT(id) DO UPDATE SET payload_json=excluded.payload_json''');
+        // A seed revision replaces bundled child rows without deleting local
+        // learner-authored lessons or their examples and question links.
+        await database.customStatement(
+          '''DELETE FROM curriculum_examples
+          WHERE word_id IN (SELECT id FROM curriculum_seed.curriculum_words)''',
+        );
+        await database.customStatement(
+          '''DELETE FROM curriculum_questions
+          WHERE word_id IN (SELECT id FROM curriculum_seed.curriculum_words)''',
+        );
+        await database.customStatement(
+          '''DELETE FROM curriculum_audio
+          WHERE sentence_id IN (SELECT id FROM curriculum_seed.curriculum_sentences)''',
+        );
         for (final table in [
           'curriculum_examples',
           'curriculum_audio',
           'curriculum_questions',
         ]) {
-          await database.customStatement('DELETE FROM $table');
           await database.customStatement(
             'INSERT INTO $table SELECT * FROM curriculum_seed.$table',
           );
@@ -181,6 +210,7 @@ class CurriculumRepository {
               ..orderBy([(q) => OrderingTerm.asc(q.position)]))
             .get();
     final word = jsonDecode(row.metadataJson) as Map<String, dynamic>;
+    word.remove('ownerProfileId');
     final teaching = (word.remove('teaching') as List? ?? [])
         .map((sense) => TeachingSense(sense as Map<String, dynamic>))
         .toList();
@@ -227,10 +257,220 @@ class CurriculumRepository {
         INSERT INTO learning_queue(profile_id,word_id,position)
         SELECT ?, w.id, COALESCE((SELECT max(position)+1 FROM learning_queue WHERE profile_id=?),0)
           + ROW_NUMBER() OVER(ORDER BY w.default_position,w.id)-1
-        FROM curriculum_words w WHERE NOT EXISTS
+        FROM curriculum_words w WHERE (w.pack_id NOT LIKE 'custom.%'
+          OR json_extract(w.metadata_json,'\$.ownerProfileId')=?) AND NOT EXISTS
           (SELECT 1 FROM learning_queue q WHERE q.profile_id=? AND q.word_id=w.id)
       ''',
-        [profile, profile, profile],
+        [profile, profile, profile, profile],
+      );
+    });
+  }
+
+  Future<CustomWordClash?> findCustomClash(
+    int profile,
+    String hanzi,
+    String pinyin,
+    String meaning,
+  ) async {
+    CustomWordDraft.validateWord(hanzi, pinyin, meaning);
+    await _queue(profile);
+    return _customClash(profile, hanzi, pinyin, meaning);
+  }
+
+  Future<CustomWordClash?> _customClash(
+    int profile,
+    String hanzi,
+    String pinyin,
+    String meaning,
+  ) async {
+    final rows = await database
+        .customSelect(
+          '''
+      SELECT w.id,w.hanzi,w.pinyin,w.meaning,
+        CASE WHEN p.word_id IS NULL THEN 0 ELSE 1 END AS started
+      FROM curriculum_words w
+      LEFT JOIN vocabulary_progress p ON p.word_id=w.id AND p.profile_id=?
+      WHERE w.pack_id NOT LIKE 'custom.%'
+        OR json_extract(w.metadata_json,'\$.ownerProfileId')=?
+      ORDER BY w.default_position,w.id
+    ''',
+          variables: [Variable(profile), Variable(profile)],
+        )
+        .get();
+    final wantedPinyin = PinyinInputEngine.normalize(pinyin);
+    final wantedMeaning = meaning.trim().toLowerCase();
+    CustomWordClash? best;
+    var bestScore = 0;
+    for (final row in rows) {
+      final fields = <String>[];
+      if (row.read<String>('hanzi') == hanzi.trim()) fields.add('Hanzi');
+      if (wantedPinyin.isNotEmpty &&
+          PinyinInputEngine.normalize(row.read<String>('pinyin')) ==
+              wantedPinyin) {
+        fields.add('Pinyin');
+      }
+      if (row.read<String>('meaning').trim().toLowerCase() == wantedMeaning) {
+        fields.add('English meaning');
+      }
+      final score =
+          (fields.contains('Hanzi') ? 4 : 0) +
+          (fields.contains('Pinyin') ? 2 : 0) +
+          (fields.contains('English meaning') ? 1 : 0);
+      if (score > bestScore) {
+        bestScore = score;
+        best = CustomWordClash(
+          QueueWord(
+            row.read<String>('id'),
+            row.read<String>('hanzi'),
+            row.read<String>('pinyin'),
+            row.read<String>('meaning'),
+          ),
+          List.unmodifiable(fields),
+          row.read<int>('started') == 1,
+        );
+        if (score == 7) break;
+      }
+    }
+    return best;
+  }
+
+  Future<void> bringToFront(int profile, String id) =>
+      move(profile, id, 'front');
+
+  Future<QueueWord> addCustomWord(int profile, CustomWordDraft draft) async {
+    draft.validate();
+    await _queue(profile);
+    return database.transaction(() async {
+      final clash = await _customClash(
+        profile,
+        draft.hanzi,
+        draft.pinyin,
+        draft.meaning,
+      );
+      if (clash != null) throw CustomWordConflict(clash);
+      final random = Random.secure();
+      final suffix = List.generate(
+        16,
+        (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0'),
+      ).join();
+      final id = 'custom.p$profile.$suffix';
+      final pool = await database
+          .customSelect(
+            '''
+        SELECT hanzi,pinyin,meaning FROM curriculum_words
+        WHERE pack_id NOT LIKE 'custom.%'
+          OR json_extract(metadata_json,'\$.ownerProfileId')=?
+        ORDER BY default_position,id
+      ''',
+            variables: [Variable(profile)],
+          )
+          .get();
+      final questions = CustomWordQuestions.build(
+        id,
+        draft,
+        pool.map(
+          (row) => CustomChoiceWord(
+            row.read<String>('hanzi'),
+            row.read<String>('pinyin'),
+            row.read<String>('meaning'),
+          ),
+        ),
+      );
+      final today = DateTime.now().toUtc().toIso8601String().substring(0, 10);
+      final word = <String, Object?>{
+        'id': id,
+        'hanzi': draft.hanzi.trim(),
+        'pinyin': draft.pinyin.trim(),
+        'meaning': draft.meaning.trim(),
+        'examples': [
+          for (var i = 0; i < 5; i++)
+            {
+              'hanzi': draft.examples[i].hanzi.trim(),
+              'pinyin': draft.examples[i].pinyin.trim(),
+              'meaning': draft.examples[i].meaning.trim(),
+              'traditional': null,
+              'sourceId': '$id.example.$i',
+              'sourceUrl': null,
+              'grammarTags': <String>[],
+              'credit': 'Written by this learner',
+            },
+        ],
+        'source': 'Learner-created content on this device.',
+        'license': 'User-created text; no external source license asserted.',
+        'reviewedBy': 'Learner; independent language review not performed',
+        'reviewedOn': today,
+        'reviewStatus': 'user-created',
+        'audio': null,
+        'questions': questions,
+        'details': null,
+        'customExplanation': draft.explanation.trim().isEmpty
+            ? null
+            : draft.explanation.trim(),
+      };
+      // The same lesson parser used by source content validates every linked
+      // example and question before any database write occurs.
+      VocabularyPack.parse(
+        jsonEncode({
+          'schemaVersion': 5,
+          'id': 'custom.p$profile',
+          'revision': 1,
+          'words': [word],
+        }),
+      );
+      final stored = {...word, 'ownerProfileId': profile};
+      final search =
+          '${draft.hanzi} ${draft.pinyin} ${draft.meaning} '
+                  '${PinyinInputEngine.normalize(draft.pinyin)}'
+              .toLowerCase();
+      await database.customStatement(
+        '''
+        INSERT INTO curriculum_words(id,pack_id,revision,content_schema,hanzi,pinyin,meaning,search_text,default_position,metadata_json)
+        VALUES(?,?,?,?,?,?,?,?,?,?)
+      ''',
+        [
+          id,
+          'custom.p$profile',
+          1,
+          5,
+          draft.hanzi.trim(),
+          draft.pinyin.trim(),
+          draft.meaning.trim(),
+          search,
+          -1,
+          jsonEncode(stored),
+        ],
+      );
+      for (var i = 0; i < 5; i++) {
+        final sid = '$id.sentence.$i';
+        final example = (word['examples'] as List)[i];
+        await database.customStatement(
+          'INSERT INTO curriculum_sentences(id,payload_json) VALUES(?,?)',
+          [sid, jsonEncode(example)],
+        );
+        await database.customStatement(
+          'INSERT INTO curriculum_examples(word_id,sentence_id,position) VALUES(?,?,?)',
+          [id, sid, i],
+        );
+      }
+      for (var i = 0; i < questions.length; i++) {
+        await database.customStatement(
+          'INSERT INTO curriculum_questions(id,word_id,position,payload_json) VALUES(?,?,?,?)',
+          [questions[i]['id'], id, i, jsonEncode(questions[i])],
+        );
+      }
+      await database.customStatement(
+        'UPDATE learning_queue SET position=position+1 WHERE profile_id=?',
+        [profile],
+      );
+      await database.customStatement(
+        'INSERT INTO learning_queue(profile_id,word_id,position) VALUES(?,?,0)',
+        [profile, id],
+      );
+      return QueueWord(
+        id,
+        draft.hanzi.trim(),
+        draft.pinyin.trim(),
+        draft.meaning.trim(),
       );
     });
   }
@@ -255,8 +495,12 @@ class CurriculumRepository {
       SELECT w.id,w.hanzi,w.pinyin,w.meaning FROM learning_queue q
       JOIN curriculum_words w ON w.id=q.word_id
       WHERE q.profile_id=? AND instr(w.search_text,?)>0
-      ${priority == null ? '' : "AND COALESCE(json_extract(w.metadata_json,'\$.details.learningPriority.tier'),4)=?"}
-      ${category == null ? '' : "AND (${category.partsOfSpeech.map((_) => "instr(';' || replace(COALESCE(json_extract(w.metadata_json,'\$.details.partOfSpeech'),''),'; ',';') || ';', ?) > 0").join(' OR ')})"}
+      ${priority == null ? '' : "AND CASE WHEN w.pack_id LIKE 'custom.%' THEN 0 ELSE COALESCE(json_extract(w.metadata_json,'\$.details.learningPriority.tier'),4) END=?"}
+      ${category == WordCategory.customWords
+              ? "AND w.pack_id LIKE 'custom.%'"
+              : category == null
+              ? ''
+              : "AND (${category.partsOfSpeech.map((_) => "instr(';' || replace(COALESCE(json_extract(w.metadata_json,'\$.details.partOfSpeech'),''),'; ',';') || ';', ?) > 0").join(' OR ')})"}
       AND NOT EXISTS (SELECT 1 FROM vocabulary_progress p WHERE p.profile_id=q.profile_id AND p.word_id=q.word_id)
       ORDER BY ${priorityOrder ? 'w.default_position' : 'q.position'},q.word_id LIMIT 21 OFFSET ?
     ''',
@@ -264,7 +508,7 @@ class CurriculumRepository {
             Variable(profile),
             Variable(search.trim().toLowerCase()),
             if (priority != null) Variable(priority),
-            if (category != null)
+            if (category != null && category != WordCategory.customWords)
               ...category.partsOfSpeech.map((part) => Variable(';$part;')),
             Variable(offset),
           ],

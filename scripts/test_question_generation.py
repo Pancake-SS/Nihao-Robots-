@@ -2,6 +2,7 @@ from dataclasses import replace
 import unittest
 
 from question_generation import (Choice, DistractorSelector, InsufficientDistractors,
+                                 semantic_category,
                                  QuestionBankGenerator, QuestionPattern, Word, Example)
 
 
@@ -49,6 +50,17 @@ class QuestionGenerationTests(unittest.TestCase):
         questions = QuestionBankGenerator(self.pool).generate(replace(self.target, examples=()))
         self.assertEqual(len(questions), 7)
         self.assertNotIn('cloze', [q['kind'] for q in questions])
+
+    def test_countries_prefer_countries_over_unrelated_nouns(self):
+        target = Word('america', '美国', 'Měiguó', 'United States', 2, 'noun')
+        related = [Word('japan', '日本', 'Rìběn', 'Japan', 2, 'noun'),
+                   Word('korea', '韩国', 'Hánguó', 'South Korea', 2, 'noun'),
+                   Word('china', '中国', 'Zhōngguó', 'China', 1, 'noun')]
+        others = [Word(f'object-{i}', f'物{i}', f'wu{i}', f'object {i}', 1, 'noun')
+                  for i in range(12)]
+        self.assertEqual(semantic_category(target.meaning), 'country')
+        chosen = DistractorSelector([target, *others, *related]).choose(target, 'pinyin')
+        self.assertEqual({w.id for w in chosen}, {w.id for w in related})
 
     def test_new_pattern_can_be_registered_without_editing_generator(self):
         class CustomPattern(QuestionPattern):
