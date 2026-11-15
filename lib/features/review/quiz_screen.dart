@@ -3,11 +3,16 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/theme.dart';
+import '../../shared/app_brand.dart';
 import '../../shared/learning_card.dart';
+import '../../shared/robot_art.dart';
+import '../../shared/cozy_ui.dart';
 import '../vocabulary/content_pack.dart';
 import 'learning.dart';
 import 'chinese_answer_input.dart';
 import 'learning_providers.dart';
+import 'quiz_practice.dart';
 
 class QuizScreen extends ConsumerStatefulWidget {
   const QuizScreen({
@@ -26,11 +31,11 @@ class QuizScreen extends ConsumerStatefulWidget {
 class _QuizScreenState extends ConsumerState<QuizScreen> {
   QuizSession? _session;
   SavedAttempt? _receipt;
-  final _answers = <String, String>{};
+  QuizPractice? _practice;
   bool _loading = true, _saving = false, _conflict = false;
   bool _submitted = false;
   String? _error;
-  int _index = 0;
+
   final _scroll = ScrollController();
 
   List<MapEntry<String, String>> _choices(VocabularyQuestion question) =>
@@ -61,6 +66,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       if (mounted)
         setState(() {
           _session = session;
+          _practice = QuizPractice(session.word.entry.questions);
           _loading = false;
         });
     } catch (e) {
@@ -75,7 +81,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   }
 
   Future<void> _submit() async {
-    if (_saving || _conflict || _receipt != null) return;
+    if (_saving || _conflict || _receipt != null || _practice?.complete != true)
+      return;
     setState(() {
       _saving = true;
       _submitted = true;
@@ -84,7 +91,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     try {
       final receipt = await ref
           .read(learningRepositoryProvider)
-          .submit(_session!, _answers);
+          .submit(_session!, _practice!.firstAnswers);
       if (!mounted) return;
       ref.invalidate(learningProgressProvider(widget.profileId));
       setState(() {
@@ -107,192 +114,234 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   Widget build(BuildContext context) {
     final session = _session;
     final receipt = _receipt;
+    final practice = _practice;
     return PopScope(
       canPop: !_saving,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.review ? 'Vocabulary review' : 'First word quiz'),
+          title: AppScreenTitle(
+            widget.review ? 'Vocabulary review' : 'First word quiz',
+          ),
         ),
         body: _loading
             ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                controller: _scroll,
-                padding: const EdgeInsets.all(20),
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 780),
-                    child: LearningCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          if (receipt != null) ...[
-                            Text(
-                              'Attempt saved',
-                              style: Theme.of(context).textTheme.headlineLarge,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              receipt.passed
-                                  ? 'All ${session!.word.entry.questions.length} checks were correct.'
-                                  : 'Keep practising. Your answers and next review are saved.',
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              'Next review: ${MaterialLocalizations.of(context).formatFullDate(receipt.nextDueAt.toLocal())}, '
-                              '${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(receipt.nextDueAt.toLocal()))}',
-                            ),
-                            const SizedBox(height: 12),
-                            const Text(
-                              'This checkpoint does not award mastery. Return to Vocabulary Practice when the review is due.',
-                            ),
-                            for (final q in session!.word.entry.questions) ...[
-                              const Divider(height: 32),
-                              Text(q.prompt),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Your answer: ${q.displayAnswer(_answers[q.id]!)}',
-                              ),
-                              Text('Correct answer: ${q.correctAnswer}'),
-                              const SizedBox(height: 8),
-                              Text(q.explanation),
-                            ],
-                            const SizedBox(height: 24),
-                            FilledButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Done'),
-                            ),
-                          ] else if (session != null) ...[
-                            Text(
-                              'Question ${_index + 1} of ${session.word.entry.questions.length}',
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              session.word.entry.questions[_index].prompt,
-                              style: Theme.of(context).textTheme.headlineSmall,
-                            ),
-                            const SizedBox(height: 24),
-                            if (session.word.entry.questions[_index].isTyped)
-                              ChineseAnswerInput(
-                                key: ValueKey(
-                                  'input-${session.word.entry.questions[_index].id}',
+            : WarmPageBackground(
+                child: SingleChildScrollView(
+                  controller: _scroll,
+                  padding: const EdgeInsets.all(20),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 780),
+                      child: LearningCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(9),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.yellow,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: const Icon(
+                                    Icons.auto_stories_rounded,
+                                    size: 23,
+                                  ),
                                 ),
-                                answerKey: ValueKey(
-                                  'typed-${session.word.entry.questions[_index].id}',
-                                ),
-                                initialValue:
-                                    _answers[session
-                                        .word
-                                        .entry
-                                        .questions[_index]
-                                        .id] ??
-                                    '',
-                                enabled: !_submitted && !_conflict,
-                                onChanged: (value) => setState(
-                                  () =>
-                                      _answers[session
-                                              .word
-                                              .entry
-                                              .questions[_index]
-                                              .id] =
-                                          value,
-                                ),
-                              )
-                            else
-                              for (final option in _choices(
-                                session.word.entry.questions[_index],
-                              )) ...[
-                                Semantics(
-                                  selected:
-                                      _answers[session
-                                          .word
-                                          .entry
-                                          .questions[_index]
-                                          .id] ==
-                                      option.key,
-                                  child: OutlinedButton(
-                                    key: ValueKey('answer-${option.key}'),
-                                    style: OutlinedButton.styleFrom(
-                                      alignment: Alignment.centerLeft,
-                                    ),
-                                    onPressed: _submitted || _conflict
-                                        ? null
-                                        : () => setState(
-                                            () =>
-                                                _answers[session
-                                                        .word
-                                                        .entry
-                                                        .questions[_index]
-                                                        .id] =
-                                                    option.key,
-                                          ),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          _answers[session
-                                                      .word
-                                                      .entry
-                                                      .questions[_index]
-                                                      .id] ==
-                                                  option.key
-                                              ? Icons.radio_button_checked
-                                              : Icons.radio_button_off,
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Expanded(child: Text(option.value)),
-                                      ],
+                                const SizedBox(width: 11),
+                                Expanded(
+                                  child: Text(
+                                    widget.review
+                                        ? 'YOUR REVIEW SESSION'
+                                        : 'WORD CHECKPOINT',
+                                    style: const TextStyle(
+                                      letterSpacing: 1,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w800,
+                                      color: AppColors.mutedInk,
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 12),
+                                const RobotArt(
+                                  artwork: RobotArtwork.shyOnPaper,
+                                  size: 62,
+                                ),
                               ],
-                            FilledButton(
-                              onPressed:
-                                  _saving ||
-                                      _conflict ||
-                                      !session.word.entry.questions[_index]
-                                          .accepts(
-                                            _answers[session
-                                                .word
-                                                .entry
-                                                .questions[_index]
-                                                .id],
-                                          )
-                                  ? null
-                                  : _index ==
-                                        session.word.entry.questions.length - 1
-                                  ? _submit
-                                  : () {
-                                      setState(() => _index++);
-                                      _scroll.jumpTo(0);
-                                    },
-                              child: Text(
-                                _saving
-                                    ? 'Saving…'
-                                    : _index ==
-                                          session.word.entry.questions.length -
-                                              1
-                                    ? _error == null
-                                          ? 'Save answers'
-                                          : 'Try saving again'
-                                    : 'Next question',
-                              ),
                             ),
-                          ],
-                          if (_error != null) ...[
                             const SizedBox(height: 16),
-                            Semantics(liveRegion: true, child: Text(_error!)),
-                            if (session == null)
-                              TextButton(
-                                onPressed: _begin,
-                                child: const Text('Try again'),
+                            if (receipt != null) ...[
+                              Text(
+                                'Attempt saved',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineLarge,
                               ),
-                            if (_conflict)
-                              TextButton(
+                              const SizedBox(height: 16),
+                              Text(
+                                receipt.passed
+                                    ? 'All ${session!.word.entry.questions.length} answers were correct on your first try.'
+                                    : 'You corrected every missed question. ${practice!.firstCorrectCount} of ${practice.questions.length} answers were correct on your first try.',
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Next review: ${MaterialLocalizations.of(context).formatFullDate(receipt.nextDueAt.toLocal())}, '
+                                '${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(receipt.nextDueAt.toLocal()))}',
+                              ),
+                              const SizedBox(height: 12),
+                              const Text(
+                                'This checkpoint does not award mastery. Return to Vocabulary Practice when the review is due.',
+                              ),
+                              if (!receipt.passed) ...[
+                                const SizedBox(height: 20),
+                                Text(
+                                  'Questions to revisit',
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
+                              ],
+                              for (final q
+                                  in session!.word.entry.questions.where(
+                                    (q) => !q.isCorrect(
+                                      practice!.firstAnswers[q.id],
+                                    ),
+                                  )) ...[
+                                const Divider(height: 32),
+                                Text(q.prompt),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'First answer: ${q.displayAnswer(practice!.firstAnswers[q.id]!)}',
+                                ),
+                                Text('Correct answer: ${q.correctAnswer}'),
+                                const SizedBox(height: 8),
+                                Text(q.explanation),
+                              ],
+                              const SizedBox(height: 24),
+                              FilledButton(
                                 onPressed: () => Navigator.pop(context),
-                                child: const Text('Return'),
+                                child: const Text('Done'),
                               ),
+                            ] else if (session != null && practice != null) ...[
+                              Text(
+                                '${practice.isRetry ? 'Try again \u00b7 ' : ''}Question ${practice.questionNumber} of ${practice.questions.length}',
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                practice.current.prompt,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall,
+                              ),
+                              const SizedBox(height: 24),
+                              if (practice.current.isTyped)
+                                ChineseAnswerInput(
+                                  key: ValueKey(
+                                    'input-${practice.visit}-${practice.current.id}',
+                                  ),
+                                  answerKey: ValueKey(
+                                    'typed-${practice.current.id}',
+                                  ),
+                                  initialValue: practice.answer ?? '',
+                                  enabled:
+                                      !practice.checked &&
+                                      !_submitted &&
+                                      !_conflict,
+                                  onChanged: (value) =>
+                                      setState(() => practice.choose(value)),
+                                )
+                              else
+                                for (final option in _choices(
+                                  practice.current,
+                                )) ...[
+                                  Semantics(
+                                    selected: practice.answer == option.key,
+                                    child: OutlinedButton(
+                                      key: ValueKey('answer-${option.key}'),
+                                      style: OutlinedButton.styleFrom(
+                                        alignment: Alignment.centerLeft,
+                                      ),
+                                      onPressed:
+                                          practice.checked ||
+                                              _submitted ||
+                                              _conflict
+                                          ? null
+                                          : () => setState(
+                                              () => practice.choose(option.key),
+                                            ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            practice.answer == option.key
+                                                ? Icons.radio_button_checked
+                                                : Icons.radio_button_off,
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(child: Text(option.value)),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                ],
+                              if (practice.checked) ...[
+                                Semantics(
+                                  liveRegion: true,
+                                  child: Text(
+                                    practice.correct! ? 'Correct!' : 'Not quite. You will try this question again at the end.',
+                                    key: const ValueKey('answer-feedback'),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium,
+                                  ),
+                                ),
+                                if (!practice.correct!)
+                                  Text(
+                                    'Correct answer: ${practice.current.correctAnswer}',
+                                  ),
+                                Text(practice.current.explanation),
+                                const SizedBox(height: 16),
+                              ],
+                              FilledButton(
+                                onPressed: _saving || _conflict
+                                    ? null
+                                    : !practice.checked
+                                    ? practice.canCheck
+                                          ? () => setState(practice.check)
+                                          : null
+                                    : practice.complete
+                                    ? _submit
+                                    : () {
+                                        setState(practice.next);
+                                        _scroll.jumpTo(0);
+                                      },
+                                child: Text(
+                                  _saving
+                                      ? 'Saving\u2026'
+                                      : !practice.checked
+                                      ? 'Check answer'
+                                      : practice.complete
+                                      ? _error == null
+                                            ? 'Save answers'
+                                            : 'Try saving again'
+                                      : 'Next question',
+                                ),
+                              ),
+                            ],
+                            if (_error != null) ...[
+                              const SizedBox(height: 16),
+                              Semantics(liveRegion: true, child: Text(_error!)),
+                              if (session == null)
+                                TextButton(
+                                  onPressed: _begin,
+                                  child: const Text('Try again'),
+                                ),
+                              if (_conflict)
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Return'),
+                                ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
                     ),
                   ),

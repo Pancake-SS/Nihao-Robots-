@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+
+import '../../shared/app_brand.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/theme.dart';
+import '../../shared/cozy_ui.dart';
 import '../../shared/robot_art.dart';
 import '../profiles/profile.dart';
 import 'foundation_content.dart';
@@ -73,123 +77,318 @@ class _FoundationScreenState extends ConsumerState<FoundationScreen> {
   Widget build(BuildContext context) {
     final page = foundationPages[_step];
     final last = _step == foundationPages.length - 1;
+    final story =
+        _step < 5 &&
+        MediaQuery.sizeOf(context).width >= 550 &&
+        MediaQuery.textScalerOf(context).scale(16) <= 24;
     return PopScope(
       canPop: !_saving,
       child: Scaffold(
-        appBar: AppBar(title: const Text('First steps')),
-        body: SingleChildScrollView(
-          controller: _scroll,
-          padding: const EdgeInsets.all(20),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 760),
-              child: Material(
-                color: AppColors.paper,
-                borderRadius: BorderRadius.circular(24),
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Step ${_step + 1} of ${foundationPages.length}',
-                        key: const Key('foundation-position'),
-                      ),
-                      const SizedBox(height: 12),
-                      LinearProgressIndicator(
+        appBar: AppBar(title: const AppScreenTitle('First steps')),
+        body: WarmPageBackground(
+          child: SingleChildScrollView(
+            controller: _scroll,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 22),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 900),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      spacing: 12,
+                      runSpacing: 4,
+                      children: [
+                        Text(
+                          'Step ${_step + 1} of ${foundationPages.length}',
+                          key: const Key('foundation-position'),
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 1.4,
+                            color: AppColors.mutedInk,
+                          ),
+                        ),
+                        Text(
+                          '${_step + 1} / ${foundationPages.length}',
+                          style: const TextStyle(fontWeight: FontWeight.w800),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 9),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: LinearProgressIndicator(
                         value: (_step + 1) / foundationPages.length,
                         semanticsLabel: 'Introduction position',
                       ),
-                      const SizedBox(height: 24),
-                      Text(
-                        page.title,
-                        style: Theme.of(context).textTheme.headlineLarge,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(page.body),
-                      if (_step == 0)
-                        const Center(
-                          child: RobotArt(
-                            artwork: RobotArtwork.orbOnPaper,
-                            size: 160,
-                          ),
-                        ),
-                      if (page.hanzi != null) ...[
-                        const SizedBox(height: 24),
-                        Text(
-                          page.hanzi!,
-                          style: Theme.of(context).textTheme.headlineLarge,
-                        ),
-                      ],
-                      if (page.pinyin != null &&
-                          (widget.profile.showPinyin ||
-                              page.teachesPinyin)) ...[
-                        const SizedBox(height: 12),
-                        Text(
-                          page.pinyin!,
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-                      ],
-                      if (page.translation != null) ...[
-                        const SizedBox(height: 12),
-                        Text(page.translation!),
-                      ],
-                      if (_step >= 5) ...[
-                        const SizedBox(height: 24),
-                        const Text(
-                          'Audio is not available in this introduction.',
-                        ),
-                      ],
-                      if (_error != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16),
-                          child: Semantics(
-                            liveRegion: true,
-                            child: Text(_error!),
-                          ),
-                        ),
-                      const SizedBox(height: 28),
-                      const Text(
-                        'Select Next to continue. Your place is saved as you go.',
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 12,
-                        runSpacing: 12,
-                        children: [
-                          if (_step > 0)
-                            OutlinedButton(
-                              onPressed: _saving
-                                  ? null
-                                  : () => _save(_step - 1),
-                              child: const Text('Back'),
-                            ),
-                          FilledButton(
-                            onPressed: _saving
-                                ? null
-                                : () => _save(
-                                    last ? _step : _step + 1,
-                                    leave: last,
-                                    complete: last,
+                    ),
+                    const SizedBox(height: 19),
+                    if (story)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(27),
+                        child: SizedBox(
+                          height: 335,
+                          child: Stack(
+                            children: [
+                              const Positioned.fill(child: NightStudyScene()),
+                              Positioned.fill(
+                                child: Container(
+                                  color: const Color(0x33101F3B),
+                                ),
+                              ),
+                              Positioned(
+                                top: 21,
+                                left: 20,
+                                right: 20,
+                                child: Row(
+                                  children: [
+                                    const Text(
+                                      'NI HAO ROBOTS',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w900,
+                                        letterSpacing: 1.5,
+                                        fontSize: 10,
+                                        color: AppColors.yellow,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      'SCENE ${_step + 1} OF 5',
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.white70,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Positioned(
+                                top: 68,
+                                left: 22,
+                                right: 22,
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      page.title,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 26,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 14),
+                                    Container(
+                                      constraints: const BoxConstraints(
+                                        maxWidth: 660,
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 19,
+                                        vertical: 17,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xDE182845),
+                                        border: Border.all(
+                                          color: const Color(0xFF7F7AA8),
+                                        ),
+                                        borderRadius: BorderRadius.circular(18),
+                                      ),
+                                      child: Text(
+                                        page.body,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          height: 1.45,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Positioned(
+                                bottom: 5,
+                                left: 10,
+                                child: RobotArt(
+                                  artwork: RobotArtwork.orbOnNavy,
+                                  size: 100,
+                                ),
+                              ),
+                              const Positioned(
+                                bottom: 20,
+                                right: 22,
+                                child: Text(
+                                  'CLICK NEXT TO CONTINUE  ›',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.white70,
+                                    letterSpacing: 1,
                                   ),
-                            child: Text(
-                              _saving
-                                  ? 'Saving…'
-                                  : last
-                                  ? 'Finish introduction'
-                                  : 'Next',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    else
+                      Container(
+                        padding: const EdgeInsets.all(25),
+                        decoration: BoxDecoration(
+                          color: AppColors.paper,
+                          borderRadius: BorderRadius.circular(25),
+                          border: Border.all(color: AppColors.border),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x120F2943),
+                              blurRadius: 20,
+                              offset: Offset(0, 8),
                             ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    page.title,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineLarge,
+                                  ),
+                                ),
+                                const RobotArt(
+                                  artwork: RobotArtwork.tallOnPaper,
+                                  size: 95,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+                            Text(page.body),
+                            if (page.hanzi != null) ...[
+                              const SizedBox(height: 19),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(22),
+                                decoration: BoxDecoration(
+                                  color: AppColors.cream,
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      page.hanzi!,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontSize: 39,
+                                        height: 1.4,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                    if (page.pinyin != null &&
+                                        (widget.profile.showPinyin ||
+                                            page.teachesPinyin))
+                                      Text(
+                                        page.pinyin!,
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall,
+                                      ),
+                                    if (page.translation != null)
+                                      Text(
+                                        page.translation!,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: AppColors.mutedInk,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ] else if (page.pinyin != null &&
+                                (widget.profile.showPinyin ||
+                                    page.teachesPinyin)) ...[
+                              const SizedBox(height: 18),
+                              Center(
+                                child: Text(
+                                  page.pinyin!,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall,
+                                ),
+                              ),
+                            ],
+                            if (_step >= 5) ...[
+                              const SizedBox(height: 12),
+                              const Text(
+                                'Audio is not available in this introduction.',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: AppColors.mutedInk,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    if (_error != null) ...[
+                      const SizedBox(height: 14),
+                      Semantics(
+                        liveRegion: true,
+                        child: Text(
+                          _error!,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
                           ),
-                          TextButton(
-                            onPressed: _saving
-                                ? null
-                                : () => _save(_step, leave: true),
-                            child: const Text('Save and leave'),
-                          ),
-                        ],
+                        ),
                       ),
                     ],
-                  ),
+                    const SizedBox(height: 18),
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      alignment: WrapAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: _saving
+                              ? null
+                              : () => _save(_step, leave: true),
+                          child: const Text('Save and leave'),
+                        ),
+                        if (_step > 0)
+                          OutlinedButton.icon(
+                            onPressed: _saving ? null : () => _save(_step - 1),
+                            icon: const Icon(Icons.arrow_back_rounded),
+                            label: const Text('Back'),
+                          ),
+                        FilledButton.icon(
+                          onPressed: _saving
+                              ? null
+                              : () => _save(
+                                  last ? _step : _step + 1,
+                                  leave: last,
+                                  complete: last,
+                                ),
+                          icon: Icon(
+                            last
+                                ? Icons.check_rounded
+                                : Icons.arrow_forward_rounded,
+                          ),
+                          label: Text(
+                            _saving
+                                ? 'Saving…'
+                                : last
+                                ? 'Finish introduction'
+                                : 'Next',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),

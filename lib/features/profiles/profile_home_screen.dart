@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
+import '../../shared/cozy_ui.dart';
 import '../../shared/context_tour.dart';
 import '../../shared/learning_card.dart';
+import '../../shared/robot_art.dart';
+import '../../shared/app_brand.dart';
+import '../../shared/app_sidebar.dart';
+import '../../shared/ui_art.dart';
 import '../dashboard/home_content.dart';
 import '../vocabulary/vocabulary_landing.dart';
 import 'profile.dart';
@@ -30,13 +35,6 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
     'Grammar',
     'Practice',
     'Speaking',
-  ];
-  static const _icons = [
-    Icons.home_outlined,
-    Icons.auto_stories_outlined,
-    Icons.menu_book_outlined,
-    Icons.edit_note_outlined,
-    Icons.chat_bubble_outline,
   ];
 
   @override
@@ -98,59 +96,151 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
     }
   }
 
-  Widget _menu({required bool wide}) {
-    final items = [
-      for (var i = 0; i < _names.length; i++)
-        TextButton.icon(
-          key: ValueKey('destination-$i'),
-          style: TextButton.styleFrom(
-            foregroundColor: _destination == i ? AppColors.navy : Colors.white,
-            backgroundColor: _destination == i
-                ? AppColors.yellow
-                : Colors.transparent,
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          ),
-          onPressed: () {
-            setState(() => _destination = i);
-            if (_scroll.hasClients) _scroll.jumpTo(0);
-          },
-          icon: Icon(_icons[i]),
-          label: Text(_names[i]),
-        ),
-    ];
-    return Material(
-      key: _navigation,
-      color: AppColors.navy,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: wide
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+  void _select(int index) {
+    setState(() => _destination = index);
+    if (_scroll.hasClients) _scroll.jumpTo(0);
+  }
+
+  Widget _menu({required bool wide}) => AppSidebar(
+    navigationKey: wide ? _navigation : null,
+    selected: _destination,
+    onSelect: (index) {
+      _select(index);
+      if (!wide) Navigator.of(context).pop(); // close the mobile drawer
+    },
+    footer: IconButton(
+      tooltip: 'Switch profile',
+      onPressed: () => Navigator.of(context).pop(),
+      icon: const Icon(Icons.swap_horiz_rounded, color: Colors.white),
+    ),
+  );
+
+  Widget _grammarPanel() => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      const SunnyHero(
+        title: 'Grammar',
+        subtitle: 'Find the patterns that make Mandarin click.',
+        tag: 'Build your foundations',
+        robot: RobotArtwork.gogglesOnPaper,
+      ),
+      const SizedBox(height: 18),
+      LearningCard(
+        key: _grammar,
+        child: ArtBackplate(
+          art: UiArtwork.studyRobotReading,
+          width: 205,
+          height: 175,
+          opacity: .33,
+          minWidth: 750,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionHeading(
+                title: 'Lesson chapters',
+                art: UiArtwork.openBook,
+                caption: 'Meaning · structure · rules · examples',
+                icon: Icons.auto_stories_outlined,
+              ),
+              const SizedBox(height: 18),
+              Row(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 24),
-                    child: Text(
-                      'NI HAO\nROBOT!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  Container(
+                    padding: const EdgeInsets.all(13),
+                    decoration: BoxDecoration(
+                      color: AppColors.peach,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(Icons.menu_book_outlined, size: 27),
+                  ),
+                  const SizedBox(width: 13),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Grammar library is being prepared',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'Lessons will come from distinct records, not repeated placeholder chapters.',
+                          style: TextStyle(
+                            color: AppColors.mutedInk,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  ...items,
-                  const SizedBox(height: 24),
-                  const Text(
-                    'Practice & Speaking\nComing later · design pending',
-                    style: TextStyle(color: Colors.white70),
-                  ),
                 ],
-              )
-            : Wrap(spacing: 8, runSpacing: 8, children: items),
+              ),
+              const SizedBox(height: 16),
+              const Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  Chip(label: Text('Clear structures')),
+                  Chip(label: Text('Grammar rules')),
+                  Chip(label: Text('Worked examples')),
+                ],
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                'No grammar lesson has been published in the supplied app yet.',
+                style: TextStyle(fontSize: 12, color: AppColors.mutedInk),
+              ),
+            ],
+          ),
+        ),
       ),
-    );
-  }
+    ],
+  );
+
+  Widget _futurePanel() => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      SunnyHero(
+        title: _names[_destination],
+        subtitle: _destination == 3
+            ? 'Put what you know into everyday conversation.'
+            : 'Build confidence with spoken Mandarin.',
+        tag: 'A space for tomorrow',
+        robot: _destination == 3
+            ? RobotArtwork.orbOnPaper
+            : RobotArtwork.tallOnPaper,
+      ),
+      const SizedBox(height: 18),
+      LearningCard(
+        child: ArtBackplate(
+          art: UiArtwork.studyRobotGreeting,
+          width: 190,
+          height: 155,
+          opacity: .30,
+          minWidth: 750,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionHeading(
+                title: 'Coming soon',
+                caption: 'This area has not been designed or connected yet',
+                icon: Icons.construction_outlined,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                _destination == 3
+                    ? 'Conversation and practical writing activities will live here. Your current saved vocabulary reviews are available under Vocabulary → Practice.'
+                    : 'Speaking features will be planned separately. Existing pronunciation and audio functions are unchanged.',
+              ),
+            ],
+          ),
+        ),
+      ),
+    ],
+  );
 
   Widget _content() => switch (_destination) {
     0 => HomeContent(
@@ -163,111 +253,100 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
       targets: _vocabulary,
       showPinyin: widget.profile.showPinyin,
     ),
-    2 => LearningCard(
-      key: _grammar,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Build sentences, step by step',
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            'Grammar lessons are being prepared. They will connect useful patterns, clear explanations and checked examples, with prerequisites that support your next step.',
-          ),
-        ],
-      ),
-    ),
-    _ => LearningCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            _names[_destination],
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-          const SizedBox(height: 16),
-          const Text('Coming later — design pending'),
-        ],
-      ),
-    ),
+    2 => _grammarPanel(),
+    _ => _futurePanel(),
   };
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Your learning space')),
-    body: LayoutBuilder(
-      builder: (context, constraints) {
-        final wide =
-            constraints.maxWidth >= 1100 &&
-            MediaQuery.textScalerOf(context).scale(16) <= 24;
-        final content = SingleChildScrollView(
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      // Keep the desktop sidebar visible at common browser widths.
+      final wide =
+          constraints.maxWidth >= 780 &&
+          MediaQuery.textScalerOf(context).scale(16) <= 24;
+      final content = WarmPageBackground(
+        child: SingleChildScrollView(
           controller: _scroll,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (!wide) _menu(wide: false),
-              Padding(
-                padding: EdgeInsets.all(wide ? 32 : 16),
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 1120),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1150),
+              child: Padding(
+                padding: EdgeInsets.all(wide ? 24 : 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 12,
+                      runSpacing: 8,
                       children: [
-                        Wrap(
-                          alignment: WrapAlignment.spaceBetween,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          spacing: 16,
-                          runSpacing: 8,
-                          children: [
-                            Text(
-                              _names[_destination],
-                              style: Theme.of(context).textTheme.headlineSmall,
+                        if (wide)
+                          const AppBrandRow(size: 35)
+                        else
+                          const Text(
+                            'YOUR LEARNING SPACE',
+                            style: TextStyle(
+                              letterSpacing: 1.3,
+                              fontSize: 10,
+                              color: AppColors.mutedInk,
+                              fontWeight: FontWeight.w800,
                             ),
-                            if (_destination <= 2)
-                              TextButton.icon(
-                                onPressed: _tourOpen ? null : _tour,
-                                icon: const Icon(Icons.help_outline),
-                                label: const Text('Replay Tutorial'),
-                              ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        _content(),
-                        const SizedBox(height: 24),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: OutlinedButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('Switch profile'),
                           ),
-                        ),
+                        if (_destination <= 2)
+                          TextButton.icon(
+                            onPressed: _tourOpen ? null : _tour,
+                            icon: const Icon(
+                              Icons.play_circle_outline,
+                              size: 19,
+                            ),
+                            label: const Text('Replay Tutorial'),
+                          ),
                       ],
                     ),
-                  ),
+                    const SizedBox(height: 17),
+                    _content(),
+                    const SizedBox(height: 22),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: OutlinedButton.icon(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Icons.swap_horiz),
+                        label: const Text('Switch profile'),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        );
-        return wide
-            ? Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(
-                    width: 230,
-                    child: ColoredBox(
-                      color: AppColors.navy,
-                      child: SingleChildScrollView(child: _menu(wide: true)),
-                    ),
+        ),
+      );
+      return Scaffold(
+        drawer: wide ? null : Drawer(width: 244, child: _menu(wide: false)),
+        appBar: wide
+            ? null
+            : AppBar(
+                leading: Builder(
+                  builder: (context) => IconButton(
+                    key: _navigation,
+                    tooltip: 'Open navigation sidebar',
+                    icon: const Icon(Icons.menu_rounded),
+                    onPressed: () => Scaffold.of(context).openDrawer(),
                   ),
+                ),
+                title: const AppBrandRow(size: 31),
+              ),
+        body: wide
+            ? Row(
+                children: [
+                  SizedBox(width: 108, child: _menu(wide: true)),
                   Expanded(child: content),
                 ],
               )
-            : content;
-      },
-    ),
+            : content,
+      );
+    },
   );
 }

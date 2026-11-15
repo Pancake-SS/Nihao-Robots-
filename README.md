@@ -2,7 +2,7 @@
 
 A Windows-first, local-first Mandarin learning companion built toward Flutter + Dart, Riverpod and Drift/SQLite. Simplified Chinese, tone-marked Pinyin, English guidance, and the user's original robots.
 
-**Current status:** offline profiles, tours, introduction and Learn > Quiz > scheduled Review are implemented. Browse **11,147 words and 85,118 questions** in separate pages of 20, with search, priority/category filters and a selected-word Learn button. **10,810 words** have FMLD meaning/usage enrichment. **7,099 words have sourced examples; 4,600 have recordings**, using 4,118 offline recordings. Words and unrecorded examples use installed device Mandarin TTS. Typed-answer questions include an offline **Pinyin-to-Hanzi keyboard** with candidate selection and optional on-screen keys. Question generation uses existing word data without AI calls. Independent teacher/listening review remains pending. See [content/database design](docs/CONTENT_DATABASE.md) and [setup](docs/SETUP.md).
+**Current status:** offline profiles, tours, introduction and Learn > Quiz > scheduled Review are implemented. Browse **11,147 words and 85,118 questions** in separate pages of 20, with search, priority/category filters and a selected-word Learn button. **10,810 words** have FMLD meaning/usage enrichment. **7,099 words have sourced examples; 4,600 have recordings**, using 4,118 offline recordings. Words and unrecorded examples use installed device Mandarin TTS. Typed-answer questions include an offline **Pinyin-to-Hanzi keyboard** with candidate selection and optional on-screen keys. Each answer is checked immediately; missed questions return at the end until correct, while the saved first-try result remains honest. The supplied cozy UI artwork and varied robot designs are integrated. Question generation uses existing word data without AI calls. Independent teacher/listening review remains pending. See [content/database design](docs/CONTENT_DATABASE.md) and [setup](docs/SETUP.md).
 
 ## GitHub backup
 
@@ -18,13 +18,17 @@ The helper checks the remote, pushes without forcing and verifies the remote com
 It does not stage files or create commits. Uncommitted changes, local learner data,
 SDKs, caches and build outputs are not included. See [backup details](docs/GITHUB_BACKUP.md).
 
+## Try the redesigned interface
+
+Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build_windows.ps1` from the project root, then launch the executable path printed by the helper. Keep its nearby DLLs and data folder together. In VS Code, **Terminal > Run Build Task** runs the same safe-path build. The patch's separate `lib/preview_main.dart` is sample-data-only source; this project has no web scaffold, so the actual Windows build is the supported way to try the design.
+
 ## Source reconciliation
 
-Vocabulary > **Browse words** opens the paged word browser. Select a card, use **Learn**, then **Continue to Quiz**. Previous/Next replaces the current page; filters combine priority with categories such as measure words and numbers. On typed questions, enter Pinyin in the built-in keyboard, choose a Hanzi candidate, then submit your answer. You can also type or paste Chinese directly. Each word has seven or eight questions. The 21 prepared lessons retain five examples each; other lessons use zero to five available source examples. Source and review details are accessible through the lesson info button. Zhongdex records remain separately quarantined.
+Vocabulary > **Browse words** opens the paged word browser. Select a card, use **Learn**, then **Continue to Quiz**. Previous/Next replaces the current page; filters combine priority with categories such as measure words and numbers. On typed questions, enter Pinyin in the built-in keyboard, choose a Hanzi candidate, then press **Check answer**. You can also type or paste Chinese directly. A wrong answer shows feedback and returns at the end of the quiz; all missed questions must be corrected before the attempt is saved. The saved review result uses first answers, so retries do not erase mistakes. Each word has seven or eight questions. The 21 prepared lessons retain five examples each; other lessons use zero to five available source examples. Source and review details are accessible through the lesson info button. Zhongdex records remain separately quarantined.
 
 - Read the full Master Plan and Coding Standards under `reference/`, the implementation brief, and existing project memory.
 - Rendered/inspected all 27 original PPT slides; extracted actual notes with `python-pptx` and inspected OOXML comment parts/relationships. No true PowerPoint comments exist. Generic note template footers are separated from requirements.
-- Inspected all 20 original PNGs: ten character pairs. Black-line variants have opaque white backing; white-line variants are transparent. Welcome uses waving/orb, Home uses tracked, and Vocabulary uses distinct hover/orb/goggles robots. All six bundled files are unchanged copies.
+- Inspected all 20 original PNGs: ten character pairs. Black-line variants have opaque white backing; white-line variants are transparent. The integrated artwork uses distinct robots across welcome, Home, Vocabulary, lesson and quiz screens; all 20 original files match their source hashes.
 - Local profiles replace slide 1 sign-in; Vocabulary Practice is separate from deferred primary Practice; failed mastery retains history. Full decisions: [decision log](docs/DECISION_LOG.md).
 
 ## Initial file tree

@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+
+import '../../shared/app_brand.dart';
+
+import '../../app/theme.dart';
+import '../../shared/robot_art.dart';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -232,7 +238,7 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
     ].join(' / ');
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Learn words'),
+        title: const AppScreenTitle('Learn words'),
         actions: [
           IconButton(
             tooltip: 'Content attribution',
@@ -246,6 +252,59 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
           constraints: const BoxConstraints(maxWidth: 1400),
           child: Column(
             children: [
+              if (MediaQuery.sizeOf(context).width >= 600 &&
+                  MediaQuery.textScalerOf(context).scale(16) <= 24)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 2),
+                  child: Row(
+                    children: [
+                      const RobotArt(
+                        artwork: RobotArtwork.hoverOnPaper,
+                        size: 62,
+                      ),
+                      const SizedBox(width: 12),
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Learn',
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.w900,
+                                color: AppColors.navy,
+                              ),
+                            ),
+                            Text(
+                              'Choose a word to discover next',
+                              style: TextStyle(
+                                color: AppColors.mutedInk,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 7,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.paleGreen,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Text(
+                          'WORD BANK',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                 child: Row(

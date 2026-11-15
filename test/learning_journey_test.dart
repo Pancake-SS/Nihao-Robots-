@@ -60,10 +60,39 @@ Future<void> answerQuiz(
           : q.correctOptionId;
       await press(tester, find.byKey(ValueKey('answer-$option')));
     }
+    await press(tester, find.text('Check answer'));
+    expect(
+      find.text(
+        !correct && i == 0
+            ? 'Not quite. You will try this question again at the end.'
+            : 'Correct!',
+      ),
+      findsOneWidget,
+    );
     await press(
       tester,
-      find.text(i == questions.length - 1 ? 'Save answers' : 'Next question'),
+      find.text(
+        i == questions.length - 1 && correct ? 'Save answers' : 'Next question',
+      ),
     );
+  }
+  if (!correct) {
+    final missed = questions.first;
+    if (missed.isTyped) {
+      await tester.enterText(
+        find.byKey(ValueKey('typed-${missed.id}')),
+        missed.correctAnswer,
+      );
+      await tester.pumpAndSettle();
+    } else {
+      await press(
+        tester,
+        find.byKey(ValueKey('answer-${missed.correctOptionId}')),
+      );
+    }
+    await press(tester, find.text('Check answer'));
+    expect(find.text('Correct!'), findsOneWidget);
+    await press(tester, find.text('Save answers'));
   }
 }
 
@@ -156,11 +185,28 @@ void main() {
               find.byKey(ValueKey('answer-${q.correctOptionId}')),
             );
           }
-          await press(
-            tester,
-            find.text(i == 7 ? 'Save answers' : 'Next question'),
+          await press(tester, find.text('Check answer'));
+          expect(
+            find.text(
+              q.isTyped
+                  ? 'Not quite. You will try this question again at the end.'
+                  : 'Correct!',
+            ),
+            findsOneWidget,
           );
+          await press(tester, find.text('Next question'));
         }
+        final missed = book.entry.questions.last;
+        expect(missed.isTyped, isTrue);
+        final retryField = find.byKey(ValueKey('typed-${missed.id}'));
+        expect(
+          tester.widget<TextFormField>(retryField).controller!.text,
+          isEmpty,
+        );
+        await tester.enterText(retryField, missed.correctAnswer);
+        await tester.pumpAndSettle();
+        await press(tester, find.text('Check answer'));
+        await press(tester, find.text('Save answers'));
         expect(find.text('Attempt saved'), findsOneWidget);
         final event = (await db.select(db.vocabularyAttempts).get()).single;
         expect(event.passed, isFalse);
@@ -322,7 +368,10 @@ void main() {
         await tester.pump(const Duration(seconds: 1));
         await press(tester, find.text('Review now'));
         await answerQuiz(tester, correct: false, word: loadExpandedGreeting());
-        expect(find.textContaining('Keep practising'), findsOneWidget);
+        expect(
+          find.textContaining('You corrected every missed question'),
+          findsOneWidget,
+        );
         final row = (await db!.select(db!.vocabularyProgress).get()).single;
         expect(row.stage, 'relearning');
         expect(await db!.select(db!.vocabularyAttempts).get(), hasLength(2));

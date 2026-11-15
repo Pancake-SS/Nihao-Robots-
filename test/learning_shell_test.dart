@@ -80,6 +80,10 @@ Future<void> press(WidgetTester tester, String label) async {
 
 Future<void> navigate(WidgetTester tester, int destination) async {
   final target = find.byKey(ValueKey('destination-$destination'));
+  if (target.evaluate().isEmpty) {
+    await tester.tap(find.byTooltip('Open navigation sidebar'));
+    await tester.pumpAndSettle();
+  }
   await tester.ensureVisible(target);
   await tester.tap(target);
   await tester.pumpAndSettle();
@@ -208,6 +212,7 @@ void main() {
             .map((r) => r.artwork)
             .toSet(),
         {
+          RobotArtwork.wavingOnPaper,
           RobotArtwork.hoverOnPaper,
           RobotArtwork.orbOnPaper,
           RobotArtwork.gogglesOnPaper,
@@ -226,7 +231,7 @@ void main() {
       await press(tester, 'Done');
       for (final destination in [3, 4]) {
         await navigate(tester, destination);
-        expect(find.text('Coming later — design pending'), findsOneWidget);
+        expect(find.text('Coming soon'), findsOneWidget);
         expect(find.text('Replay Tutorial'), findsNothing);
       }
       expect(tester.takeException(), isNull);

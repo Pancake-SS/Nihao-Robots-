@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../shared/learning_card.dart';
+import '../../app/theme.dart';
+import '../../shared/cozy_ui.dart';
+import '../../shared/vocabulary_card.dart';
 import '../../shared/robot_art.dart';
-import 'learning_queue_screen.dart';
 import '../review/review_screen.dart';
+import 'learning_queue_screen.dart';
 
 class VocabularyLanding extends StatelessWidget {
   const VocabularyLanding({
@@ -18,29 +20,32 @@ class VocabularyLanding extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      Text(
-        'One word, many connections',
-        style: Theme.of(context).textTheme.headlineLarge,
+      const SunnyHero(
+        title: 'Vocabulary',
+        subtitle: 'Grow your Chinese word bank, step by step.',
+        tag: 'Three ways to grow',
+        robot: RobotArtwork.wavingOnPaper,
       ),
-      const SizedBox(height: 12),
-      const Text(
-        'Choose your next word, practise its meaning and reading, and return when your review is due.',
-      ),
-      const SizedBox(height: 24),
+      const SizedBox(height: 19),
       LayoutBuilder(
-        builder: (context, constraints) {
+        builder: (context, c) {
           final wide =
-              constraints.maxWidth >= 850 &&
+              c.maxWidth >= 760 &&
               MediaQuery.textScalerOf(context).scale(16) <= 24;
           final cards = [
-            _StackCard(
+            VocabularyStackCard(
               key: targets[0],
               title: 'Learn',
+              label: '01  ·  DISCOVER',
+              color: AppColors.yellow,
+              background: const Color(0xFFFFF5DB),
+              icon: Icons.auto_stories_outlined,
               artwork: RobotArtwork.hoverOnPaper,
-              description: 'Meet new words through characters, meaning and checked examples.',
-              status: 'Your learning queue · 20 words at a time',
+              description: 'Meet new Chinese words with meanings, pronunciation and checked examples.',
+              status: 'Your next words are ready',
+              actionLabel: 'Browse words',
               action: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => LearningQueueScreen(
@@ -50,12 +55,16 @@ class VocabularyLanding extends StatelessWidget {
                 ),
               ),
             ),
-            _StackCard(
+            VocabularyStackCard(
               key: targets[1],
               title: 'Practice',
+              label: '02  ·  RECALL',
+              color: AppColors.blue,
+              background: const Color(0xFFE9F4FF),
+              icon: Icons.forum_outlined,
               artwork: RobotArtwork.orbOnPaper,
-              description: 'Return to vocabulary through scheduled reviews and varied recall.',
-              status: 'Your saved early reviews',
+              description: 'Revisit your saved words when their review time comes around.',
+              status: 'Check your review schedule',
               actionLabel: 'Open reviews',
               action: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
@@ -63,12 +72,17 @@ class VocabularyLanding extends StatelessWidget {
                 ),
               ),
             ),
-            _StackCard(
+            VocabularyStackCard(
               key: targets[2],
               title: 'Master',
+              label: '03  ·  REMEMBER',
+              color: AppColors.leaf,
+              background: Color(0xFFEDF7E5),
+              icon: Icons.star_outline_rounded,
               artwork: RobotArtwork.gogglesOnPaper,
-              description: 'Build evidence across time and different tasks. Quick clicks are not mastery.',
-              status: 'Mastery activities coming later',
+              description: 'Strengthen lasting recall with future mastery challenges and varied tests.',
+              status: 'Mastery tools in development',
+              actionLabel: 'Coming soon',
             ),
           ];
           return wide
@@ -85,50 +99,21 @@ class VocabularyLanding extends StatelessWidget {
                   children: [
                     for (final card in cards) ...[
                       card,
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 15),
                     ],
                   ],
                 );
         },
       ),
+      const SizedBox(height: 18),
+      const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 7),
+        child: Text(
+          'Each word is a little discovery. Progress is saved per profile.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: AppColors.mutedInk, fontSize: 12),
+        ),
+      ),
     ],
-  );
-}
-
-class _StackCard extends StatelessWidget {
-  const _StackCard({
-    required this.title,
-    required this.artwork,
-    required this.description,
-    required this.status,
-    this.action,
-    this.actionLabel = 'Browse words',
-    super.key,
-  });
-  final String title;
-  final RobotArtwork artwork;
-  final String description;
-  final String status;
-  final VoidCallback? action;
-  final String actionLabel;
-
-  @override
-  Widget build(BuildContext context) => LearningCard(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Center(child: RobotArt(artwork: artwork, size: 140)),
-        const SizedBox(height: 16),
-        Text(title, style: Theme.of(context).textTheme.headlineMedium),
-        const SizedBox(height: 12),
-        Text(description),
-        const SizedBox(height: 20),
-        Text(status, style: const TextStyle(fontWeight: FontWeight.w600)),
-        if (action != null) ...[
-          const SizedBox(height: 16),
-          FilledButton(onPressed: action, child: Text(actionLabel)),
-        ],
-      ],
-    ),
   );
 }

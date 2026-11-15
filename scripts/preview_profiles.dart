@@ -31,6 +31,7 @@ void main() {
     await tester.runAsync(() async {
       for (final font in {
         'Segoe UI': 'segoeui.ttf',
+        'Roboto': 'segoeui.ttf',
         'Microsoft YaHei': 'msyh.ttc',
       }.entries) {
         final file = File('C:/Windows/Fonts/${font.value}');
@@ -202,6 +203,10 @@ void main() {
         await tester.tap(find.byKey(ValueKey('answer-${q.correctOptionId}')));
       }
       await tester.pumpAndSettle();
+      final check = find.text('Check answer');
+      await tester.ensureVisible(check);
+      await tester.tap(check);
+      await tester.pumpAndSettle();
       final next = find.text(
         i == book.entry.questions.length - 1 ? 'Save answers' : 'Next question',
       );
@@ -226,6 +231,8 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('destination-0')));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Start introduction'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Start introduction'));
     await tester.pumpAndSettle();

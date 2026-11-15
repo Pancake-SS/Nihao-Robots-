@@ -41,6 +41,12 @@ Future<void> showContextTour(BuildContext context, List<TourStop> stops) async {
                 ),
               ),
               Dialog(
+                backgroundColor: AppColors.paper,
+                elevation: 14,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(21),
+                  side: const BorderSide(color: AppColors.yellow, width: 2),
+                ),
                 alignment: alignTop
                     ? Alignment.topCenter
                     : Alignment.bottomCenter,
@@ -56,8 +62,41 @@ Future<void> showContextTour(BuildContext context, List<TourStop> stops) async {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Tutorial ${stopIndex + 1} of ${stops.length}'),
-                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Container(
+                              width: 29,
+                              height: 29,
+                              decoration: const BoxDecoration(
+                                color: AppColors.sky,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.info_outline,
+                                size: 20,
+                                color: AppColors.navy,
+                              ),
+                            ),
+                            const SizedBox(width: 9),
+                            Expanded(
+                              child: Text(
+                                'TUTORIAL  ${stopIndex + 1} / ${stops.length}',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: AppColors.mutedInk,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                            ),
+                            const Icon(
+                              Icons.auto_awesome,
+                              color: AppColors.gold,
+                              size: 22,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 11),
                         Text(
                           stop.title,
                           style: Theme.of(context).textTheme.headlineSmall,
@@ -82,8 +121,20 @@ Future<void> showContextTour(BuildContext context, List<TourStop> stops) async {
                             FilledButton(
                               autofocus: true,
                               onPressed: () => Navigator.pop(dialogContext, 1),
-                              child: Text(
-                                stopIndex == stops.length - 1 ? 'Done' : 'Next',
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    stopIndex == stops.length - 1
+                                        ? 'Done'
+                                        : 'Next',
+                                  ),
+                                  const SizedBox(width: 7),
+                                  const Icon(
+                                    Icons.arrow_forward_rounded,
+                                    size: 17,
+                                  ),
+                                ],
                               ),
                             ),
                           ],

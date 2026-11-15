@@ -3,16 +3,25 @@ import 'package:flutter/material.dart';
 import '../app/theme.dart';
 
 class LearningCard extends StatelessWidget {
-  const LearningCard({required this.child, super.key});
+  const LearningCard({required this.child, this.background, super.key});
   final Widget child;
+  final Color? background;
 
   @override
-  Widget build(BuildContext context) => Material(
-    color: AppColors.paper,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20),
-      side: const BorderSide(color: AppColors.border),
+  Widget build(BuildContext context) => Container(
+    decoration: BoxDecoration(
+      color: background ?? AppColors.paper,
+      borderRadius: BorderRadius.circular(23),
+      border: Border.all(color: AppColors.border),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0x120F2943),
+          blurRadius: 25,
+          offset: Offset(0, 8),
+        ),
+      ],
     ),
-    child: Padding(padding: const EdgeInsets.all(24), child: child),
+    padding: const EdgeInsets.all(23),
+    child: child,
   );
 }

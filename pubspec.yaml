@@ -28,6 +28,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/robots/
+    - assets/branding/
+    - assets/ui_art/
     - assets/content/curriculum.sqlite
     - assets/content/curriculum.manifest.json
     - assets/audio/

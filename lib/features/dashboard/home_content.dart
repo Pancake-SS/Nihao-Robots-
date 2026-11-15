@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/theme.dart';
+import '../../shared/cozy_ui.dart';
+import '../../shared/dashboard_widgets.dart';
 import '../../shared/learning_card.dart';
-import '../../data/database_provider.dart';
 import '../../shared/robot_art.dart';
+import '../../data/database_provider.dart';
 import '../onboarding/foundation_repository.dart';
 import '../onboarding/foundation_screen.dart';
 import '../profiles/profile.dart';
+import '../review/learning_providers.dart';
 
 class HomeContent extends ConsumerWidget {
   const HomeContent({
@@ -22,142 +26,221 @@ class HomeContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final foundation = ref.watch(foundationStateProvider(profile.id));
+    // Existing persisted review records, not a fabricated streak or a fluency score.
+    final reviewHistory = ref.watch(learningProgressProvider(profile.id));
+    final started = reviewHistory.asData?.value.length;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          'Welcome, ${profile.name}!',
-          style: Theme.of(context).textTheme.headlineLarge,
+        const SunnyHero(
+          title: 'Home',
+          subtitle: 'Small steps today, a more confident you tomorrow.',
+          robot: RobotArtwork.trackedOnPaper,
+          tag: 'Your Chinese learning journey',
         ),
         const SizedBox(height: 8),
-        Text('${profile.dailyMinutes} minutes a day · ${profile.goal.label}'),
-        const SizedBox(height: 24),
-        LearningCard(
-          key: foundationKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Center(
-                child: RobotArt(
-                  artwork: RobotArtwork.trackedOnPaper,
-                  size: 120,
-                ),
-              ),
-              Text(
-                'A small beginning',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Meet your companions, then explore characters, Pinyin, tones and a first exchange.',
-              ),
-              const SizedBox(height: 16),
-              foundation.when(
-                loading: () => const LinearProgressIndicator(
-                  semanticsLabel: 'Loading your place',
-                ),
-                error: (_, _) => Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Could not load your introduction. Your saved data has not been reset.',
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        ref.invalidate(appDatabaseProvider);
-                        ref.invalidate(foundationStateProvider(profile.id));
-                      },
-                      child: const Text('Try again'),
-                    ),
-                  ],
-                ),
-                data: (state) => Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      state.completed
-                          ? 'Introduction complete · replay any time'
-                          : state.step == 0
-                          ? 'Ready when you are'
-                          : 'Resume at step ${state.step + 1} of $foundationStepCount',
-                    ),
-                    const SizedBox(height: 12),
-                    FilledButton(
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (_) => FoundationScreen(
-                            profile: profile,
-                            initial: state,
-                            replay: state.completed,
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        state.completed
-                            ? 'Replay introduction'
-                            : state.step == 0
-                            ? 'Start introduction'
-                            : 'Resume introduction',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+        Text(
+          'Welcome, ${profile.name}!',
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
-        const SizedBox(height: 20),
+        Text('${profile.dailyMinutes} minutes a day · ${profile.goal.label}'),
+        const SizedBox(height: 19),
+        LayoutBuilder(
+          builder: (context, c) {
+            final wide = c.maxWidth >= 650;
+            final first = MetricCard(
+              title: 'Words started',
+              value: started?.toString() ?? '—',
+              caption: started == null
+                  ? 'Reading your saved progress'
+                  : 'With a saved learning quiz',
+              icon: Icons.auto_stories_rounded,
+              color: AppColors.yellow,
+              artwork: RobotArtwork.orbOnPaper,
+            );
+            const second = MetricCard(
+              title: 'Daily streak',
+              value: '—',
+              caption: 'Daily activity tracking is coming soon',
+              icon: Icons.local_fire_department_rounded,
+              color: AppColors.peach,
+              artwork: RobotArtwork.squareOnPaper,
+            );
+            return wide
+                ? Row(
+                    children: [
+                      Expanded(child: first),
+                      const SizedBox(width: 17),
+                      const Expanded(child: second),
+                    ],
+                  )
+                : Column(children: [first, const SizedBox(height: 14), second]);
+          },
+        ),
+        const SizedBox(height: 18),
         LearningCard(
-          key: progressKey,
+          background: const Color(0xFFFFFDF9),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Your learning journey',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Try the pilot lesson in Vocabulary, then open Vocabulary Practice for your saved review schedule. Dashboard word totals, streaks and weekly activity are still being prepared.',
+              const SectionHeading(
+                title: 'This week',
+                caption: 'A little practice goes a long way',
+                icon: Icons.spa_outlined,
               ),
               const SizedBox(height: 16),
-              Wrap(
-                spacing: 12,
-                runSpacing: 8,
+              Row(
                 children: [
-                  for (final milestone in [500, 1000, 2000, 5000])
-                    Chip(label: Text('$milestone words')),
+                  for (final day in [
+                    'Mon',
+                    'Tue',
+                    'Wed',
+                    'Thu',
+                    'Fri',
+                    'Sat',
+                    'Sun',
+                  ])
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text(
+                            day,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: AppColors.mutedInk,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 7),
+                          Container(
+                            height: 29,
+                            width: 29,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.cream,
+                              border: Border.all(color: AppColors.border),
+                            ),
+                            child: const Icon(
+                              Icons.more_horiz,
+                              size: 16,
+                              color: AppColors.mutedInk,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
               ),
-              TextButton(
-                onPressed: () => showDialog<void>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Word milestones'),
-                    content: const SingleChildScrollView(
-                      child: Text(
-                        '500, 1,000, 2,000 and 5,000 words are product milestones, not fluency scores. '
-                        'Future details will show the actual words behind your progress. '
-                        'Current early-review records are available in Vocabulary Practice. '
-                        'Reading the introduction does not count as learning or mastering a word.',
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Close'),
-                      ),
-                    ],
-                  ),
-                ),
-                child: const Text('View Details'),
+              const SizedBox(height: 10),
+              const Text(
+                'Check-in history has not been implemented yet.',
+                style: TextStyle(fontSize: 11, color: AppColors.mutedInk),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 20),
-        Text('Starting level: ${profile.level.label}'),
-        Text('Pinyin support: ${profile.showPinyin ? 'on' : 'off'}'),
+        const SizedBox(height: 18),
+        LearningCard(
+          key: progressKey,
+          background: const Color(0xFFFCFEF7),
+          child: JourneyProgress(count: started),
+        ),
+        const SizedBox(height: 18),
+        LearningCard(
+          key: foundationKey,
+          background: const Color(0xFFFFF9ED),
+          child: LayoutBuilder(
+            builder: (context, c) {
+              final wide = c.maxWidth > 510;
+              final content = Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SectionHeading(
+                    title: 'Start with the basics',
+                    caption: 'Meet the robots and explore your first sounds',
+                    icon: Icons.waving_hand_outlined,
+                  ),
+                  const SizedBox(height: 14),
+                  foundation.when(
+                    loading: () => const LinearProgressIndicator(),
+                    error: (_, _) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Could not load your introduction. Your saved data has not been reset.',
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            ref.invalidate(appDatabaseProvider);
+                            ref.invalidate(foundationStateProvider(profile.id));
+                          },
+                          child: const Text('Try again'),
+                        ),
+                      ],
+                    ),
+                    data: (state) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          state.completed
+                              ? 'Introduction complete · replay whenever you like'
+                              : state.step == 0
+                              ? 'Ready when you are'
+                              : 'Resume at step ${state.step + 1} of $foundationStepCount',
+                          style: const TextStyle(color: AppColors.mutedInk),
+                        ),
+                        const SizedBox(height: 14),
+                        FilledButton.icon(
+                          onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => FoundationScreen(
+                                profile: profile,
+                                initial: state,
+                                replay: state.completed,
+                              ),
+                            ),
+                          ),
+                          icon: const Icon(Icons.play_arrow_rounded),
+                          label: Text(
+                            state.completed
+                                ? 'Replay introduction'
+                                : state.step == 0
+                                ? 'Start introduction'
+                                : 'Resume introduction',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+              return wide
+                  ? Row(
+                      children: [
+                        Expanded(child: content),
+                        const SizedBox(width: 14),
+                        const RobotArt(
+                          artwork: RobotArtwork.hoverOnPaper,
+                          size: 128,
+                        ),
+                      ],
+                    )
+                  : content;
+            },
+          ),
+        ),
+        const SizedBox(height: 18),
+        Text(
+          'LEARNING SETTINGS  •  ${profile.level.label.toUpperCase()}  •  '
+          '${profile.dailyMinutes} MIN / DAY  •  PINYIN ${profile.showPinyin ? 'ON' : 'OFF'}',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 10,
+            letterSpacing: .7,
+            color: AppColors.mutedInk,
+          ),
+        ),
       ],
     );
   }
