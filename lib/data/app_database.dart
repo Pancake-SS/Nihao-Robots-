@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 
 part 'app_database.g.dart';
@@ -91,6 +93,19 @@ class VocabularyAttempts extends Table {
     "CHECK (next_stage IN ('learning', 'review', 'relearning'))",
     'UNIQUE (profile_id, word_id, version_before)',
   ];
+}
+
+/// One immutable first response per quiz visit. Correct responses are the
+/// learner's per-word correctness points, independent of review timing.
+class PracticeResponses extends Table {
+  TextColumn get id => text()();
+  IntColumn get profileId => integer().references(Profiles, #id)();
+  TextColumn get wordId => text()();
+  TextColumn get questionId => text()();
+  BoolColumn get correct => boolean()();
+  IntColumn get answeredAtMs => integer()();
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 // Shared, versioned learning content is independent of private learner history.
@@ -243,6 +258,7 @@ class LearningQueue extends Table {
     FoundationProgress,
     VocabularyProgress,
     VocabularyAttempts,
+    PracticeResponses,
     ContentPacks,
     ContentWords,
     ContentExamples,
@@ -260,13 +276,13 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (migrator) => migrator.createAll(),
     onUpgrade: (migrator, from, to) async {
-      if (from < 1 || from > 4 || to != 5) {
+      if (from < 1 || from > 5 || to != 6) {
         throw StateError('No migration from schema $from to $to.');
       }
       // Additive migration: existing profiles and selection are never rewritten.
@@ -282,18 +298,58 @@ class AppDatabase extends _$AppDatabase {
           await migrator.createTable(contentExamples);
           await migrator.createTable(contentExercises);
         }
-        for (final table in <TableInfo>[
-          curriculumWords,
-          curriculumSentences,
-          curriculumExamples,
-          curriculumAudio,
-          curriculumQuestions,
-          curriculumInstalls,
-          learningQueue,
-        ]) {
-          await migrator.createTable(table);
+        if (from < 5) {
+          for (final table in <TableInfo>[
+            curriculumWords,
+            curriculumSentences,
+            curriculumExamples,
+            curriculumAudio,
+            curriculumQuestions,
+            curriculumInstalls,
+            learningQueue,
+          ]) {
+            await migrator.createTable(table);
+          }
+          await _curriculumIndexes();
         }
-        await _curriculumIndexes();
+        await migrator.createTable(practiceResponses);
+        if (from >= 3) {
+          final attempts = await customSelect(
+            'SELECT event_id, profile_id, word_id, answers_json, questions_json, answered_at_ms FROM vocabulary_attempts',
+          ).get();
+          for (final attempt in attempts) {
+            final answers = jsonDecode(
+              attempt.read<String>('answers_json'),
+            ) as Map<String, dynamic>;
+            final questions = jsonDecode(
+              attempt.read<String>('questions_json'),
+            ) as List<dynamic>;
+            for (final raw in questions) {
+              final question = raw as Map<String, dynamic>;
+              final id = question['id'] as String;
+              final answer = answers[id] as String?;
+              final correctId = question['correctOptionId'] as String;
+              final typed = question['kind'] == 'typed_hanzi';
+              final options = question['options'] as Map<String, dynamic>;
+              final correct = typed
+                  ? answer?.trim() == options[correctId]
+                  : answer == correctId;
+              await customStatement(
+                'INSERT OR IGNORE INTO practice_responses '
+                '(id, profile_id, word_id, question_id, correct, answered_at_ms) '
+                'VALUES (?, ?, ?, ?, ?, ?)',
+                [
+                  '${attempt.read<String>('event_id')}.$id',
+                  attempt.read<int>('profile_id'),
+                  attempt.read<String>('word_id'),
+                  id,
+                  correct ? 1 : 0,
+                  attempt.read<int>('answered_at_ms'),
+                ],
+              );
+            }
+          }
+        }
       });
     },
     beforeOpen: (_) async {

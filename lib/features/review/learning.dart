@@ -11,12 +11,13 @@ class WordProgress {
     required this.dueAt,
     required this.version,
     required this.successfulReviews,
+    this.correctCount = 0,
   });
   final String wordId;
   final LearningStage stage;
   final DateTime dueAt;
   final int version, successfulReviews;
-  bool isDue(DateTime now) => !dueAt.isAfter(now);
+  final int correctCount;
 }
 
 class QuizSession {
@@ -50,34 +51,6 @@ class SavedAttempt {
 class LearningConflict implements Exception {
   const LearningConflict(this.message);
   final String message;
-}
-
-/// Initial pilot intervals, not FSRS or a mastery rule. No score grants mastery.
-class EarlyReviewPolicy {
-  EarlyReviewPolicy({
-    this.firstDelay = const Duration(minutes: 5),
-    this.retryDelay = const Duration(minutes: 5),
-    this.reviewDelay = const Duration(days: 1),
-  }) {
-    for (final delay in [firstDelay, retryDelay, reviewDelay]) {
-      if (delay <= Duration.zero || delay > const Duration(days: 30)) {
-        throw ArgumentError(
-          'Review intervals must be positive and at most 30 days.',
-        );
-      }
-    }
-  }
-  final Duration firstDelay, retryDelay, reviewDelay;
-  Duration delay({required bool passed, required bool isReview}) => !passed
-      ? retryDelay
-      : isReview
-      ? reviewDelay
-      : firstDelay;
-  LearningStage stage({required bool passed, required bool isReview}) => !passed
-      ? LearningStage.relearning
-      : isReview
-      ? LearningStage.review
-      : LearningStage.learning;
 }
 
 String newAttemptId() {

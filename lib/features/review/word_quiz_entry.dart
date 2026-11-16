@@ -40,7 +40,7 @@ class WordQuizEntry extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                existing == null ? 'Ready to try $questionCount questions?' : 'This word is in your review list. Vocabulary Practice shows when it is due.',
+                existing == null ? 'Ready to try $questionCount questions?' : 'You have learned this word. Open Practice to test it again whenever you like.',
               ),
               const SizedBox(height: 12),
               if (existing == null)

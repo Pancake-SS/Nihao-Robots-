@@ -1,5 +1,11 @@
 # Local database migrations and recovery
 
+## Version 1/2/3/4/5 to 6 (2026-11-15)
+
+Schema 6 adds `practice_responses`: one immutable first response per profile, word and question visit. Correct rows count as per-word correctness points. The migration preserves every historical profile, word, attempt and queue. For existing attempts it reads the saved answer and question snapshots and backfills first-response rows, so points earned before this update carry forward. New responses are recorded when an answer is checked, including incorrect first tries; correcting a missed question does not add a point. The migration is additive and transactional. A new `drift_schema_v6.json` is kept beside the unchanged older schema snapshots.
+
+Practice no longer waits for a due time or uses a stage to determine availability. Older due/stage columns remain in historical tables for compatibility with saved attempts; new attempts write their answer time as the legacy due value and a neutral `learning` stage. No interval is calculated. The three new session types and relearning search use learned words from the current profile. `test/practice_mode_test.dart` covers migration, point persistence, profile isolation, distinct random words and no repeated endless questions. Follow the closed-app backup procedure below before upgrading a real learner database.
+
 ## Version 1/2/3/4 to 5 (2026-11-07)
 
 Schema 5 adds curriculum words, sentences, word/example links, audio, questions, install markers and per-profile learning queues. Existing content tables, profiles, introduction state, attempts, progress and due dates are preserved. Historical snapshots 1-4 are unchanged; `drift_schema_v5.json` is separate.

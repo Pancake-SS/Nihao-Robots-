@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +11,9 @@ import 'package:ni_hao_robot/features/profiles/profile.dart';
 import 'package:ni_hao_robot/features/profiles/sqlite_profile_repository.dart';
 import 'package:ni_hao_robot/features/vocabulary/curriculum_repository.dart';
 import 'package:ni_hao_robot/features/vocabulary/learning_queue_screen.dart';
+import 'package:ni_hao_robot/features/vocabulary/learning_keyboard.dart';
+import 'package:ni_hao_robot/features/vocabulary/pinyin_input.dart';
+import 'package:ni_hao_robot/features/vocabulary/word_library.dart';
 import 'package:ni_hao_robot/features/vocabulary/vocabulary_repository.dart';
 
 import 'curriculum_fixture.dart';
@@ -20,6 +25,7 @@ class _QueueViewFixture extends CurriculumRepository {
   final List<QueueWord> rows;
   final CatalogueWord word;
   final offsets = <int>[];
+  final searches = <String>[];
   @override
   Future<QueuePage> page(
     int profile, {
@@ -30,6 +36,7 @@ class _QueueViewFixture extends CurriculumRepository {
     bool priorityOrder = false,
   }) async {
     offsets.add(offset);
+    searches.add(search);
     return QueuePage(
       rows.skip(offset).take(20).toList(),
       rows.length > offset + 20,
@@ -53,6 +60,11 @@ void main() {
     'queue requests 20 at a time, replaces pages, highlights and opens the selected lesson at large text',
     (tester) async {
       final db = AppDatabase(NativeDatabase.memory());
+      final keyboard = PinyinInputEngine(
+        WordLibrary.parse(
+          File('assets/content/dictionary_v1.json').readAsStringSync(),
+        ).words,
+      );
       final storage = fullCurriculum(db);
       late _QueueViewFixture repo;
       late int profile;
@@ -75,6 +87,7 @@ void main() {
         ProviderScope(
           overrides: [
             appDatabaseProvider.overrideWithValue(db),
+            pinyinInputEngineProvider.overrideWith((ref) async => keyboard),
             curriculumRepositoryProvider.overrideWithValue(repo),
           ],
           child: MaterialApp(
@@ -89,6 +102,28 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      expect(find.byType(LearningKeyboard), findsOneWidget);
+      expect(find.byKey(const ValueKey('queue-search')), findsOneWidget);
+      await tester.enterText(
+        find.byKey(const ValueKey('queue-search')),
+        'nihao',
+      );
+      await tester.pumpAndSettle();
+      final candidate = find.byKey(const ValueKey('candidate-你好'));
+      await tester.ensureVisible(candidate);
+      await tester.tap(candidate);
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<TextFormField>(find.byKey(const ValueKey('queue-search')))
+            .controller!
+            .text,
+        '你好',
+      );
+      await tester.tap(find.byTooltip('Search queue'));
+      await tester.pumpAndSettle();
+      expect(repo.searches.last, '你好');
+      repo.offsets.removeLast();
       expect(find.text('Page 1'), findsOneWidget);
       await tester.tap(find.byTooltip('Filter words'));
       await tester.pumpAndSettle();

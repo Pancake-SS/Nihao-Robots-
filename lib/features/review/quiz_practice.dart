@@ -1,7 +1,7 @@
 import '../vocabulary/content_pack.dart';
 
 /// Checks each response and returns missed questions to the end of the session.
-/// First responses remain immutable evidence for the saved score/review schedule.
+/// First responses remain immutable evidence for saved correctness points.
 class QuizPractice {
   QuizPractice(Iterable<VocabularyQuestion> source)
     : questions = List.unmodifiable(source) {

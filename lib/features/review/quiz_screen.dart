@@ -185,12 +185,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                               ),
                               const SizedBox(height: 12),
                               Text(
-                                'Next review: ${MaterialLocalizations.of(context).formatFullDate(receipt.nextDueAt.toLocal())}, '
-                                '${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(receipt.nextDueAt.toLocal()))}',
-                              ),
-                              const SizedBox(height: 12),
-                              const Text(
-                                'This checkpoint does not award mastery. Return to Vocabulary Practice when the review is due.',
+                                '${practice!.firstCorrectCount} correctness points earned. You can practise this word again at any time.',
                               ),
                               if (!receipt.passed) ...[
                                 const SizedBox(height: 20),
@@ -202,14 +197,14 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                               for (final q
                                   in session!.word.entry.questions.where(
                                     (q) => !q.isCorrect(
-                                      practice!.firstAnswers[q.id],
+                                      practice.firstAnswers[q.id],
                                     ),
                                   )) ...[
                                 const Divider(height: 32),
                                 Text(q.prompt),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'First answer: ${q.displayAnswer(practice!.firstAnswers[q.id]!)}',
+                                  'First answer: ${q.displayAnswer(practice.firstAnswers[q.id]!)}',
                                 ),
                                 Text('Correct answer: ${q.correctAnswer}'),
                                 const SizedBox(height: 8),

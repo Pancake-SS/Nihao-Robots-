@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ni_hao_robot/app/app.dart';
 import 'package:ni_hao_robot/app/theme.dart';
 import 'package:ni_hao_robot/features/onboarding/welcome_screen.dart';
+import 'package:ni_hao_robot/shared/cozy_ui.dart';
 import 'package:ni_hao_robot/shared/robot_art.dart';
 import 'package:ni_hao_robot/features/profiles/profile_providers.dart';
 import 'package:ni_hao_robot/features/profiles/profile.dart';
@@ -65,6 +66,7 @@ void main() {
 
     expect(find.text('NI HAO ROBOT!'), findsOneWidget);
     expect(find.text('Create local profile'), findsOneWidget);
+    expect(find.byType(NightStudyScene), findsOneWidget);
     final robots = tester.widgetList<RobotArt>(find.byType(RobotArt));
     expect(robots.map((robot) => robot.artwork).toSet(), {
       RobotArtwork.wavingOnPaper,

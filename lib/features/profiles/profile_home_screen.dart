@@ -10,6 +10,7 @@ import '../../shared/app_sidebar.dart';
 import '../../shared/ui_art.dart';
 import '../dashboard/home_content.dart';
 import '../vocabulary/vocabulary_landing.dart';
+import '../review/review_screen.dart';
 import 'profile.dart';
 
 class ProfileHomeScreen extends StatefulWidget {
@@ -61,7 +62,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
         TourStop(
           _navigation,
           'Find your way',
-          'Home, Vocabulary and Grammar each have a replayable tour. Practice and Speaking in this menu are future areas whose designs are pending.',
+          'Home, Vocabulary and Grammar each have a replayable tour. Practice opens your learned words and three question modes.',
         ),
       ],
       1 => [
@@ -73,7 +74,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
         TourStop(
           _vocabulary[1],
           'Vocabulary practice',
-          'Open reviews shows this profile’s saved early reviews and due times. It is separate from the future Practice area in the main menu.',
+          'Practice lets you replay a word test, choose a number of random words, or keep answering fresh questions.',
         ),
         TourStop(
           _vocabulary[2],
@@ -254,6 +255,10 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
       showPinyin: widget.profile.showPinyin,
     ),
     2 => _grammarPanel(),
+    3 => PracticeContent(
+      profileId: widget.profile.id,
+      showPinyin: widget.profile.showPinyin,
+    ),
     _ => _futurePanel(),
   };
 

@@ -63,9 +63,9 @@ class VocabularyLanding extends StatelessWidget {
               background: const Color(0xFFE9F4FF),
               icon: Icons.forum_outlined,
               artwork: RobotArtwork.orbOnPaper,
-              description: 'Revisit your saved words when their review time comes around.',
-              status: 'Check your review schedule',
-              actionLabel: 'Open reviews',
+              description: 'Replay a word test, choose random questions, or keep practising.',
+              status: 'Ready whenever you are',
+              actionLabel: 'Open practice',
               action: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => ReviewScreen(profileId: profileId),

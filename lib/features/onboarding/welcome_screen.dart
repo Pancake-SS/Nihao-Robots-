@@ -63,7 +63,7 @@ class _StoryPanel extends StatelessWidget {
       height: tall ? 695 : 350,
       child: Stack(
         children: [
-          const Positioned.fill(child: ColoredBox(color: Colors.black)),
+          const Positioned.fill(child: NightStudyScene()),
           Positioned(
             right: 0,
             bottom: 0,

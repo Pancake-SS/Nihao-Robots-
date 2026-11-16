@@ -2139,6 +2139,428 @@ class VocabularyAttemptsCompanion extends UpdateCompanion<VocabularyAttempt> {
   }
 }
 
+class $PracticeResponsesTable extends PracticeResponses
+    with TableInfo<$PracticeResponsesTable, PracticeResponse> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PracticeResponsesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<int> profileId = GeneratedColumn<int>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES profiles (id)',
+    ),
+  );
+  static const VerificationMeta _wordIdMeta = const VerificationMeta('wordId');
+  @override
+  late final GeneratedColumn<String> wordId = GeneratedColumn<String>(
+    'word_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _questionIdMeta = const VerificationMeta(
+    'questionId',
+  );
+  @override
+  late final GeneratedColumn<String> questionId = GeneratedColumn<String>(
+    'question_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _correctMeta = const VerificationMeta(
+    'correct',
+  );
+  @override
+  late final GeneratedColumn<bool> correct = GeneratedColumn<bool>(
+    'correct',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("correct" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _answeredAtMsMeta = const VerificationMeta(
+    'answeredAtMs',
+  );
+  @override
+  late final GeneratedColumn<int> answeredAtMs = GeneratedColumn<int>(
+    'answered_at_ms',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    profileId,
+    wordId,
+    questionId,
+    correct,
+    answeredAtMs,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'practice_responses';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PracticeResponse> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('word_id')) {
+      context.handle(
+        _wordIdMeta,
+        wordId.isAcceptableOrUnknown(data['word_id']!, _wordIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_wordIdMeta);
+    }
+    if (data.containsKey('question_id')) {
+      context.handle(
+        _questionIdMeta,
+        questionId.isAcceptableOrUnknown(data['question_id']!, _questionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_questionIdMeta);
+    }
+    if (data.containsKey('correct')) {
+      context.handle(
+        _correctMeta,
+        correct.isAcceptableOrUnknown(data['correct']!, _correctMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_correctMeta);
+    }
+    if (data.containsKey('answered_at_ms')) {
+      context.handle(
+        _answeredAtMsMeta,
+        answeredAtMs.isAcceptableOrUnknown(
+          data['answered_at_ms']!,
+          _answeredAtMsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_answeredAtMsMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PracticeResponse map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PracticeResponse(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      wordId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}word_id'],
+      )!,
+      questionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}question_id'],
+      )!,
+      correct: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}correct'],
+      )!,
+      answeredAtMs: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}answered_at_ms'],
+      )!,
+    );
+  }
+
+  @override
+  $PracticeResponsesTable createAlias(String alias) {
+    return $PracticeResponsesTable(attachedDatabase, alias);
+  }
+}
+
+class PracticeResponse extends DataClass
+    implements Insertable<PracticeResponse> {
+  final String id;
+  final int profileId;
+  final String wordId;
+  final String questionId;
+  final bool correct;
+  final int answeredAtMs;
+  const PracticeResponse({
+    required this.id,
+    required this.profileId,
+    required this.wordId,
+    required this.questionId,
+    required this.correct,
+    required this.answeredAtMs,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['profile_id'] = Variable<int>(profileId);
+    map['word_id'] = Variable<String>(wordId);
+    map['question_id'] = Variable<String>(questionId);
+    map['correct'] = Variable<bool>(correct);
+    map['answered_at_ms'] = Variable<int>(answeredAtMs);
+    return map;
+  }
+
+  PracticeResponsesCompanion toCompanion(bool nullToAbsent) {
+    return PracticeResponsesCompanion(
+      id: Value(id),
+      profileId: Value(profileId),
+      wordId: Value(wordId),
+      questionId: Value(questionId),
+      correct: Value(correct),
+      answeredAtMs: Value(answeredAtMs),
+    );
+  }
+
+  factory PracticeResponse.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PracticeResponse(
+      id: serializer.fromJson<String>(json['id']),
+      profileId: serializer.fromJson<int>(json['profileId']),
+      wordId: serializer.fromJson<String>(json['wordId']),
+      questionId: serializer.fromJson<String>(json['questionId']),
+      correct: serializer.fromJson<bool>(json['correct']),
+      answeredAtMs: serializer.fromJson<int>(json['answeredAtMs']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'profileId': serializer.toJson<int>(profileId),
+      'wordId': serializer.toJson<String>(wordId),
+      'questionId': serializer.toJson<String>(questionId),
+      'correct': serializer.toJson<bool>(correct),
+      'answeredAtMs': serializer.toJson<int>(answeredAtMs),
+    };
+  }
+
+  PracticeResponse copyWith({
+    String? id,
+    int? profileId,
+    String? wordId,
+    String? questionId,
+    bool? correct,
+    int? answeredAtMs,
+  }) => PracticeResponse(
+    id: id ?? this.id,
+    profileId: profileId ?? this.profileId,
+    wordId: wordId ?? this.wordId,
+    questionId: questionId ?? this.questionId,
+    correct: correct ?? this.correct,
+    answeredAtMs: answeredAtMs ?? this.answeredAtMs,
+  );
+  PracticeResponse copyWithCompanion(PracticeResponsesCompanion data) {
+    return PracticeResponse(
+      id: data.id.present ? data.id.value : this.id,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      wordId: data.wordId.present ? data.wordId.value : this.wordId,
+      questionId: data.questionId.present
+          ? data.questionId.value
+          : this.questionId,
+      correct: data.correct.present ? data.correct.value : this.correct,
+      answeredAtMs: data.answeredAtMs.present
+          ? data.answeredAtMs.value
+          : this.answeredAtMs,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PracticeResponse(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('wordId: $wordId, ')
+          ..write('questionId: $questionId, ')
+          ..write('correct: $correct, ')
+          ..write('answeredAtMs: $answeredAtMs')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, profileId, wordId, questionId, correct, answeredAtMs);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PracticeResponse &&
+          other.id == this.id &&
+          other.profileId == this.profileId &&
+          other.wordId == this.wordId &&
+          other.questionId == this.questionId &&
+          other.correct == this.correct &&
+          other.answeredAtMs == this.answeredAtMs);
+}
+
+class PracticeResponsesCompanion extends UpdateCompanion<PracticeResponse> {
+  final Value<String> id;
+  final Value<int> profileId;
+  final Value<String> wordId;
+  final Value<String> questionId;
+  final Value<bool> correct;
+  final Value<int> answeredAtMs;
+  final Value<int> rowid;
+  const PracticeResponsesCompanion({
+    this.id = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.wordId = const Value.absent(),
+    this.questionId = const Value.absent(),
+    this.correct = const Value.absent(),
+    this.answeredAtMs = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PracticeResponsesCompanion.insert({
+    required String id,
+    required int profileId,
+    required String wordId,
+    required String questionId,
+    required bool correct,
+    required int answeredAtMs,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       profileId = Value(profileId),
+       wordId = Value(wordId),
+       questionId = Value(questionId),
+       correct = Value(correct),
+       answeredAtMs = Value(answeredAtMs);
+  static Insertable<PracticeResponse> custom({
+    Expression<String>? id,
+    Expression<int>? profileId,
+    Expression<String>? wordId,
+    Expression<String>? questionId,
+    Expression<bool>? correct,
+    Expression<int>? answeredAtMs,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (profileId != null) 'profile_id': profileId,
+      if (wordId != null) 'word_id': wordId,
+      if (questionId != null) 'question_id': questionId,
+      if (correct != null) 'correct': correct,
+      if (answeredAtMs != null) 'answered_at_ms': answeredAtMs,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PracticeResponsesCompanion copyWith({
+    Value<String>? id,
+    Value<int>? profileId,
+    Value<String>? wordId,
+    Value<String>? questionId,
+    Value<bool>? correct,
+    Value<int>? answeredAtMs,
+    Value<int>? rowid,
+  }) {
+    return PracticeResponsesCompanion(
+      id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
+      wordId: wordId ?? this.wordId,
+      questionId: questionId ?? this.questionId,
+      correct: correct ?? this.correct,
+      answeredAtMs: answeredAtMs ?? this.answeredAtMs,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<int>(profileId.value);
+    }
+    if (wordId.present) {
+      map['word_id'] = Variable<String>(wordId.value);
+    }
+    if (questionId.present) {
+      map['question_id'] = Variable<String>(questionId.value);
+    }
+    if (correct.present) {
+      map['correct'] = Variable<bool>(correct.value);
+    }
+    if (answeredAtMs.present) {
+      map['answered_at_ms'] = Variable<int>(answeredAtMs.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PracticeResponsesCompanion(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('wordId: $wordId, ')
+          ..write('questionId: $questionId, ')
+          ..write('correct: $correct, ')
+          ..write('answeredAtMs: $answeredAtMs, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $ContentPacksTable extends ContentPacks
     with TableInfo<$ContentPacksTable, ContentPack> {
   @override
@@ -5818,6 +6240,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $VocabularyProgressTable(this);
   late final $VocabularyAttemptsTable vocabularyAttempts =
       $VocabularyAttemptsTable(this);
+  late final $PracticeResponsesTable practiceResponses =
+      $PracticeResponsesTable(this);
   late final $ContentPacksTable contentPacks = $ContentPacksTable(this);
   late final $ContentWordsTable contentWords = $ContentWordsTable(this);
   late final $ContentExamplesTable contentExamples = $ContentExamplesTable(
@@ -5863,6 +6287,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     foundationProgress,
     vocabularyProgress,
     vocabularyAttempts,
+    practiceResponses,
     contentPacks,
     contentWords,
     contentExamples,
@@ -6001,6 +6426,27 @@ final class $$ProfilesTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _vocabularyAttemptsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$PracticeResponsesTable, List<PracticeResponse>>
+  _practiceResponsesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.practiceResponses,
+        aliasName: 'profiles__id__practice_responses__profile_id',
+      );
+
+  $$PracticeResponsesTableProcessedTableManager get practiceResponsesRefs {
+    final manager = $$PracticeResponsesTableTableManager(
+      $_db,
+      $_db.practiceResponses,
+    ).filter((f) => f.profileId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _practiceResponsesRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -6161,6 +6607,31 @@ class $$ProfilesTableFilterComposer
           }) => $$VocabularyAttemptsTableFilterComposer(
             $db: $db,
             $table: $db.vocabularyAttempts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> practiceResponsesRefs(
+    Expression<bool> Function($$PracticeResponsesTableFilterComposer f) f,
+  ) {
+    final $$PracticeResponsesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.practiceResponses,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PracticeResponsesTableFilterComposer(
+            $db: $db,
+            $table: $db.practiceResponses,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -6378,6 +6849,32 @@ class $$ProfilesTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> practiceResponsesRefs<T extends Object>(
+    Expression<T> Function($$PracticeResponsesTableAnnotationComposer a) f,
+  ) {
+    final $$PracticeResponsesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.practiceResponses,
+          getReferencedColumn: (t) => t.profileId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PracticeResponsesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.practiceResponses,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
   Expression<T> learningQueueRefs<T extends Object>(
     Expression<T> Function($$LearningQueueTableAnnotationComposer a) f,
   ) {
@@ -6422,6 +6919,7 @@ class $$ProfilesTableTableManager
             bool foundationProgressRefs,
             bool vocabularyProgressRefs,
             bool vocabularyAttemptsRefs,
+            bool practiceResponsesRefs,
             bool learningQueueRefs,
           })
         > {
@@ -6486,6 +6984,7 @@ class $$ProfilesTableTableManager
                 foundationProgressRefs = false,
                 vocabularyProgressRefs = false,
                 vocabularyAttemptsRefs = false,
+                practiceResponsesRefs = false,
                 learningQueueRefs = false,
               }) {
                 return PrefetchHooks(
@@ -6495,6 +6994,7 @@ class $$ProfilesTableTableManager
                     if (foundationProgressRefs) db.foundationProgress,
                     if (vocabularyProgressRefs) db.vocabularyProgress,
                     if (vocabularyAttemptsRefs) db.vocabularyAttempts,
+                    if (practiceResponsesRefs) db.practiceResponses,
                     if (learningQueueRefs) db.learningQueue,
                   ],
                   addJoins: null,
@@ -6580,6 +7080,26 @@ class $$ProfilesTableTableManager
                           referencedColumn: 'profile_id',
                           typedResults: items,
                         ),
+                      if (practiceResponsesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          ProfileRow,
+                          $ProfilesTable,
+                          PracticeResponse,
+                          $PracticeResponsesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ProfilesTableReferences
+                              ._practiceResponsesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProfilesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).practiceResponsesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'profile_id',
+                          typedResults: items,
+                        ),
                       if (learningQueueRefs)
                         await $_getPrefetchedDataByColumns<
                           ProfileRow,
@@ -6625,6 +7145,7 @@ typedef $$ProfilesTableProcessedTableManager =
         bool foundationProgressRefs,
         bool vocabularyProgressRefs,
         bool vocabularyAttemptsRefs,
+        bool practiceResponsesRefs,
         bool learningQueueRefs,
       })
     >;
@@ -8018,6 +8539,358 @@ typedef $$VocabularyAttemptsTableProcessedTableManager =
       $$VocabularyAttemptsTableUpdateCompanionBuilder,
       (VocabularyAttempt, $$VocabularyAttemptsTableReferences),
       VocabularyAttempt,
+      PrefetchHooks Function({bool profileId})
+    >;
+typedef $$PracticeResponsesTableCreateCompanionBuilder =
+    PracticeResponsesCompanion Function({
+      required String id,
+      required int profileId,
+      required String wordId,
+      required String questionId,
+      required bool correct,
+      required int answeredAtMs,
+      Value<int> rowid,
+    });
+typedef $$PracticeResponsesTableUpdateCompanionBuilder =
+    PracticeResponsesCompanion Function({
+      Value<String> id,
+      Value<int> profileId,
+      Value<String> wordId,
+      Value<String> questionId,
+      Value<bool> correct,
+      Value<int> answeredAtMs,
+      Value<int> rowid,
+    });
+
+final class $$PracticeResponsesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $PracticeResponsesTable,
+          PracticeResponse
+        > {
+  $$PracticeResponsesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ProfilesTable _profileIdTable(_$AppDatabase db) =>
+      db.profiles.createAlias('practice_responses__profile_id__profiles__id');
+
+  $$ProfilesTableProcessedTableManager get profileId {
+    final $_column = $_itemColumn<int>('profile_id')!;
+
+    final manager = $$ProfilesTableTableManager(
+      $_db,
+      $_db.profiles,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_profileIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$PracticeResponsesTableFilterComposer
+    extends Composer<_$AppDatabase, $PracticeResponsesTable> {
+  $$PracticeResponsesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get wordId => $composableBuilder(
+    column: $table.wordId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get questionId => $composableBuilder(
+    column: $table.questionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get correct => $composableBuilder(
+    column: $table.correct,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get answeredAtMs => $composableBuilder(
+    column: $table.answeredAtMs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ProfilesTableFilterComposer get profileId {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PracticeResponsesTableOrderingComposer
+    extends Composer<_$AppDatabase, $PracticeResponsesTable> {
+  $$PracticeResponsesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get wordId => $composableBuilder(
+    column: $table.wordId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get questionId => $composableBuilder(
+    column: $table.questionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get correct => $composableBuilder(
+    column: $table.correct,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get answeredAtMs => $composableBuilder(
+    column: $table.answeredAtMs,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ProfilesTableOrderingComposer get profileId {
+    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableOrderingComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PracticeResponsesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PracticeResponsesTable> {
+  $$PracticeResponsesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get wordId =>
+      $composableBuilder(column: $table.wordId, builder: (column) => column);
+
+  GeneratedColumn<String> get questionId => $composableBuilder(
+    column: $table.questionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get correct =>
+      $composableBuilder(column: $table.correct, builder: (column) => column);
+
+  GeneratedColumn<int> get answeredAtMs => $composableBuilder(
+    column: $table.answeredAtMs,
+    builder: (column) => column,
+  );
+
+  $$ProfilesTableAnnotationComposer get profileId {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PracticeResponsesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PracticeResponsesTable,
+          PracticeResponse,
+          $$PracticeResponsesTableFilterComposer,
+          $$PracticeResponsesTableOrderingComposer,
+          $$PracticeResponsesTableAnnotationComposer,
+          $$PracticeResponsesTableCreateCompanionBuilder,
+          $$PracticeResponsesTableUpdateCompanionBuilder,
+          (PracticeResponse, $$PracticeResponsesTableReferences),
+          PracticeResponse,
+          PrefetchHooks Function({bool profileId})
+        > {
+  $$PracticeResponsesTableTableManager(
+    _$AppDatabase db,
+    $PracticeResponsesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PracticeResponsesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PracticeResponsesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PracticeResponsesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<int> profileId = const Value.absent(),
+                Value<String> wordId = const Value.absent(),
+                Value<String> questionId = const Value.absent(),
+                Value<bool> correct = const Value.absent(),
+                Value<int> answeredAtMs = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PracticeResponsesCompanion(
+                id: id,
+                profileId: profileId,
+                wordId: wordId,
+                questionId: questionId,
+                correct: correct,
+                answeredAtMs: answeredAtMs,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required int profileId,
+                required String wordId,
+                required String questionId,
+                required bool correct,
+                required int answeredAtMs,
+                Value<int> rowid = const Value.absent(),
+              }) => PracticeResponsesCompanion.insert(
+                id: id,
+                profileId: profileId,
+                wordId: wordId,
+                questionId: questionId,
+                correct: correct,
+                answeredAtMs: answeredAtMs,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$PracticeResponsesTable, PracticeResponse>(table),
+                  $$PracticeResponsesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({profileId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (profileId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.profileId,
+                        referencedTable: $$PracticeResponsesTableReferences
+                            ._profileIdTable(db),
+                        referencedColumn: $$PracticeResponsesTableReferences
+                            ._profileIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$PracticeResponsesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PracticeResponsesTable,
+      PracticeResponse,
+      $$PracticeResponsesTableFilterComposer,
+      $$PracticeResponsesTableOrderingComposer,
+      $$PracticeResponsesTableAnnotationComposer,
+      $$PracticeResponsesTableCreateCompanionBuilder,
+      $$PracticeResponsesTableUpdateCompanionBuilder,
+      (PracticeResponse, $$PracticeResponsesTableReferences),
+      PracticeResponse,
       PrefetchHooks Function({bool profileId})
     >;
 typedef $$ContentPacksTableCreateCompanionBuilder =
@@ -12015,6 +12888,8 @@ class $AppDatabaseManager {
       $$VocabularyProgressTableTableManager(_db, _db.vocabularyProgress);
   $$VocabularyAttemptsTableTableManager get vocabularyAttempts =>
       $$VocabularyAttemptsTableTableManager(_db, _db.vocabularyAttempts);
+  $$PracticeResponsesTableTableManager get practiceResponses =>
+      $$PracticeResponsesTableTableManager(_db, _db.practiceResponses);
   $$ContentPacksTableTableManager get contentPacks =>
       $$ContentPacksTableTableManager(_db, _db.contentPacks);
   $$ContentWordsTableTableManager get contentWords =>

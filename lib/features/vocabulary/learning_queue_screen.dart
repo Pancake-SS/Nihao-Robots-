@@ -12,6 +12,7 @@ import 'curriculum_repository.dart';
 import 'add_word_screen.dart';
 import 'learning_priority.dart';
 import 'word_introduction_screen.dart';
+import 'learning_keyboard.dart';
 
 class LearningQueueScreen extends ConsumerStatefulWidget {
   const LearningQueueScreen({
@@ -337,26 +338,23 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: TextField(
-                        controller: _search,
-                        key: const ValueKey('queue-search'),
-                        maxLength: 100,
-                        decoration: InputDecoration(
-                          labelText: 'Search words',
-                          counterText: '',
-                          hintText: 'Hanzi, Pinyin or meaning',
-                          suffixIcon: IconButton(
-                            tooltip: 'Search queue',
-                            icon: const Icon(Icons.search),
-                            onPressed: _busy
-                                ? null
-                                : () {
-                                    _query = _search.text;
-                                    _load();
-                                  },
-                          ),
+                      child: LearningKeyboard(
+                        hanzi: _search,
+                        enabled: !_busy,
+                        hanziKey: const ValueKey('queue-search'),
+                        hanziLabel: 'Search words',
+                        hanziHint: 'Hanzi, Pinyin or meaning',
+                        hanziSuffixIcon: IconButton(
+                          tooltip: 'Search queue',
+                          icon: const Icon(Icons.search),
+                          onPressed: _busy
+                              ? null
+                              : () {
+                                  _query = _search.text;
+                                  _load();
+                                },
                         ),
-                        onSubmitted: (value) {
+                        onHanziSubmitted: (value) {
                           _query = value;
                           _load();
                         },

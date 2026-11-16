@@ -214,7 +214,7 @@ void main() {
         expect(event.answersJson, contains('错'));
         expect(
           (await db.select(db.vocabularyProgress).get()).single.stage,
-          'relearning',
+          'learning',
         );
         expect(tester.takeException(), isNull);
       } finally {
@@ -225,7 +225,7 @@ void main() {
   );
 
   testWidgets(
-    'missing lesson content retains a due record without a broken review action',
+    'missing lesson content retains learned progress without a broken practice action',
     (tester) async {
       final db = AppDatabase(NativeDatabase.memory());
       final profile = (await SqliteProfileRepository(
@@ -262,9 +262,10 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        expect(find.text('1 due · 1 in early learning'), findsOneWidget);
-        expect(find.text('Lesson content unavailable'), findsOneWidget);
-        expect(find.text('Review now'), findsNothing);
+        expect(find.text('1 learned words'), findsOneWidget);
+        await press(tester, find.text('Browse learned words'));
+        expect(find.text('Loading word…'), findsOneWidget);
+        expect(find.text('Test selected word'), findsOneWidget);
         expect(await db.select(db.vocabularyAttempts).get(), hasLength(1));
         expect((await repo.progress(profile.id)).single.version, 1);
       } finally {
@@ -275,7 +276,7 @@ void main() {
   );
 
   testWidgets(
-    'learn, quiz, due review, failure, SQLite restart, recovery and profile isolation',
+    'learn, practise immediately, restart with points and isolate profiles',
     (tester) async {
       final directory = (await tester.runAsync(
         () => Directory.systemTemp.createTemp('nihao-journey-test-'),
@@ -356,26 +357,47 @@ void main() {
         await tester.pumpAndSettle();
         await tester.pageBack();
         await tester.pumpAndSettle();
-        await press(tester, find.text('Open reviews'));
-        expect(find.text('0 due · 1 in early learning'), findsOneWidget);
-        expect(find.text('Review now'), findsNothing);
-        final firstDue =
-            (await db!.select(db!.vocabularyProgress).get()).single.dueAtMs;
-        clock = DateTime.fromMillisecondsSinceEpoch(firstDue - 1, isUtc: true);
-        await tester.pump(const Duration(seconds: 1));
-        expect(find.text('Review now'), findsNothing);
-        clock = DateTime.fromMillisecondsSinceEpoch(firstDue, isUtc: true);
-        await tester.pump(const Duration(seconds: 1));
-        await press(tester, find.text('Review now'));
-        await answerQuiz(tester, correct: false, word: loadExpandedGreeting());
-        expect(
-          find.textContaining('You corrected every missed question'),
-          findsOneWidget,
+        await press(tester, find.text('Open practice'));
+        expect(find.text('1 learned words'), findsOneWidget);
+        await press(tester, find.text('Browse learned words'));
+        await press(
+          tester,
+          find.byKey(
+            ValueKey('practice-word-${loadExpandedGreeting().entry.id}'),
+          ),
         );
-        final row = (await db!.select(db!.vocabularyProgress).get()).single;
-        expect(row.stage, 'relearning');
-        expect(await db!.select(db!.vocabularyAttempts).get(), hasLength(2));
-        clock = DateTime.fromMillisecondsSinceEpoch(row.dueAtMs, isUtc: true);
+        await press(tester, find.text('Test selected word'));
+        final questions = loadExpandedGreeting().entry.questions;
+        for (var i = 0; i < questions.length; i++) {
+          final q = questions[i];
+          if (q.isTyped) {
+            await tester.enterText(
+              find.byKey(const ValueKey('practice-typed-answer')),
+              q.correctAnswer,
+            );
+            await tester.pumpAndSettle();
+          } else {
+            await press(
+              tester,
+              find.byKey(ValueKey('practice-answer-${q.correctOptionId}')),
+            );
+          }
+          await press(tester, find.text('Check answer'));
+          expect(find.text('Correct! +1 point'), findsOneWidget);
+          await press(
+            tester,
+            find.text(
+              i == questions.length - 1 ? 'Finish round' : 'Next question',
+            ),
+          );
+        }
+        expect(find.text('Session complete'), findsOneWidget);
+        expect(
+          (await db!.select(db!.practiceResponses).get()).where(
+            (response) => response.correct,
+          ),
+          hasLength(questions.length * 2),
+        );
         await tester.pumpWidget(const SizedBox.shrink());
         await tester.runAsync(db!.close);
         db = null;
@@ -383,27 +405,17 @@ void main() {
         await open();
         await press(tester, find.text('Continue'));
         await press(tester, find.byKey(const ValueKey('destination-1')));
-        await press(tester, find.text('Open reviews'));
-        expect(find.text('1 due · 1 in early learning'), findsOneWidget);
-        await press(tester, find.text('Review now'));
-        await answerQuiz(tester, word: loadExpandedGreeting());
-        final history = await db!.select(db!.vocabularyAttempts).get();
-        expect(history.map((a) => a.passed), [true, false, true]);
-        expect(
-          (await db!.select(db!.vocabularyProgress).get())
-              .single
-              .successfulReviews,
-          1,
-        );
-        await press(tester, find.text('Done'));
+        await press(tester, find.text('Open practice'));
+        await press(tester, find.text('Browse learned words'));
+        expect(find.text('${questions.length * 2} correct'), findsOneWidget);
         await tester.pageBack();
         await tester.pumpAndSettle();
         await press(tester, find.text('Switch profile'));
         await press(tester, find.byKey(ValueKey('profile-$second')));
         await press(tester, find.text('Continue'));
         await press(tester, find.byKey(const ValueKey('destination-1')));
-        await press(tester, find.text('Open reviews'));
-        expect(find.text('0 due · 0 in early learning'), findsOneWidget);
+        await press(tester, find.text('Open practice'));
+        expect(find.text('0 learned words'), findsOneWidget);
         expect(tester.takeException(), isNull);
       } finally {
         await tester.pumpWidget(const SizedBox.shrink());

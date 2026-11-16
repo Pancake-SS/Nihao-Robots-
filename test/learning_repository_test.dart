@@ -65,7 +65,7 @@ void main() {
   tearDown(() => db.close());
 
   test(
-    'failed review schedule update preserves old progress and attempt history',
+    'failed progress update preserves old progress and attempt history',
     () async {
       final initial = await repository.begin(profile, id, review: false);
       clock = (await repository.submit(initial, correct)).nextDueAt;
@@ -84,18 +84,18 @@ void main() {
       expect(await db.select(db.vocabularyAttempts).get(), hasLength(2));
       expect(
         (await repository.progress(profile)).single.stage,
-        LearningStage.relearning,
+        LearningStage.learning,
       );
     },
   );
 
-  test('first quiz commits immutable evidence and schedule without mastery or cross-profile changes', () async {
+  test('first quiz commits immutable evidence and points without cross-profile changes', () async {
     final session = await repository.begin(profile, id, review: false);
     expect(await repository.progress(profile), isEmpty);
     final saved = await repository.submit(session, correct);
     expect(saved.passed, isTrue);
     expect(saved.stage, LearningStage.learning);
-    expect(saved.nextDueAt, clock.add(const Duration(minutes: 5)));
+    expect(saved.nextDueAt, saved.answeredAt);
     final progress = (await repository.progress(profile)).single;
     expect(progress.successfulReviews, 0);
     expect(progress.version, 1);
@@ -109,42 +109,44 @@ void main() {
   });
 
   test(
-    'review eligibility is exact at due time and rechecked on submit',
+    'learned word can be retested immediately without a due-time gate',
     () async {
       final first = await repository.begin(profile, id, review: false);
       final receipt = await repository.submit(first, correct);
       clock = receipt.nextDueAt.subtract(const Duration(milliseconds: 1));
-      await expectLater(repository.begin(profile, id, review: true), conflict);
-      clock = receipt.nextDueAt;
       final review = await repository.begin(profile, id, review: true);
-      clock = clock.subtract(const Duration(seconds: 1));
-      await expectLater(repository.submit(review, correct), conflict);
-      clock = receipt.nextDueAt;
       final saved = await repository.submit(review, correct);
-      expect(saved.stage, LearningStage.review);
-      expect(saved.nextDueAt, clock.add(const Duration(days: 1)));
-      expect((await repository.progress(profile)).single.successfulReviews, 1);
+      expect(saved.stage, LearningStage.learning);
+      expect(saved.nextDueAt, saved.answeredAt);
+      expect((await repository.progress(profile)).single.successfulReviews, 0);
+      expect(
+        (await repository.progress(profile)).single.correctCount,
+        correct.length * 2,
+      );
     },
   );
 
-  test('incorrect initial and delayed answers retain history and schedule relearning', () async {
-    final first = await repository.begin(profile, id, review: false);
-    final failed = await repository.submit(first, incorrect);
-    expect(failed.passed, isFalse);
-    expect(failed.stage, LearningStage.relearning);
-    final original = (await db.select(db.vocabularyAttempts).get()).single;
-    clock = failed.nextDueAt;
-    final review = await repository.begin(profile, id, review: true);
-    final second = await repository.submit(review, incorrect);
-    expect(second.stage, LearningStage.relearning);
-    clock = second.nextDueAt;
-    final retry = await repository.begin(profile, id, review: true);
-    await repository.submit(retry, correct);
-    final history = await db.select(db.vocabularyAttempts).get();
-    expect(history, hasLength(3));
-    expect(history.first, original);
-    expect((await repository.progress(profile)).single.successfulReviews, 1);
-  });
+  test(
+    'incorrect first answers retain history and do not earn points',
+    () async {
+      final first = await repository.begin(profile, id, review: false);
+      final failed = await repository.submit(first, incorrect);
+      expect(failed.passed, isFalse);
+      expect(failed.stage, LearningStage.learning);
+      final original = (await db.select(db.vocabularyAttempts).get()).single;
+      clock = failed.nextDueAt;
+      final review = await repository.begin(profile, id, review: true);
+      final second = await repository.submit(review, incorrect);
+      expect(second.stage, LearningStage.learning);
+      clock = second.nextDueAt;
+      final retry = await repository.begin(profile, id, review: true);
+      await repository.submit(retry, correct);
+      final history = await db.select(db.vocabularyAttempts).get();
+      expect(history, hasLength(3));
+      expect(history.first, original);
+      expect((await repository.progress(profile)).single.successfulReviews, 0);
+    },
+  );
 
   test(
     'same event retry returns original receipt even after content removal',
@@ -177,31 +179,28 @@ void main() {
     expect(await repository.progress(other), isEmpty);
   });
 
-  test(
-    'two open sessions race without duplicate attempts or schedule changes',
-    () async {
-      final a = await repository.begin(profile, id, review: false);
-      final b = await repository.begin(profile, id, review: false);
-      Future<String> submit(QuizSession session) async {
-        try {
-          await repository.submit(session, correct);
-          return 'saved';
-        } on LearningConflict {
-          return 'conflict';
-        }
+  test('two open sessions race without duplicate attempts or points', () async {
+    final a = await repository.begin(profile, id, review: false);
+    final b = await repository.begin(profile, id, review: false);
+    Future<String> submit(QuizSession session) async {
+      try {
+        await repository.submit(session, correct);
+        return 'saved';
+      } on LearningConflict {
+        return 'conflict';
       }
+    }
 
-      expect(
-        await Future.wait([submit(a), submit(b)]),
-        unorderedEquals(['saved', 'conflict']),
-      );
-      expect(await db.select(db.vocabularyAttempts).get(), hasLength(1));
-      expect((await repository.progress(profile)).single.version, 1);
-    },
-  );
+    expect(
+      await Future.wait([submit(a), submit(b)]),
+      unorderedEquals(['saved', 'conflict']),
+    );
+    expect(await db.select(db.vocabularyAttempts).get(), hasLength(1));
+    expect((await repository.progress(profile)).single.version, 1);
+  });
 
   test(
-    'schedule failure rolls back attempt; retry records it exactly once',
+    'progress write failure rolls back attempt; retry records it exactly once',
     () async {
       final session = await repository.begin(profile, id, review: false);
       await db.customStatement(
@@ -251,26 +250,16 @@ void main() {
     },
   );
 
-  test('early policy is configurable and rejects invalid intervals', () async {
-    expect(
-      () => EarlyReviewPolicy(firstDelay: Duration.zero),
-      throwsArgumentError,
-    );
-    expect(
-      () => EarlyReviewPolicy(reviewDelay: const Duration(days: 31)),
-      throwsArgumentError,
-    );
-    final custom = SqliteLearningRepository(
-      db,
-      catalogue: () async => catalogue,
-      now: () => clock,
-      policy: EarlyReviewPolicy(firstDelay: const Duration(seconds: 3)),
-    );
-    final session = await custom.begin(profile, id, review: false);
-    expect(
-      (await custom.submit(session, correct)).nextDueAt,
-      clock.add(const Duration(seconds: 3)),
-    );
+  test('new attempts store no delayed due time or stage progression', () async {
+    final first = await repository.begin(profile, id, review: false);
+    final saved = await repository.submit(first, correct);
+    expect(saved.nextDueAt, saved.answeredAt);
+    expect(saved.stage, LearningStage.learning);
+    clock = clock.add(const Duration(seconds: 1));
+    final second = await repository.begin(profile, id, review: true);
+    final repeated = await repository.submit(second, correct);
+    expect(repeated.nextDueAt, repeated.answeredAt);
+    expect(repeated.stage, LearningStage.learning);
   });
 
   test('v2 migration and restart retain profiles, onboarding, attempts and due dates', () async {

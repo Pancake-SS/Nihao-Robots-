@@ -1,5 +1,9 @@
 # Ni Hao Robot! — Decision log
 
+## 2026-11-15: user-directed Practice redesign
+
+The user's latest request supersedes the earlier plan to gate vocabulary reviews by time and defer the main Practice area. Practice is now available from both the sidebar and Vocabulary. A word's score is the number of questions answered correctly on the first try across saved attempts. Full-word replay, a user-chosen number of distinct random words, and an endless question deck use learned words from the selected profile. A missed question returns at the end of its round. Relearning uses Hanzi or English meaning to open a lesson; Pinyin is not a lookup key. Existing schedule columns and attempt snapshots are retained for database compatibility and migration, while new attempts create no delayed schedule.
+
 ## 2026-11-06: imported vocabulary and reusable question patterns
 
 The user explicitly requested bulk real-data imports, more question directions, object-oriented pattern generation and existing sentence/audio sources. Added pinned HearMandarin/no7z imports, a separate staging database, an extensible Python question strategy hierarchy and additive app content schema v4. Generation and grading have no AI/network dependency. Twenty imported lessons plus the existing greeting publish eight questions each; the broader generated bank remains draft.

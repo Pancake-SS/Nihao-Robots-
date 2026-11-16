@@ -13,16 +13,13 @@ class SqliteLearningRepository implements LearningRepository {
     this.lookup,
     DateTime Function()? now,
     String Function()? eventId,
-    EarlyReviewPolicy? policy,
   }) : now = now ?? DateTime.now,
-       eventId = eventId ?? newAttemptId,
-       policy = policy ?? EarlyReviewPolicy();
+       eventId = eventId ?? newAttemptId;
   final AppDatabase database;
   final Future<List<CatalogueWord>> Function() catalogue;
   final Future<CatalogueWord?> Function(String)? lookup;
   final DateTime Function() now;
   final String Function() eventId;
-  final EarlyReviewPolicy policy;
 
   Future<void> _profile(int id) async {
     if (await (database.select(
@@ -55,40 +52,53 @@ class SqliteLearningRepository implements LearningRepository {
           ))
           .getSingleOrNull();
 
-  WordProgress _progress(VocabularyProgressData row) => WordProgress(
-    wordId: row.wordId,
-    stage: LearningStage.values.byName(row.stage),
-    dueAt: DateTime.fromMillisecondsSinceEpoch(row.dueAtMs, isUtc: true),
-    version: row.version,
-    successfulReviews: row.successfulReviews,
-  );
+  WordProgress _progress(VocabularyProgressData row, int correctCount) =>
+      WordProgress(
+        wordId: row.wordId,
+        stage: LearningStage.values.byName(row.stage),
+        dueAt: DateTime.fromMillisecondsSinceEpoch(row.dueAtMs, isUtc: true),
+        version: row.version,
+        successfulReviews: row.successfulReviews,
+        correctCount: correctCount,
+      );
 
   @override
-  Future<List<WordProgress>> progress(int profileId) =>
-      database.transaction(() async {
-        await _profile(profileId);
-        final rows =
-            await (database.select(database.vocabularyProgress)
-                  ..where((p) => p.profileId.equals(profileId))
-                  ..orderBy([
-                    (p) => OrderingTerm.asc(p.dueAtMs),
-                    (p) => OrderingTerm.asc(p.wordId),
-                  ]))
+  Future<List<WordProgress>> progress(int profileId) => database.transaction(
+    () async {
+      await _profile(profileId);
+      final rows =
+          await (database.select(database.vocabularyProgress)
+                ..where((p) => p.profileId.equals(profileId))
+                ..orderBy([(p) => OrderingTerm.asc(p.wordId)]))
+              .get();
+      final totals = database.schemaVersion < 6
+          ? <QueryRow>[]
+          : await database
+                .customSelect(
+                  'SELECT word_id, COUNT(*) AS points FROM practice_responses '
+                  'WHERE profile_id = ? AND correct = 1 GROUP BY word_id',
+                  variables: [Variable.withInt(profileId)],
+                )
                 .get();
-        return List.unmodifiable(rows.map(_progress));
-      });
+      final points = {
+        for (final total in totals)
+          total.read<String>('word_id'): total.read<int>('points'),
+      };
+      return List.unmodifiable(
+        rows.map((row) => _progress(row, points[row.wordId] ?? 0)),
+      );
+    },
+  );
 
-  void _available(VocabularyProgressData? row, bool review, DateTime time) {
+  void _available(VocabularyProgressData? row, bool review) {
     if (review) {
       if (row == null)
         throw const LearningConflict(
           'Read the lesson and take its first quiz before reviewing.',
         );
-      if (!_progress(row).isDue(time))
-        throw const LearningConflict('This review is not due yet.');
     } else if (row != null) {
       throw const LearningConflict(
-        'This word already has a review schedule. Open Vocabulary Practice.',
+        'This word has already been learned. Open Practice to try it again.',
       );
     }
   }
@@ -103,7 +113,7 @@ class SqliteLearningRepository implements LearningRepository {
     return database.transaction(() async {
       await _profile(profileId);
       final row = await _row(profileId, wordId);
-      _available(row, review, now().toUtc());
+      _available(row, review);
       return QuizSession(
         eventId: eventId(),
         profileId: profileId,
@@ -175,16 +185,16 @@ class SqliteLearningRepository implements LearningRepository {
       final row = await _row(session.profileId, word.entry.id);
       if ((row?.version ?? 0) != session.versionBefore) {
         throw const LearningConflict(
-          'Another attempt updated this word. Return to Practice for its current schedule.',
+          'Another attempt updated this word. Return to Practice and try again.',
         );
       }
       final time = now().toUtc();
-      _available(row, session.isReview, time);
+      _available(row, session.isReview);
       final passed = questions.every((q) => q.isCorrect(frozen[q.id]));
-      final due = time.add(
-        policy.delay(passed: passed, isReview: session.isReview),
-      );
-      final stage = policy.stage(passed: passed, isReview: session.isReview);
+      // Historical columns are required by schema 5. New quizzes have no
+      // schedule or stage progression; their timestamp is retained for audit.
+      final due = time;
+      const stage = LearningStage.learning;
       final saved = await database
           .into(database.vocabularyAttempts)
           .insertReturning(
@@ -214,6 +224,22 @@ class SqliteLearningRepository implements LearningRepository {
               nextStage: stage.name,
             ),
           );
+      if (database.schemaVersion >= 6) {
+        for (final question in questions) {
+          await database
+              .into(database.practiceResponses)
+              .insert(
+                PracticeResponsesCompanion.insert(
+                  id: '${session.eventId}.${question.id}',
+                  profileId: session.profileId,
+                  wordId: word.entry.id,
+                  questionId: question.id,
+                  correct: question.isCorrect(frozen[question.id]),
+                  answeredAtMs: time.millisecondsSinceEpoch,
+                ),
+              );
+        }
+      }
       await database
           .into(database.vocabularyProgress)
           .insertOnConflictUpdate(
@@ -223,9 +249,7 @@ class SqliteLearningRepository implements LearningRepository {
               stage: stage.name,
               dueAtMs: due.millisecondsSinceEpoch,
               version: session.versionBefore + 1,
-              successfulReviews:
-                  (row?.successfulReviews ?? 0) +
-                  (session.isReview && passed ? 1 : 0),
+              successfulReviews: row?.successfulReviews ?? 0,
             ),
           );
       return _receipt(saved);

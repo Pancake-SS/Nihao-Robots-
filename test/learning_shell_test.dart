@@ -12,6 +12,7 @@ import 'package:ni_hao_robot/app/theme.dart';
 import 'package:ni_hao_robot/features/onboarding/foundation_repository.dart';
 import 'package:ni_hao_robot/features/profiles/profile.dart';
 import 'package:ni_hao_robot/features/profiles/profile_home_screen.dart';
+import 'package:ni_hao_robot/features/review/learning_providers.dart';
 import 'package:ni_hao_robot/shared/robot_art.dart';
 import 'package:ni_hao_robot/shared/app_sidebar.dart';
 
@@ -40,6 +41,7 @@ Future<void> mountShell(
     ProviderScope(
       overrides: [
         foundationRepositoryProvider.overrideWithValue(repository),
+        learningProgressProvider(1).overrideWith((ref) async => []),
         curriculumRepositoryProvider.overrideWithValue(
           StarterQueueFixture(
             contentDb,
@@ -245,11 +247,12 @@ void main() {
       await press(tester, 'Replay Tutorial');
       expect(find.text('Patterns, then practice'), findsOneWidget);
       await press(tester, 'Done');
-      for (final destination in [3, 4]) {
-        await navigate(tester, destination);
-        expect(find.text('Coming soon'), findsOneWidget);
-        expect(find.text('Replay Tutorial'), findsNothing);
-      }
+      await navigate(tester, 3);
+      expect(find.text('0 learned words'), findsOneWidget);
+      expect(find.text('Coming soon'), findsNothing);
+      await navigate(tester, 4);
+      expect(find.text('Coming soon'), findsOneWidget);
+      expect(find.text('Replay Tutorial'), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
