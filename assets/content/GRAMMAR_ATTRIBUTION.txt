@@ -1,0 +1,26 @@
+Ni Hao Robot! offline grammar lessons
+
+Syllabus points, categories, levels, patterns, short explanations and the first
+example of each lesson are adapted from "The complete HSK 3.0 syllabus" by
+Gushi: https://gushichinese.com/hsk-3.0/downloads
+Source file: reference/hsk-3.0-complete.json
+Source SHA-256: 01fcee191c76ddcda96a42dff23106b70a19ab39ae288974c4e04956bf533a67
+The supplied compilation states CC BY-SA 4.0:
+https://creativecommons.org/licenses/by-sa/4.0/
+Its source notes credit the official 2025 HSK 3.0 syllabus, CC-CEDICT and
+Tatoeba. The in-app pack selects only its 428 grammar entries and gives them
+stable IDs and a beginner-first browse order.
+
+Nineteen manually matched lessons also show a short note and up to two
+additional examples from AllSet Learning Chinese Grammar Wiki:
+https://resources.allsetlearning.com/chinese/grammar/
+Repository copy: https://github.com/ivankra/asg (crawled October 2023).
+AllSet teaching text is CC BY-NC-SA 3.0:
+https://creativecommons.org/licenses/by-nc-sa/3.0/
+Each lesson that shows AllSet content displays the full source name and its
+article URL. These excerpts are kept distinct from the Gushi material.
+
+This pack was imported and structured by Ni Hao Robot!, 2026-11-17. Sources
+and Pinyin have not received independent teacher review. Audio for grammar
+examples uses device Mandarin speech where available; no AllSet recording is
+copied. The app contains no required runtime download for these lessons.

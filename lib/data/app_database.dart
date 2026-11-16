@@ -129,6 +129,65 @@ class MasterWritings extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Shared grammar syllabus; private completion lives in GrammarProgress.
+@DataClassName('GrammarLessonRow')
+class GrammarLessons extends Table {
+  TextColumn get id => text()();
+  IntColumn get position => integer()();
+  IntColumn get level => integer()();
+  TextColumn get title => text()();
+  TextColumn get category => text()();
+  TextColumn get pattern => text()();
+  TextColumn get explanation => text()();
+  TextColumn get allsetId => text().nullable()();
+  TextColumn get allsetTitle => text().nullable()();
+  TextColumn get allsetNote => text().nullable()();
+  @override
+  Set<Column> get primaryKey => {id};
+  @override
+  List<String> get customConstraints => [
+    'CHECK (position >= 0)',
+    'CHECK (level BETWEEN 1 AND 9)',
+  ];
+}
+
+class GrammarExamples extends Table {
+  TextColumn get lessonId => text().references(GrammarLessons, #id)();
+  IntColumn get position => integer()();
+  TextColumn get chinese => text()();
+  TextColumn get pinyin => text()();
+  TextColumn get english => text()();
+  TextColumn get source => text()();
+  @override
+  Set<Column> get primaryKey => {lessonId, position};
+  @override
+  List<String> get customConstraints => [
+    'CHECK (position BETWEEN 0 AND 4)',
+    "CHECK (source IN ('gushi', 'allset'))",
+  ];
+}
+
+class GrammarProgress extends Table {
+  IntColumn get profileId => integer().references(Profiles, #id)();
+  TextColumn get lessonId => text().references(GrammarLessons, #id)();
+  IntColumn get completedAtMs => integer()();
+  @override
+  Set<Column> get primaryKey => {profileId, lessonId};
+}
+
+class GrammarInstalls extends Table {
+  IntColumn get id => integer()();
+  IntColumn get revision => integer()();
+  TextColumn get digest => text()();
+  @override
+  Set<Column> get primaryKey => {id};
+  @override
+  List<String> get customConstraints => [
+    'CHECK (id = 1)',
+    'CHECK (revision > 0)',
+  ];
+}
+
 // Shared, versioned learning content is independent of private learner history.
 class ContentPacks extends Table {
   TextColumn get id => text()();
@@ -282,6 +341,10 @@ class LearningQueue extends Table {
     PracticeResponses,
     MasteredWords,
     MasterWritings,
+    GrammarLessons,
+    GrammarExamples,
+    GrammarProgress,
+    GrammarInstalls,
     ContentPacks,
     ContentWords,
     ContentExamples,
@@ -299,13 +362,13 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (migrator) => migrator.createAll(),
     onUpgrade: (migrator, from, to) async {
-      if (from < 1 || from > 6 || to != 7) {
+      if (from < 1 || from > 7 || to != 8) {
         throw StateError('No migration from schema $from to $to.');
       }
       // Additive migration: existing profiles and selection are never rewritten.
@@ -375,8 +438,14 @@ class AppDatabase extends _$AppDatabase {
             }
           }
         }
-        await migrator.createTable(masteredWords);
-        await migrator.createTable(masterWritings);
+        if (from < 7) {
+          await migrator.createTable(masteredWords);
+          await migrator.createTable(masterWritings);
+        }
+        await migrator.createTable(grammarLessons);
+        await migrator.createTable(grammarExamples);
+        await migrator.createTable(grammarProgress);
+        await migrator.createTable(grammarInstalls);
       });
     },
     beforeOpen: (_) async {

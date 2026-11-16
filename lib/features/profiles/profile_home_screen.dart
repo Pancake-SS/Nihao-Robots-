@@ -9,6 +9,7 @@ import '../../shared/app_brand.dart';
 import '../../shared/app_sidebar.dart';
 import '../../shared/ui_art.dart';
 import '../dashboard/home_content.dart';
+import '../grammar/grammar_screen.dart';
 import '../vocabulary/vocabulary_landing.dart';
 import '../review/review_screen.dart';
 import 'profile.dart';
@@ -85,8 +86,8 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
       _ => [
         TourStop(
           _grammar,
-          'Patterns, then practice',
-          'Grammar will use distinct lessons with explanations, examples and prerequisites. Lesson records are being prepared; there are no placeholder exercises to complete.',
+          'Patterns in context',
+          'Open Pending lessons to study a grammar pattern with a clear explanation, structure and examples. Mark it completed when you understand it, then revisit it under Completed lessons.',
         ),
       ],
     };
@@ -116,89 +117,12 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
     ),
   );
 
-  Widget _grammarPanel() => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      const SunnyHero(
-        title: 'Grammar',
-        subtitle: 'Find the patterns that make Mandarin click.',
-        tag: 'Build your foundations',
-        robot: RobotArtwork.gogglesOnPaper,
-      ),
-      const SizedBox(height: 18),
-      LearningCard(
-        key: _grammar,
-        child: ArtBackplate(
-          art: UiArtwork.studyRobotReading,
-          width: 205,
-          height: 175,
-          opacity: .33,
-          minWidth: 750,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SectionHeading(
-                title: 'Lesson chapters',
-                art: UiArtwork.openBook,
-                caption: 'Meaning · structure · rules · examples',
-                icon: Icons.auto_stories_outlined,
-              ),
-              const SizedBox(height: 18),
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(13),
-                    decoration: BoxDecoration(
-                      color: AppColors.peach,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: const Icon(Icons.menu_book_outlined, size: 27),
-                  ),
-                  const SizedBox(width: 13),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Grammar library is being prepared',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 16,
-                          ),
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          'Lessons will come from distinct records, not repeated placeholder chapters.',
-                          style: TextStyle(
-                            color: AppColors.mutedInk,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  Chip(label: Text('Clear structures')),
-                  Chip(label: Text('Grammar rules')),
-                  Chip(label: Text('Worked examples')),
-                ],
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                'No grammar lesson has been published in the supplied app yet.',
-                style: TextStyle(fontSize: 12, color: AppColors.mutedInk),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ],
+  Widget _grammarPanel() => KeyedSubtree(
+    key: _grammar,
+    child: GrammarHomeContent(
+      profileId: widget.profile.id,
+      showPinyin: widget.profile.showPinyin,
+    ),
   );
 
   Widget _futurePanel() => Column(

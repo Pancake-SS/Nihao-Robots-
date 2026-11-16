@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/native.dart';
 import 'package:ni_hao_robot/data/app_database.dart';
 import 'package:ni_hao_robot/data/database_provider.dart';
+import 'package:ni_hao_robot/features/grammar/grammar_repository.dart';
 import 'package:ni_hao_robot/features/vocabulary/vocabulary_repository.dart';
 import 'package:ni_hao_robot/features/vocabulary/sqlite_vocabulary_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -43,6 +44,9 @@ Future<void> mountShell(
       overrides: [
         foundationRepositoryProvider.overrideWithValue(repository),
         appDatabaseProvider.overrideWithValue(contentDb),
+        grammarCountsProvider(1).overrideWith(
+          (ref) async => const GrammarCounts(428, 0),
+        ),
         learningProgressProvider(1).overrideWith((ref) async => []),
         curriculumRepositoryProvider.overrideWithValue(
           StarterQueueFixture(
@@ -247,7 +251,7 @@ void main() {
       await press(tester, 'Done');
       await navigate(tester, 2);
       await press(tester, 'Replay Tutorial');
-      expect(find.text('Patterns, then practice'), findsOneWidget);
+      expect(find.text('Patterns in context'), findsOneWidget);
       await press(tester, 'Done');
       await navigate(tester, 3);
       expect(find.text('0 words ready'), findsOneWidget);

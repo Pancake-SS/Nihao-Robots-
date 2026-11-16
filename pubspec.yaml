@@ -33,6 +33,8 @@ flutter:
     - assets/ui_art/
     - assets/content/curriculum.sqlite
     - assets/content/curriculum.manifest.json
+    - assets/content/grammar_v1.json
+    - assets/content/GRAMMAR_ATTRIBUTION.txt
     - assets/audio/
     - assets/content/starter_greeting_v2.json
     - assets/content/starter_imported_v1.json

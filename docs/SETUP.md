@@ -70,11 +70,13 @@ Riverpod/Drift are resolved and tested; see `docs/DEPENDENCIES.md` and `pubspec.
 $env:PUB_CACHE = Join-Path $env:LOCALAPPDATA 'NihaoRobotTools\pub-cache'
 $dartTool = Join-Path $env:LOCALAPPDATA 'NihaoRobotTools\flutter\bin\dart.bat'
 & $dartTool run build_runner build
-& $dartTool run drift_dev schema dump lib\data\app_database.dart docs\schema\drift_schema_v7.json
+& $dartTool run drift_dev schema dump lib\data\app_database.dart docs\schema\drift_schema_v8.json
 & $dartTool format lib test scripts\preview_profiles.dart
 ```
 
-Schema v1 is the retained baseline; v2 adds introduction state, v3 vocabulary progress/attempts, v4 versioned content tables, v5 the relational curriculum and per-profile queue, v6 per-question correctness records, and v7 Master membership and writing history. Migrations are additive and tested. For later versions, use a new export filename and implement/test migration; never overwrite historical schemas. Read [migration and backup recovery](MIGRATIONS.md) before updating a real installation. The database is `ni_hao_robot.sqlite` under the OS app-support directory. Windows company/product metadata influences that directory: changing it requires a data-path migration. Unknown upgrades fail rather than dropping tables. Keep real databases intact; never use test reset logic on learner storage.
+The schema-v8 export command stalled at `Running build hooks` during this checkpoint, so `drift_schema_v8.json` is not yet committed. Generated database code and migration tests pass; retry that export when the CLI issue is resolved.
+
+Schema v1 is the retained baseline; v2 adds introduction state, v3 vocabulary progress/attempts, v4 versioned content tables, v5 the relational curriculum and per-profile queue, v6 per-question correctness records, v7 Master membership and writing history, and v8 the shared grammar syllabus with profile-specific completion. Migrations are additive and tested. For later versions, use a new export filename and implement/test migration; never overwrite historical schemas. Read [migration and backup recovery](MIGRATIONS.md) before updating a real installation. The database is `ni_hao_robot.sqlite` under the OS app-support directory. Windows company/product metadata influences that directory: changing it requires a data-path migration. Unknown upgrades fail rather than dropping tables. Keep real databases intact; never use test reset logic on learner storage.
 
 Profile acceptance tests cover independent same-name profiles, invalid inputs, write rollback, persistent selection, temporary SQLite file reopening, and a UI-created profile continued after database/widget restart. Full native process testing is still a separate gate. Optional visual review: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\flutter.ps1 test --no-pub scripts\preview_profiles.dart`; PNGs go to `%TEMP%\nihao-profile-previews`.
 
@@ -110,6 +112,10 @@ The app uses bundled recordings when available and an installed offline Mandarin
 For the already-authorized setup on this PC, `scripts/install_mandarin_voice.ps1` installs only `Language.TextToSpeech~~~zh-CN~0.0.1.0` when run as administrator. It records state/restart requirements in `.dart_tool/mandarin-voice-install.json`; it does not restart Windows or change the display language. Voice installation requires Windows Update access; using an installed voice is local.
 
 The Windows build helper now prepares a pinned, Microsoft-signed NuGet CLI for flutter_tts automatically. The first build downloads the tool and the plugin's C++/WinRT package; later builds reuse the cache. It changes PATH only inside the build process. A NuGet signature/checksum failure stops the build rather than executing an unverified download.
+
+## Grammar lessons (2026-11-17)
+
+Open **Grammar** in the sidebar, then **Pending lessons**. The 428 offline HSK grammar lessons are presented 20 at a time, with foundational patterns first. Search by Chinese point or English explanation; HSK level and category filters are available. Open a lesson for its explanation, structure when provided, examples and Mandarin speech button. **Mark lesson completed** moves it to **Completed lessons** for the current profile; **Move back to Pending** reverses that marker. There is no grammar quiz or Master threshold. Source and license details are in [GRAMMAR_CONTENT.md](GRAMMAR_CONTENT.md). Back up a closed existing learner database before opening a schema-8 build.
 
 Latest TTS/corpus build verified 2026-11-07 (176.1 seconds):
 `%TEMP%\nihao-windows-88a776f0c1894fa385ff402db2cba783\build\windows\x64\runner\Debug\ni_hao_robot.exe`.

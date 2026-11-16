@@ -70,6 +70,9 @@ Use clearly named disposable profiles, keeping any existing profiles intact. The
 | With A, inspect character page, Pinyin page and tone page | Optional Pinyin is hidden; teaching examples remain visible; audio is explicitly unavailable | NOT RUN |
 | Replay Home, Vocabulary and Grammar tutorials | Live targets highlighted; Back, Next, Done and Close work; Enter/Escape work | NOT RUN |
 | Open Vocabulary | Three distinct original robots; Browse words, Practice and Master open | NOT RUN |
+| Open Grammar > Pending, then browse pages and filter by HSK level and category | Lessons appear 20 per page; beginner patterns are first; search finds Chinese or English text | NOT RUN |
+| Open a grammar lesson and play its example speech | Explanation, structure when available, Chinese/English examples and source credit are readable; Mandarin speech plays if the installed voice is available | NOT RUN |
+| Mark one grammar lesson completed, relaunch, switch profiles, then move it back to Pending | It appears only in the first profile’s Completed list after relaunch; the second profile retains its own Pending list; moving it back works | NOT RUN |
 | Browse words; type Pinyin in search, choose Hanzi and explore 你好 | Search uses the chosen Hanzi; lesson has five examples, source details, Pinyin preference and word/example audio controls | NOT RUN |
 | Continue to Quiz; answer questions and save | Wrong answers return at the end; first-try correct answers add correctness points; no due timer | NOT RUN |
 | Open Practice immediately and replay the selected word's full test | Test starts without waiting; each correct first answer adds a point | NOT RUN |
