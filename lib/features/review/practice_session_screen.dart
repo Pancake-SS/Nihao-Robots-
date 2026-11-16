@@ -13,6 +13,7 @@ import 'learning.dart';
 import 'learning_providers.dart';
 import 'practice_deck.dart';
 import 'practice_repository.dart';
+import 'master_repository.dart';
 import 'quiz_practice.dart';
 
 class PracticeSessionScreen extends ConsumerStatefulWidget {
@@ -21,11 +22,14 @@ class PracticeSessionScreen extends ConsumerStatefulWidget {
     required this.mode,
     required this.wordIds,
     this.count = 0,
+    this.masterChallenge = false,
+    this.masterPractice = false,
     super.key,
-  });
+  }) : assert(!masterChallenge || !masterPractice);
   final int profileId, count;
   final PracticeMode mode;
   final List<String> wordIds;
+  final bool masterChallenge, masterPractice;
   @override
   ConsumerState<PracticeSessionScreen> createState() =>
       _PracticeSessionScreenState();
@@ -36,9 +40,12 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen> {
   QuizPractice? _quiz;
   Map<String, PracticeItem> _items = {};
   final _events = <String, String>{};
+  final _savedEvents = <String>{};
+  final _masterMisses = <String, int>{};
+  final _penaltyAppliedVisits = <String>{};
   bool _loading = true, _saving = false, _finished = false;
   int _seen = 0, _pointsAdded = 0;
-  String? _error;
+  String? _error, _demotedWordId;
 
   @override
   void initState() {
@@ -78,9 +85,9 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen> {
     }
   }
 
-  Future<void> _saveChecked() async {
+  Future<bool> _saveChecked() async {
     final quiz = _quiz!;
-    if (quiz.isRetry) return;
+    if (quiz.isRetry) return true;
     final item = _items[quiz.current.id]!;
     final event = _events.putIfAbsent(quiz.current.id, () => newAttemptId());
     setState(() {
@@ -96,12 +103,16 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen> {
             wordId: item.wordId,
             questionId: item.question.id,
             answer: quiz.firstAnswers[item.question.id]!,
+            allowUnlearned: widget.masterChallenge,
           );
-      if (!mounted) return;
-      if (correct) _pointsAdded++;
-      _seen++;
+      if (!mounted) return false;
+      if (_savedEvents.add(event)) {
+        if (correct) _pointsAdded++;
+        _seen++;
+      }
       ref.invalidate(learningProgressProvider(widget.profileId));
       setState(() => _saving = false);
+      return true;
     } catch (e) {
       if (mounted)
         setState(() {
@@ -110,6 +121,39 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen> {
               ? e.message
               : 'Could not save this answer. Try saving again.';
         });
+      return false;
+    }
+  }
+
+  Future<void> _applyMasterMiss() async {
+    final quiz = _quiz!;
+    final wordId = _items[quiz.current.id]!.wordId;
+    if (_penaltyAppliedVisits.add('${quiz.current.id}:${quiz.visit}')) {
+      setState(() => _masterMisses[wordId] = (_masterMisses[wordId] ?? 0) + 1);
+    }
+    if (_masterMisses[wordId]! < 3) return;
+    setState(() {
+      _saving = true;
+      _error = null;
+    });
+    try {
+      await ref
+          .read(masterRepositoryProvider)
+          .returnToLearn(widget.profileId, wordId);
+      if (!mounted) return;
+      ref.invalidate(masteredIdsProvider(widget.profileId));
+      ref.invalidate(learningProgressProvider(widget.profileId));
+      setState(() {
+        _saving = false;
+        _demotedWordId = wordId;
+        _finished = true;
+      });
+    } catch (_) {
+      if (mounted)
+        setState(() {
+          _saving = false;
+          _error = 'Could not move this word to Learn. Try again.';
+        });
     }
   }
 
@@ -117,12 +161,23 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen> {
     final quiz = _quiz!;
     final retry = quiz.isRetry;
     setState(quiz.check);
-    if (!retry) await _saveChecked();
+    if (!retry && !await _saveChecked()) return;
+    if (widget.masterPractice && !quiz.correct!) await _applyMasterMiss();
+  }
+
+  Future<void> _retrySave() async {
+    final quiz = _quiz!;
+    if (!await _saveChecked()) return;
+    if (widget.masterPractice && !quiz.correct!) await _applyMasterMiss();
   }
 
   Future<void> _next() async {
     final quiz = _quiz!;
     if (quiz.complete) {
+      if (widget.masterChallenge) {
+        Navigator.of(context).pop(true);
+        return;
+      }
       if (widget.mode != PracticeMode.singleWord) {
         await _loadBatch();
       } else {
@@ -139,10 +194,29 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen> {
   @override
   Widget build(BuildContext context) {
     final quiz = _quiz;
+    final eligible =
+        ref
+            .watch(learningProgressProvider(widget.profileId))
+            .asData
+            ?.value
+            .any(
+              (word) =>
+                  widget.wordIds.contains(word.wordId) &&
+                  word.correctCount >= 25,
+            ) ??
+        false;
     return PopScope(
       canPop: !_saving,
       child: Scaffold(
-        appBar: AppBar(title: const AppScreenTitle('Practice')),
+        appBar: AppBar(
+          title: AppScreenTitle(
+            widget.masterChallenge
+                ? 'Master test'
+                : widget.masterPractice
+                ? 'Master practice'
+                : 'Practice',
+          ),
+        ),
         body: WarmPageBackground(
           child: Center(
             child: ConstrainedBox(
@@ -158,17 +232,33 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen> {
                           const LinearProgressIndicator()
                         else if (_finished) ...[
                           Text(
-                            'Session complete',
+                            _demotedWordId == null
+                                ? 'Session complete'
+                                : 'Word returned to Learn',
                             style: Theme.of(context).textTheme.headlineMedium,
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            '$_seen questions answered · $_pointsAdded correctness points earned',
+                            _demotedWordId == null
+                                ? '$_seen questions answered · $_pointsAdded correctness points earned'
+                                : 'Three missed answers used this word’s chances. Its writing gallery and correctness points are saved.',
                           ),
+                          if (eligible &&
+                              !widget.masterPractice &&
+                              !widget.masterChallenge) ...[
+                            const SizedBox(height: 10),
+                            const Text(
+                              'A word in this session is ready for its Master test. Open Vocabulary > Master to continue.',
+                            ),
+                          ],
                           const SizedBox(height: 18),
                           FilledButton(
                             onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('Back to Practice'),
+                            child: Text(
+                              widget.masterPractice
+                                  ? 'Back to Master'
+                                  : 'Back to Practice',
+                            ),
                           ),
                         ] else if (quiz != null) ...[
                           Text(
@@ -224,9 +314,13 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen> {
                                         : 'Correct! +1 point'
                                   : 'Not quite. Try this again at the end of this round.',
                             ),
-                            if (!quiz.correct!)
+                            if (!quiz.correct! && !widget.masterPractice)
                               Text(
                                 'Correct answer: ${quiz.current.correctAnswer}',
+                              ),
+                            if (!quiz.correct! && widget.masterPractice)
+                              Text(
+                                '${3 - (_masterMisses[_items[quiz.current.id]!.wordId] ?? 0)} chances left for this word.',
                               ),
                             Text(quiz.current.explanation),
                           ],
@@ -235,7 +329,7 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen> {
                             onPressed: _saving
                                 ? null
                                 : _error != null && quiz.checked
-                                ? _saveChecked
+                                ? _retrySave
                                 : !quiz.checked
                                 ? quiz.canCheck
                                       ? _check

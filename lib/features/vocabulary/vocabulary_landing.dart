@@ -5,6 +5,7 @@ import '../../shared/cozy_ui.dart';
 import '../../shared/vocabulary_card.dart';
 import '../../shared/robot_art.dart';
 import '../review/review_screen.dart';
+import '../review/master_screen.dart';
 import 'learning_queue_screen.dart';
 
 class VocabularyLanding extends StatelessWidget {
@@ -80,9 +81,17 @@ class VocabularyLanding extends StatelessWidget {
               background: Color(0xFFEDF7E5),
               icon: Icons.star_outline_rounded,
               artwork: RobotArtwork.gogglesOnPaper,
-              description: 'Strengthen lasting recall with future mastery challenges and varied tests.',
-              status: 'Mastery tools in development',
-              actionLabel: 'Coming soon',
+              description: 'Take a Master test, save your writing, and keep your words sharp.',
+              status: 'Ready at 25 correct points',
+              actionLabel: 'Open Master',
+              action: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => MasterScreen(
+                    profileId: profileId,
+                    showPinyin: showPinyin,
+                  ),
+                ),
+              ),
             ),
           ];
           return wide

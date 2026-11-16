@@ -90,3 +90,7 @@ User authorized project backups at https://github.com/Pancake-SS/Nihao-Robots-.
 Configure origin, align local/remote main branches, upload reviewed committed
 history, and provide a non-forcing backup helper with remote-hash verification.
 Learner data, caches and uncommitted edits remain local; no scheduled upload is added.
+
+## 2026-11-16: Practice pages and Master progression
+
+Practice opens as four short routes: one learned word, a chosen count of distinct random words, endless original questions without repeats, and Hanzi/English relearning. Master membership is a separate profile-owned table. At 25 cumulative correct first responses, a word becomes eligible for the full Master test; Instant master starts the same test sooner. After the full test, one randomized writing prompt is saved without semantic grading. Master practice uses three missed-answer chances per word in a session; the third moves it to Learn. Preserve all earlier correctness points, attempts and writing when this happens. On a new Learn attempt, derive the version from immutable history to avoid reusing a unique attempt version. Export schema v7 separately from historical versions when the Drift CLI export completes.

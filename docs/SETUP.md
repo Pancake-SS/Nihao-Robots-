@@ -60,6 +60,8 @@ The helper copies only `lib`, `assets`, `windows`, `pubspec.yaml`, `pubspec.lock
 
 The implemented flow is Create Local Profile > Choose > Continue > Home. Vocabulary > Browse words opens a priority queue of all 11,147 words in pages of 20. Select a row and press Learn, then Continue to Quiz. Previous/Next replaces the current page; search, the Pinyin-to-Hanzi keyboard and filters cover the full queue. In the quiz, select or type an answer and press Check answer. Wrong questions return at the end until corrected; every correct first response adds one cumulative correctness point. Open Practice from the sidebar or Vocabulary to replay a selected word's full test, choose a number of random questions from distinct learned words, or continue through fresh random questions. Search by Hanzi or English meaning to relearn a word. Practice is available immediately with no due timer. All words have seven or eight questions; available source examples and audio vary by word. The first queue visit installs the bundled curriculum once, so allow it to finish. No web server or runtime download is needed.
 
+Practice now opens a menu of four separate pages: one-word test, counted random questions, endless questions, and relearning. Vocabulary > Master offers a test for words with 25 correct points. Instant master lets an experienced learner take the same full test before reaching 25 points. After the test, a randomized writing prompt saves an ungraded response in that word's gallery. Master practice offers the same four methods; a word returns to Learn after three missed answers in a session. Its points and writing remain saved.
+
 ## Dependencies, code generation and data preservation
 
 Riverpod/Drift are resolved and tested; see `docs/DEPENDENCIES.md` and `pubspec.lock`. Do not hand-edit `lib/data/app_database.g.dart`. To regenerate or export schema after an intentional change:
@@ -68,11 +70,11 @@ Riverpod/Drift are resolved and tested; see `docs/DEPENDENCIES.md` and `pubspec.
 $env:PUB_CACHE = Join-Path $env:LOCALAPPDATA 'NihaoRobotTools\pub-cache'
 $dartTool = Join-Path $env:LOCALAPPDATA 'NihaoRobotTools\flutter\bin\dart.bat'
 & $dartTool run build_runner build
-& $dartTool run drift_dev schema dump lib\data\app_database.dart docs\schema\drift_schema_v6.json
+& $dartTool run drift_dev schema dump lib\data\app_database.dart docs\schema\drift_schema_v7.json
 & $dartTool format lib test scripts\preview_profiles.dart
 ```
 
-Schema v1 is the retained baseline; v2 adds introduction state, v3 vocabulary progress/attempts, v4 versioned content tables, v5 the relational curriculum and per-profile queue, and v6 per-question correctness records. Migrations are additive and tested. For later versions, use a new export filename and implement/test migration; never overwrite historical schemas. Read [migration and backup recovery](MIGRATIONS.md) before updating a real installation. The database is `ni_hao_robot.sqlite` under the OS app-support directory. Windows company/product metadata influences that directory: changing it requires a data-path migration. Unknown upgrades fail rather than dropping tables. Keep real databases intact; never use test reset logic on learner storage.
+Schema v1 is the retained baseline; v2 adds introduction state, v3 vocabulary progress/attempts, v4 versioned content tables, v5 the relational curriculum and per-profile queue, v6 per-question correctness records, and v7 Master membership and writing history. Migrations are additive and tested. For later versions, use a new export filename and implement/test migration; never overwrite historical schemas. Read [migration and backup recovery](MIGRATIONS.md) before updating a real installation. The database is `ni_hao_robot.sqlite` under the OS app-support directory. Windows company/product metadata influences that directory: changing it requires a data-path migration. Unknown upgrades fail rather than dropping tables. Keep real databases intact; never use test reset logic on learner storage.
 
 Profile acceptance tests cover independent same-name profiles, invalid inputs, write rollback, persistent selection, temporary SQLite file reopening, and a UI-created profile continued after database/widget restart. Full native process testing is still a separate gate. Optional visual review: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\flutter.ps1 test --no-pub scripts\preview_profiles.dart`; PNGs go to `%TEMP%\nihao-profile-previews`.
 

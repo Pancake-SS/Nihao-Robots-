@@ -1,5 +1,9 @@
 # Local database migrations and recovery
 
+## Version 1/2/3/4/5/6 to 7 (2026-11-16)
+
+Schema 7 adds `mastered_words` for current Master membership and `master_writings` for saved, ungraded writing. A word is eligible for its Master test at 25 cumulative correct first responses; Instant master bypasses that point threshold but still requires the full test and writing prompt. Returning a word to Learn deletes its current Master membership and learning-progress row while preserving its correctness points, writing, and immutable attempt history. The next initial quiz uses the next historical attempt version, avoiding a version collision. Existing profiles, queue, content and response rows are preserved. The migration is additive and transactional; `test/master_mode_test.dart` covers schema-6 upgrade and retention. Keep `drift_schema_v6.json` as a historical snapshot. The Drift CLI schema-v7 export stalled on this machine; the v7 snapshot remains to be generated separately. Follow the closed-app backup procedure below before opening a real learner database with this version.
+
 ## Version 1/2/3/4/5 to 6 (2026-11-15)
 
 Schema 6 adds `practice_responses`: one immutable first response per profile, word and question visit. Correct rows count as per-word correctness points. The migration preserves every historical profile, word, attempt and queue. For existing attempts it reads the saved answer and question snapshots and backfills first-response rows, so points earned before this update carry forward. New responses are recorded when an answer is checked, including incorrect first tries; correcting a missed question does not add a point. The migration is additive and transactional. A new `drift_schema_v6.json` is kept beside the unchanged older schema snapshots.

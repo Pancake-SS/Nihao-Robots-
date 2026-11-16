@@ -108,6 +108,27 @@ class PracticeResponses extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Current mastery is separate from cumulative correctness history.
+class MasteredWords extends Table {
+  IntColumn get profileId => integer().references(Profiles, #id)();
+  TextColumn get wordId => text()();
+  IntColumn get masteredAtMs => integer()();
+  @override
+  Set<Column> get primaryKey => {profileId, wordId};
+}
+
+/// Writing is retained if a mastered word later returns to Learn.
+class MasterWritings extends Table {
+  TextColumn get id => text()();
+  IntColumn get profileId => integer().references(Profiles, #id)();
+  TextColumn get wordId => text()();
+  TextColumn get prompt => text()();
+  TextColumn get sentence => text()();
+  IntColumn get writtenAtMs => integer()();
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 // Shared, versioned learning content is independent of private learner history.
 class ContentPacks extends Table {
   TextColumn get id => text()();
@@ -259,6 +280,8 @@ class LearningQueue extends Table {
     VocabularyProgress,
     VocabularyAttempts,
     PracticeResponses,
+    MasteredWords,
+    MasterWritings,
     ContentPacks,
     ContentWords,
     ContentExamples,
@@ -276,13 +299,13 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (migrator) => migrator.createAll(),
     onUpgrade: (migrator, from, to) async {
-      if (from < 1 || from > 5 || to != 6) {
+      if (from < 1 || from > 6 || to != 7) {
         throw StateError('No migration from schema $from to $to.');
       }
       // Additive migration: existing profiles and selection are never rewritten.
@@ -312,8 +335,10 @@ class AppDatabase extends _$AppDatabase {
           }
           await _curriculumIndexes();
         }
-        await migrator.createTable(practiceResponses);
-        if (from >= 3) {
+        if (from < 6) {
+          await migrator.createTable(practiceResponses);
+        }
+        if (from >= 3 && from < 6) {
           final attempts = await customSelect(
             'SELECT event_id, profile_id, word_id, answers_json, questions_json, answered_at_ms FROM vocabulary_attempts',
           ).get();
@@ -350,6 +375,8 @@ class AppDatabase extends _$AppDatabase {
             }
           }
         }
+        await migrator.createTable(masteredWords);
+        await migrator.createTable(masterWritings);
       });
     },
     beforeOpen: (_) async {

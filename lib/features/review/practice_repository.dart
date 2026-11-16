@@ -24,6 +24,7 @@ class PracticeRepository {
     required String wordId,
     required String questionId,
     required String answer,
+    bool allowUnlearned = false,
   }) async {
     final word = await lookup(wordId);
     final question = word?.entry.questions
@@ -51,7 +52,7 @@ class PracticeRepository {
                 (p) => p.profileId.equals(profileId) & p.wordId.equals(wordId),
               ))
               .getSingleOrNull();
-      if (learned == null) {
+      if (learned == null && !allowUnlearned) {
         throw const LearningConflict('Learn this word before practising it.');
       }
       final correct = question.isCorrect(answer);
@@ -73,7 +74,11 @@ class PracticeRepository {
 
   /// Search only Hanzi and English meaning, so overlapping Pinyin cannot
   /// accidentally lead to a different lesson.
-  Future<List<RelearnWord>> relearnSearch(int profileId, String query) async {
+  Future<List<RelearnWord>> relearnSearch(
+    int profileId,
+    String query, {
+    bool? mastered,
+  }) async {
     final term = query.trim().toLowerCase();
     if (term.isEmpty) return const [];
     final rows = await database
@@ -88,6 +93,11 @@ class PracticeRepository {
           'JOIN vocabulary_progress p ON p.word_id = w.id '
           'WHERE p.profile_id = ? AND '
           '(w.hanzi LIKE ? OR lower(w.meaning) LIKE ?) '
+          '${mastered == null
+              ? ''
+              : mastered
+              ? 'AND EXISTS (SELECT 1 FROM mastered_words m WHERE m.profile_id = p.profile_id AND m.word_id = w.id) '
+              : 'AND NOT EXISTS (SELECT 1 FROM mastered_words m WHERE m.profile_id = p.profile_id AND m.word_id = w.id) '}'
           'ORDER BY CASE WHEN w.hanzi = ? OR lower(w.meaning) = ? THEN 0 ELSE 1 END, '
           'w.id LIMIT 20',
           variables: [

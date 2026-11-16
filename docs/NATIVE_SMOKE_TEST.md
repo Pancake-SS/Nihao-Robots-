@@ -69,13 +69,17 @@ Use clearly named disposable profiles, keeping any existing profiles intact. The
 | Complete A's introduction, replay, then leave early | Completion remains recorded; no word or mastery credit appears | NOT RUN |
 | With A, inspect character page, Pinyin page and tone page | Optional Pinyin is hidden; teaching examples remain visible; audio is explicitly unavailable | NOT RUN |
 | Replay Home, Vocabulary and Grammar tutorials | Live targets highlighted; Back, Next, Done and Close work; Enter/Escape work | NOT RUN |
-| Open Vocabulary | Three distinct original robots; Browse words and Open practice work; Master is pending | NOT RUN |
+| Open Vocabulary | Three distinct original robots; Browse words, Practice and Master open | NOT RUN |
 | Browse words; type Pinyin in search, choose Hanzi and explore 你好 | Search uses the chosen Hanzi; lesson has five examples, source details, Pinyin preference and word/example audio controls | NOT RUN |
 | Continue to Quiz; answer questions and save | Wrong answers return at the end; first-try correct answers add correctness points; no due timer | NOT RUN |
 | Open Practice immediately and replay the selected word's full test | Test starts without waiting; each correct first answer adds a point | NOT RUN |
 | Start a numbered random session and an endless session | Numbered questions use different words; endless original questions do not repeat; wrong answers return at the end of each round | NOT RUN |
 | Search by Hanzi or English and relearn, then close and relaunch offline | The matching lesson opens; correctness points and profile selection persist | NOT RUN |
 | Switch to B and open Practice | A's learned word and correctness points do not appear in B's list | NOT RUN |
+| Open Practice and choose each of its four methods | Each method opens its own page; one word, counted random, endless and relearn controls are clear | NOT RUN |
+| Reach 25 correct points for a word, then open Vocabulary > Master | The word appears in Ready for Master test; full quiz leads to a randomized, ungraded writing prompt | NOT RUN |
+| Search a known word under Instant master | Full test and writing prompt are required; saved writing appears in the word gallery | NOT RUN |
+| Practise a mastered word and miss three answers | It returns to Learn; previous writing and points remain available | NOT RUN |
 | Open primary Practice and Speaking | Practice is usable; Speaking remains pending | NOT RUN |
 | Resize to approximately 1440×900, 900×700 and 360×640 | Scroll/navigation remain usable; no clipped controls or overflow | NOT RUN |
 | Increase Windows text scaling to 200%, then restore its prior value | Introduction and tutorial actions remain reachable | NOT RUN |

@@ -249,6 +249,7 @@ void main() {
           ProviderScope(
             overrides: [
               pinyinInputEngineProvider.overrideWith((ref) async => _keyboard),
+              appDatabaseProvider.overrideWithValue(db),
               learningRepositoryProvider.overrideWithValue(repo),
               learningClockProvider.overrideWithValue(() => clock),
               vocabularyCatalogueProvider.overrideWith((ref) async => []),
@@ -262,10 +263,13 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        expect(find.text('1 learned words'), findsOneWidget);
-        await press(tester, find.text('Browse learned words'));
-        expect(find.text('Loading word…'), findsOneWidget);
-        expect(find.text('Test selected word'), findsOneWidget);
+        expect(find.text('1 word ready'), findsOneWidget);
+        await press(tester, find.text('Test one word'));
+        expect(
+          find.byKey(ValueKey('practice-word-${word.entry.id}')),
+          findsOneWidget,
+        );
+        expect(find.text('Start full word test'), findsOneWidget);
         expect(await db.select(db.vocabularyAttempts).get(), hasLength(1));
         expect((await repo.progress(profile.id)).single.version, 1);
       } finally {
@@ -358,15 +362,15 @@ void main() {
         await tester.pageBack();
         await tester.pumpAndSettle();
         await press(tester, find.text('Open practice'));
-        expect(find.text('1 learned words'), findsOneWidget);
-        await press(tester, find.text('Browse learned words'));
+        expect(find.text('1 word ready'), findsOneWidget);
+        await press(tester, find.text('Test one word'));
         await press(
           tester,
           find.byKey(
             ValueKey('practice-word-${loadExpandedGreeting().entry.id}'),
           ),
         );
-        await press(tester, find.text('Test selected word'));
+        await press(tester, find.text('Start full word test'));
         final questions = loadExpandedGreeting().entry.questions;
         for (var i = 0; i < questions.length; i++) {
           final q = questions[i];
@@ -406,8 +410,22 @@ void main() {
         await press(tester, find.text('Continue'));
         await press(tester, find.byKey(const ValueKey('destination-1')));
         await press(tester, find.text('Open practice'));
-        await press(tester, find.text('Browse learned words'));
-        expect(find.text('${questions.length * 2} correct'), findsOneWidget);
+        expect(find.text('1 word ready'), findsOneWidget);
+        await press(tester, find.text('Test one word'));
+        expect(
+          find.byKey(
+            ValueKey('practice-word-${loadExpandedGreeting().entry.id}'),
+          ),
+          findsOneWidget,
+        );
+        expect(
+          (await db!.select(db!.practiceResponses).get()).where(
+            (response) => response.correct,
+          ),
+          hasLength(questions.length * 2),
+        );
+        await tester.pageBack();
+        await tester.pumpAndSettle();
         await tester.pageBack();
         await tester.pumpAndSettle();
         await press(tester, find.text('Switch profile'));
@@ -415,7 +433,7 @@ void main() {
         await press(tester, find.text('Continue'));
         await press(tester, find.byKey(const ValueKey('destination-1')));
         await press(tester, find.text('Open practice'));
-        expect(find.text('0 learned words'), findsOneWidget);
+        expect(find.text('0 words ready'), findsOneWidget);
         expect(tester.takeException(), isNull);
       } finally {
         await tester.pumpWidget(const SizedBox.shrink());

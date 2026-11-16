@@ -52,6 +52,23 @@ class SqliteLearningRepository implements LearningRepository {
           ))
           .getSingleOrNull();
 
+  Future<int> _versionBefore(
+    int profileId,
+    String wordId,
+    VocabularyProgressData? row,
+  ) async {
+    if (row != null) return row.version;
+    // A mastered word can return to Learn while immutable prior attempts stay.
+    final history = await database
+        .customSelect(
+          'SELECT COALESCE(MAX(version_before) + 1, 0) AS next_version '
+          'FROM vocabulary_attempts WHERE profile_id = ? AND word_id = ?',
+          variables: [Variable.withInt(profileId), Variable.withString(wordId)],
+        )
+        .getSingle();
+    return history.read<int>('next_version');
+  }
+
   WordProgress _progress(VocabularyProgressData row, int correctCount) =>
       WordProgress(
         wordId: row.wordId,
@@ -118,7 +135,7 @@ class SqliteLearningRepository implements LearningRepository {
         eventId: eventId(),
         profileId: profileId,
         word: word,
-        versionBefore: row?.version ?? 0,
+        versionBefore: await _versionBefore(profileId, wordId, row),
         isReview: review,
       );
     });
@@ -183,7 +200,8 @@ class SqliteLearningRepository implements LearningRepository {
       }
       await _profile(session.profileId);
       final row = await _row(session.profileId, word.entry.id);
-      if ((row?.version ?? 0) != session.versionBefore) {
+      if (await _versionBefore(session.profileId, word.entry.id, row) !=
+          session.versionBefore) {
         throw const LearningConflict(
           'Another attempt updated this word. Return to Practice and try again.',
         );

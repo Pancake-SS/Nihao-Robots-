@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/native.dart';
 import 'package:ni_hao_robot/data/app_database.dart';
+import 'package:ni_hao_robot/data/database_provider.dart';
 import 'package:ni_hao_robot/features/vocabulary/vocabulary_repository.dart';
 import 'package:ni_hao_robot/features/vocabulary/sqlite_vocabulary_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -41,6 +42,7 @@ Future<void> mountShell(
     ProviderScope(
       overrides: [
         foundationRepositoryProvider.overrideWithValue(repository),
+        appDatabaseProvider.overrideWithValue(contentDb),
         learningProgressProvider(1).overrideWith((ref) async => []),
         curriculumRepositoryProvider.overrideWithValue(
           StarterQueueFixture(
@@ -248,7 +250,7 @@ void main() {
       expect(find.text('Patterns, then practice'), findsOneWidget);
       await press(tester, 'Done');
       await navigate(tester, 3);
-      expect(find.text('0 learned words'), findsOneWidget);
+      expect(find.text('0 words ready'), findsOneWidget);
       expect(find.text('Coming soon'), findsNothing);
       await navigate(tester, 4);
       expect(find.text('Coming soon'), findsOneWidget);

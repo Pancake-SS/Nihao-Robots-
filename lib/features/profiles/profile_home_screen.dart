@@ -79,7 +79,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
         TourStop(
           _vocabulary[2],
           'Mastery takes time',
-          'Mastery will need delayed, varied recall. A failed mastery check will return a word to review while preserving its history.',
+          'After 25 correct points, take the full Master test and save an ungraded writing prompt. Instant master offers the same test sooner. Three missed answers during Master practice return the word to Learn while keeping its writing and points.',
         ),
       ],
       _ => [

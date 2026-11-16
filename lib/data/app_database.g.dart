@@ -2561,6 +2561,692 @@ class PracticeResponsesCompanion extends UpdateCompanion<PracticeResponse> {
   }
 }
 
+class $MasteredWordsTable extends MasteredWords
+    with TableInfo<$MasteredWordsTable, MasteredWord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MasteredWordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<int> profileId = GeneratedColumn<int>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES profiles (id)',
+    ),
+  );
+  static const VerificationMeta _wordIdMeta = const VerificationMeta('wordId');
+  @override
+  late final GeneratedColumn<String> wordId = GeneratedColumn<String>(
+    'word_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _masteredAtMsMeta = const VerificationMeta(
+    'masteredAtMs',
+  );
+  @override
+  late final GeneratedColumn<int> masteredAtMs = GeneratedColumn<int>(
+    'mastered_at_ms',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [profileId, wordId, masteredAtMs];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'mastered_words';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MasteredWord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('word_id')) {
+      context.handle(
+        _wordIdMeta,
+        wordId.isAcceptableOrUnknown(data['word_id']!, _wordIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_wordIdMeta);
+    }
+    if (data.containsKey('mastered_at_ms')) {
+      context.handle(
+        _masteredAtMsMeta,
+        masteredAtMs.isAcceptableOrUnknown(
+          data['mastered_at_ms']!,
+          _masteredAtMsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_masteredAtMsMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {profileId, wordId};
+  @override
+  MasteredWord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MasteredWord(
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      wordId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}word_id'],
+      )!,
+      masteredAtMs: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}mastered_at_ms'],
+      )!,
+    );
+  }
+
+  @override
+  $MasteredWordsTable createAlias(String alias) {
+    return $MasteredWordsTable(attachedDatabase, alias);
+  }
+}
+
+class MasteredWord extends DataClass implements Insertable<MasteredWord> {
+  final int profileId;
+  final String wordId;
+  final int masteredAtMs;
+  const MasteredWord({
+    required this.profileId,
+    required this.wordId,
+    required this.masteredAtMs,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['profile_id'] = Variable<int>(profileId);
+    map['word_id'] = Variable<String>(wordId);
+    map['mastered_at_ms'] = Variable<int>(masteredAtMs);
+    return map;
+  }
+
+  MasteredWordsCompanion toCompanion(bool nullToAbsent) {
+    return MasteredWordsCompanion(
+      profileId: Value(profileId),
+      wordId: Value(wordId),
+      masteredAtMs: Value(masteredAtMs),
+    );
+  }
+
+  factory MasteredWord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MasteredWord(
+      profileId: serializer.fromJson<int>(json['profileId']),
+      wordId: serializer.fromJson<String>(json['wordId']),
+      masteredAtMs: serializer.fromJson<int>(json['masteredAtMs']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'profileId': serializer.toJson<int>(profileId),
+      'wordId': serializer.toJson<String>(wordId),
+      'masteredAtMs': serializer.toJson<int>(masteredAtMs),
+    };
+  }
+
+  MasteredWord copyWith({int? profileId, String? wordId, int? masteredAtMs}) =>
+      MasteredWord(
+        profileId: profileId ?? this.profileId,
+        wordId: wordId ?? this.wordId,
+        masteredAtMs: masteredAtMs ?? this.masteredAtMs,
+      );
+  MasteredWord copyWithCompanion(MasteredWordsCompanion data) {
+    return MasteredWord(
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      wordId: data.wordId.present ? data.wordId.value : this.wordId,
+      masteredAtMs: data.masteredAtMs.present
+          ? data.masteredAtMs.value
+          : this.masteredAtMs,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MasteredWord(')
+          ..write('profileId: $profileId, ')
+          ..write('wordId: $wordId, ')
+          ..write('masteredAtMs: $masteredAtMs')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(profileId, wordId, masteredAtMs);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MasteredWord &&
+          other.profileId == this.profileId &&
+          other.wordId == this.wordId &&
+          other.masteredAtMs == this.masteredAtMs);
+}
+
+class MasteredWordsCompanion extends UpdateCompanion<MasteredWord> {
+  final Value<int> profileId;
+  final Value<String> wordId;
+  final Value<int> masteredAtMs;
+  final Value<int> rowid;
+  const MasteredWordsCompanion({
+    this.profileId = const Value.absent(),
+    this.wordId = const Value.absent(),
+    this.masteredAtMs = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MasteredWordsCompanion.insert({
+    required int profileId,
+    required String wordId,
+    required int masteredAtMs,
+    this.rowid = const Value.absent(),
+  }) : profileId = Value(profileId),
+       wordId = Value(wordId),
+       masteredAtMs = Value(masteredAtMs);
+  static Insertable<MasteredWord> custom({
+    Expression<int>? profileId,
+    Expression<String>? wordId,
+    Expression<int>? masteredAtMs,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (profileId != null) 'profile_id': profileId,
+      if (wordId != null) 'word_id': wordId,
+      if (masteredAtMs != null) 'mastered_at_ms': masteredAtMs,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MasteredWordsCompanion copyWith({
+    Value<int>? profileId,
+    Value<String>? wordId,
+    Value<int>? masteredAtMs,
+    Value<int>? rowid,
+  }) {
+    return MasteredWordsCompanion(
+      profileId: profileId ?? this.profileId,
+      wordId: wordId ?? this.wordId,
+      masteredAtMs: masteredAtMs ?? this.masteredAtMs,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (profileId.present) {
+      map['profile_id'] = Variable<int>(profileId.value);
+    }
+    if (wordId.present) {
+      map['word_id'] = Variable<String>(wordId.value);
+    }
+    if (masteredAtMs.present) {
+      map['mastered_at_ms'] = Variable<int>(masteredAtMs.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MasteredWordsCompanion(')
+          ..write('profileId: $profileId, ')
+          ..write('wordId: $wordId, ')
+          ..write('masteredAtMs: $masteredAtMs, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MasterWritingsTable extends MasterWritings
+    with TableInfo<$MasterWritingsTable, MasterWriting> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MasterWritingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<int> profileId = GeneratedColumn<int>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES profiles (id)',
+    ),
+  );
+  static const VerificationMeta _wordIdMeta = const VerificationMeta('wordId');
+  @override
+  late final GeneratedColumn<String> wordId = GeneratedColumn<String>(
+    'word_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _promptMeta = const VerificationMeta('prompt');
+  @override
+  late final GeneratedColumn<String> prompt = GeneratedColumn<String>(
+    'prompt',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sentenceMeta = const VerificationMeta(
+    'sentence',
+  );
+  @override
+  late final GeneratedColumn<String> sentence = GeneratedColumn<String>(
+    'sentence',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _writtenAtMsMeta = const VerificationMeta(
+    'writtenAtMs',
+  );
+  @override
+  late final GeneratedColumn<int> writtenAtMs = GeneratedColumn<int>(
+    'written_at_ms',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    profileId,
+    wordId,
+    prompt,
+    sentence,
+    writtenAtMs,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'master_writings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MasterWriting> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('word_id')) {
+      context.handle(
+        _wordIdMeta,
+        wordId.isAcceptableOrUnknown(data['word_id']!, _wordIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_wordIdMeta);
+    }
+    if (data.containsKey('prompt')) {
+      context.handle(
+        _promptMeta,
+        prompt.isAcceptableOrUnknown(data['prompt']!, _promptMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_promptMeta);
+    }
+    if (data.containsKey('sentence')) {
+      context.handle(
+        _sentenceMeta,
+        sentence.isAcceptableOrUnknown(data['sentence']!, _sentenceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sentenceMeta);
+    }
+    if (data.containsKey('written_at_ms')) {
+      context.handle(
+        _writtenAtMsMeta,
+        writtenAtMs.isAcceptableOrUnknown(
+          data['written_at_ms']!,
+          _writtenAtMsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_writtenAtMsMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MasterWriting map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MasterWriting(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      wordId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}word_id'],
+      )!,
+      prompt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prompt'],
+      )!,
+      sentence: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sentence'],
+      )!,
+      writtenAtMs: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}written_at_ms'],
+      )!,
+    );
+  }
+
+  @override
+  $MasterWritingsTable createAlias(String alias) {
+    return $MasterWritingsTable(attachedDatabase, alias);
+  }
+}
+
+class MasterWriting extends DataClass implements Insertable<MasterWriting> {
+  final String id;
+  final int profileId;
+  final String wordId;
+  final String prompt;
+  final String sentence;
+  final int writtenAtMs;
+  const MasterWriting({
+    required this.id,
+    required this.profileId,
+    required this.wordId,
+    required this.prompt,
+    required this.sentence,
+    required this.writtenAtMs,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['profile_id'] = Variable<int>(profileId);
+    map['word_id'] = Variable<String>(wordId);
+    map['prompt'] = Variable<String>(prompt);
+    map['sentence'] = Variable<String>(sentence);
+    map['written_at_ms'] = Variable<int>(writtenAtMs);
+    return map;
+  }
+
+  MasterWritingsCompanion toCompanion(bool nullToAbsent) {
+    return MasterWritingsCompanion(
+      id: Value(id),
+      profileId: Value(profileId),
+      wordId: Value(wordId),
+      prompt: Value(prompt),
+      sentence: Value(sentence),
+      writtenAtMs: Value(writtenAtMs),
+    );
+  }
+
+  factory MasterWriting.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MasterWriting(
+      id: serializer.fromJson<String>(json['id']),
+      profileId: serializer.fromJson<int>(json['profileId']),
+      wordId: serializer.fromJson<String>(json['wordId']),
+      prompt: serializer.fromJson<String>(json['prompt']),
+      sentence: serializer.fromJson<String>(json['sentence']),
+      writtenAtMs: serializer.fromJson<int>(json['writtenAtMs']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'profileId': serializer.toJson<int>(profileId),
+      'wordId': serializer.toJson<String>(wordId),
+      'prompt': serializer.toJson<String>(prompt),
+      'sentence': serializer.toJson<String>(sentence),
+      'writtenAtMs': serializer.toJson<int>(writtenAtMs),
+    };
+  }
+
+  MasterWriting copyWith({
+    String? id,
+    int? profileId,
+    String? wordId,
+    String? prompt,
+    String? sentence,
+    int? writtenAtMs,
+  }) => MasterWriting(
+    id: id ?? this.id,
+    profileId: profileId ?? this.profileId,
+    wordId: wordId ?? this.wordId,
+    prompt: prompt ?? this.prompt,
+    sentence: sentence ?? this.sentence,
+    writtenAtMs: writtenAtMs ?? this.writtenAtMs,
+  );
+  MasterWriting copyWithCompanion(MasterWritingsCompanion data) {
+    return MasterWriting(
+      id: data.id.present ? data.id.value : this.id,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      wordId: data.wordId.present ? data.wordId.value : this.wordId,
+      prompt: data.prompt.present ? data.prompt.value : this.prompt,
+      sentence: data.sentence.present ? data.sentence.value : this.sentence,
+      writtenAtMs: data.writtenAtMs.present
+          ? data.writtenAtMs.value
+          : this.writtenAtMs,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MasterWriting(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('wordId: $wordId, ')
+          ..write('prompt: $prompt, ')
+          ..write('sentence: $sentence, ')
+          ..write('writtenAtMs: $writtenAtMs')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, profileId, wordId, prompt, sentence, writtenAtMs);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MasterWriting &&
+          other.id == this.id &&
+          other.profileId == this.profileId &&
+          other.wordId == this.wordId &&
+          other.prompt == this.prompt &&
+          other.sentence == this.sentence &&
+          other.writtenAtMs == this.writtenAtMs);
+}
+
+class MasterWritingsCompanion extends UpdateCompanion<MasterWriting> {
+  final Value<String> id;
+  final Value<int> profileId;
+  final Value<String> wordId;
+  final Value<String> prompt;
+  final Value<String> sentence;
+  final Value<int> writtenAtMs;
+  final Value<int> rowid;
+  const MasterWritingsCompanion({
+    this.id = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.wordId = const Value.absent(),
+    this.prompt = const Value.absent(),
+    this.sentence = const Value.absent(),
+    this.writtenAtMs = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MasterWritingsCompanion.insert({
+    required String id,
+    required int profileId,
+    required String wordId,
+    required String prompt,
+    required String sentence,
+    required int writtenAtMs,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       profileId = Value(profileId),
+       wordId = Value(wordId),
+       prompt = Value(prompt),
+       sentence = Value(sentence),
+       writtenAtMs = Value(writtenAtMs);
+  static Insertable<MasterWriting> custom({
+    Expression<String>? id,
+    Expression<int>? profileId,
+    Expression<String>? wordId,
+    Expression<String>? prompt,
+    Expression<String>? sentence,
+    Expression<int>? writtenAtMs,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (profileId != null) 'profile_id': profileId,
+      if (wordId != null) 'word_id': wordId,
+      if (prompt != null) 'prompt': prompt,
+      if (sentence != null) 'sentence': sentence,
+      if (writtenAtMs != null) 'written_at_ms': writtenAtMs,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MasterWritingsCompanion copyWith({
+    Value<String>? id,
+    Value<int>? profileId,
+    Value<String>? wordId,
+    Value<String>? prompt,
+    Value<String>? sentence,
+    Value<int>? writtenAtMs,
+    Value<int>? rowid,
+  }) {
+    return MasterWritingsCompanion(
+      id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
+      wordId: wordId ?? this.wordId,
+      prompt: prompt ?? this.prompt,
+      sentence: sentence ?? this.sentence,
+      writtenAtMs: writtenAtMs ?? this.writtenAtMs,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<int>(profileId.value);
+    }
+    if (wordId.present) {
+      map['word_id'] = Variable<String>(wordId.value);
+    }
+    if (prompt.present) {
+      map['prompt'] = Variable<String>(prompt.value);
+    }
+    if (sentence.present) {
+      map['sentence'] = Variable<String>(sentence.value);
+    }
+    if (writtenAtMs.present) {
+      map['written_at_ms'] = Variable<int>(writtenAtMs.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MasterWritingsCompanion(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('wordId: $wordId, ')
+          ..write('prompt: $prompt, ')
+          ..write('sentence: $sentence, ')
+          ..write('writtenAtMs: $writtenAtMs, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $ContentPacksTable extends ContentPacks
     with TableInfo<$ContentPacksTable, ContentPack> {
   @override
@@ -6242,6 +6928,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $VocabularyAttemptsTable(this);
   late final $PracticeResponsesTable practiceResponses =
       $PracticeResponsesTable(this);
+  late final $MasteredWordsTable masteredWords = $MasteredWordsTable(this);
+  late final $MasterWritingsTable masterWritings = $MasterWritingsTable(this);
   late final $ContentPacksTable contentPacks = $ContentPacksTable(this);
   late final $ContentWordsTable contentWords = $ContentWordsTable(this);
   late final $ContentExamplesTable contentExamples = $ContentExamplesTable(
@@ -6288,6 +6976,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     vocabularyProgress,
     vocabularyAttempts,
     practiceResponses,
+    masteredWords,
+    masterWritings,
     contentPacks,
     contentWords,
     contentExamples,
@@ -6448,6 +7138,42 @@ final class $$ProfilesTableReferences
     final cache = $_typedResult.readTableOrNull(
       _practiceResponsesRefsTable($_db),
     );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$MasteredWordsTable, List<MasteredWord>>
+  _masteredWordsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.masteredWords,
+    aliasName: 'profiles__id__mastered_words__profile_id',
+  );
+
+  $$MasteredWordsTableProcessedTableManager get masteredWordsRefs {
+    final manager = $$MasteredWordsTableTableManager(
+      $_db,
+      $_db.masteredWords,
+    ).filter((f) => f.profileId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_masteredWordsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$MasterWritingsTable, List<MasterWriting>>
+  _masterWritingsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.masterWritings,
+    aliasName: 'profiles__id__master_writings__profile_id',
+  );
+
+  $$MasterWritingsTableProcessedTableManager get masterWritingsRefs {
+    final manager = $$MasterWritingsTableTableManager(
+      $_db,
+      $_db.masterWritings,
+    ).filter((f) => f.profileId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_masterWritingsRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -6632,6 +7358,56 @@ class $$ProfilesTableFilterComposer
           }) => $$PracticeResponsesTableFilterComposer(
             $db: $db,
             $table: $db.practiceResponses,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> masteredWordsRefs(
+    Expression<bool> Function($$MasteredWordsTableFilterComposer f) f,
+  ) {
+    final $$MasteredWordsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.masteredWords,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MasteredWordsTableFilterComposer(
+            $db: $db,
+            $table: $db.masteredWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> masterWritingsRefs(
+    Expression<bool> Function($$MasterWritingsTableFilterComposer f) f,
+  ) {
+    final $$MasterWritingsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.masterWritings,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MasterWritingsTableFilterComposer(
+            $db: $db,
+            $table: $db.masterWritings,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -6875,6 +7651,56 @@ class $$ProfilesTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> masteredWordsRefs<T extends Object>(
+    Expression<T> Function($$MasteredWordsTableAnnotationComposer a) f,
+  ) {
+    final $$MasteredWordsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.masteredWords,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MasteredWordsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.masteredWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> masterWritingsRefs<T extends Object>(
+    Expression<T> Function($$MasterWritingsTableAnnotationComposer a) f,
+  ) {
+    final $$MasterWritingsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.masterWritings,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MasterWritingsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.masterWritings,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
   Expression<T> learningQueueRefs<T extends Object>(
     Expression<T> Function($$LearningQueueTableAnnotationComposer a) f,
   ) {
@@ -6920,6 +7746,8 @@ class $$ProfilesTableTableManager
             bool vocabularyProgressRefs,
             bool vocabularyAttemptsRefs,
             bool practiceResponsesRefs,
+            bool masteredWordsRefs,
+            bool masterWritingsRefs,
             bool learningQueueRefs,
           })
         > {
@@ -6985,6 +7813,8 @@ class $$ProfilesTableTableManager
                 vocabularyProgressRefs = false,
                 vocabularyAttemptsRefs = false,
                 practiceResponsesRefs = false,
+                masteredWordsRefs = false,
+                masterWritingsRefs = false,
                 learningQueueRefs = false,
               }) {
                 return PrefetchHooks(
@@ -6995,6 +7825,8 @@ class $$ProfilesTableTableManager
                     if (vocabularyProgressRefs) db.vocabularyProgress,
                     if (vocabularyAttemptsRefs) db.vocabularyAttempts,
                     if (practiceResponsesRefs) db.practiceResponses,
+                    if (masteredWordsRefs) db.masteredWords,
+                    if (masterWritingsRefs) db.masterWritings,
                     if (learningQueueRefs) db.learningQueue,
                   ],
                   addJoins: null,
@@ -7100,6 +7932,46 @@ class $$ProfilesTableTableManager
                           referencedColumn: 'profile_id',
                           typedResults: items,
                         ),
+                      if (masteredWordsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          ProfileRow,
+                          $ProfilesTable,
+                          MasteredWord,
+                          $MasteredWordsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ProfilesTableReferences
+                              ._masteredWordsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProfilesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).masteredWordsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'profile_id',
+                          typedResults: items,
+                        ),
+                      if (masterWritingsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          ProfileRow,
+                          $ProfilesTable,
+                          MasterWriting,
+                          $MasterWritingsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ProfilesTableReferences
+                              ._masterWritingsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProfilesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).masterWritingsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'profile_id',
+                          typedResults: items,
+                        ),
                       if (learningQueueRefs)
                         await $_getPrefetchedDataByColumns<
                           ProfileRow,
@@ -7146,6 +8018,8 @@ typedef $$ProfilesTableProcessedTableManager =
         bool vocabularyProgressRefs,
         bool vocabularyAttemptsRefs,
         bool practiceResponsesRefs,
+        bool masteredWordsRefs,
+        bool masterWritingsRefs,
         bool learningQueueRefs,
       })
     >;
@@ -8891,6 +9765,631 @@ typedef $$PracticeResponsesTableProcessedTableManager =
       $$PracticeResponsesTableUpdateCompanionBuilder,
       (PracticeResponse, $$PracticeResponsesTableReferences),
       PracticeResponse,
+      PrefetchHooks Function({bool profileId})
+    >;
+typedef $$MasteredWordsTableCreateCompanionBuilder =
+    MasteredWordsCompanion Function({
+      required int profileId,
+      required String wordId,
+      required int masteredAtMs,
+      Value<int> rowid,
+    });
+typedef $$MasteredWordsTableUpdateCompanionBuilder =
+    MasteredWordsCompanion Function({
+      Value<int> profileId,
+      Value<String> wordId,
+      Value<int> masteredAtMs,
+      Value<int> rowid,
+    });
+
+final class $$MasteredWordsTableReferences
+    extends BaseReferences<_$AppDatabase, $MasteredWordsTable, MasteredWord> {
+  $$MasteredWordsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ProfilesTable _profileIdTable(_$AppDatabase db) =>
+      db.profiles.createAlias('mastered_words__profile_id__profiles__id');
+
+  $$ProfilesTableProcessedTableManager get profileId {
+    final $_column = $_itemColumn<int>('profile_id')!;
+
+    final manager = $$ProfilesTableTableManager(
+      $_db,
+      $_db.profiles,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_profileIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$MasteredWordsTableFilterComposer
+    extends Composer<_$AppDatabase, $MasteredWordsTable> {
+  $$MasteredWordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get wordId => $composableBuilder(
+    column: $table.wordId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get masteredAtMs => $composableBuilder(
+    column: $table.masteredAtMs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ProfilesTableFilterComposer get profileId {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MasteredWordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $MasteredWordsTable> {
+  $$MasteredWordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get wordId => $composableBuilder(
+    column: $table.wordId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get masteredAtMs => $composableBuilder(
+    column: $table.masteredAtMs,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ProfilesTableOrderingComposer get profileId {
+    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableOrderingComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MasteredWordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MasteredWordsTable> {
+  $$MasteredWordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get wordId =>
+      $composableBuilder(column: $table.wordId, builder: (column) => column);
+
+  GeneratedColumn<int> get masteredAtMs => $composableBuilder(
+    column: $table.masteredAtMs,
+    builder: (column) => column,
+  );
+
+  $$ProfilesTableAnnotationComposer get profileId {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MasteredWordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MasteredWordsTable,
+          MasteredWord,
+          $$MasteredWordsTableFilterComposer,
+          $$MasteredWordsTableOrderingComposer,
+          $$MasteredWordsTableAnnotationComposer,
+          $$MasteredWordsTableCreateCompanionBuilder,
+          $$MasteredWordsTableUpdateCompanionBuilder,
+          (MasteredWord, $$MasteredWordsTableReferences),
+          MasteredWord,
+          PrefetchHooks Function({bool profileId})
+        > {
+  $$MasteredWordsTableTableManager(_$AppDatabase db, $MasteredWordsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MasteredWordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MasteredWordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MasteredWordsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> profileId = const Value.absent(),
+                Value<String> wordId = const Value.absent(),
+                Value<int> masteredAtMs = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MasteredWordsCompanion(
+                profileId: profileId,
+                wordId: wordId,
+                masteredAtMs: masteredAtMs,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int profileId,
+                required String wordId,
+                required int masteredAtMs,
+                Value<int> rowid = const Value.absent(),
+              }) => MasteredWordsCompanion.insert(
+                profileId: profileId,
+                wordId: wordId,
+                masteredAtMs: masteredAtMs,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$MasteredWordsTable, MasteredWord>(table),
+                  $$MasteredWordsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({profileId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (profileId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.profileId,
+                        referencedTable: $$MasteredWordsTableReferences
+                            ._profileIdTable(db),
+                        referencedColumn: $$MasteredWordsTableReferences
+                            ._profileIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$MasteredWordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MasteredWordsTable,
+      MasteredWord,
+      $$MasteredWordsTableFilterComposer,
+      $$MasteredWordsTableOrderingComposer,
+      $$MasteredWordsTableAnnotationComposer,
+      $$MasteredWordsTableCreateCompanionBuilder,
+      $$MasteredWordsTableUpdateCompanionBuilder,
+      (MasteredWord, $$MasteredWordsTableReferences),
+      MasteredWord,
+      PrefetchHooks Function({bool profileId})
+    >;
+typedef $$MasterWritingsTableCreateCompanionBuilder =
+    MasterWritingsCompanion Function({
+      required String id,
+      required int profileId,
+      required String wordId,
+      required String prompt,
+      required String sentence,
+      required int writtenAtMs,
+      Value<int> rowid,
+    });
+typedef $$MasterWritingsTableUpdateCompanionBuilder =
+    MasterWritingsCompanion Function({
+      Value<String> id,
+      Value<int> profileId,
+      Value<String> wordId,
+      Value<String> prompt,
+      Value<String> sentence,
+      Value<int> writtenAtMs,
+      Value<int> rowid,
+    });
+
+final class $$MasterWritingsTableReferences
+    extends BaseReferences<_$AppDatabase, $MasterWritingsTable, MasterWriting> {
+  $$MasterWritingsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ProfilesTable _profileIdTable(_$AppDatabase db) =>
+      db.profiles.createAlias('master_writings__profile_id__profiles__id');
+
+  $$ProfilesTableProcessedTableManager get profileId {
+    final $_column = $_itemColumn<int>('profile_id')!;
+
+    final manager = $$ProfilesTableTableManager(
+      $_db,
+      $_db.profiles,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_profileIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$MasterWritingsTableFilterComposer
+    extends Composer<_$AppDatabase, $MasterWritingsTable> {
+  $$MasterWritingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get wordId => $composableBuilder(
+    column: $table.wordId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get prompt => $composableBuilder(
+    column: $table.prompt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sentence => $composableBuilder(
+    column: $table.sentence,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get writtenAtMs => $composableBuilder(
+    column: $table.writtenAtMs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ProfilesTableFilterComposer get profileId {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MasterWritingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $MasterWritingsTable> {
+  $$MasterWritingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get wordId => $composableBuilder(
+    column: $table.wordId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get prompt => $composableBuilder(
+    column: $table.prompt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sentence => $composableBuilder(
+    column: $table.sentence,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get writtenAtMs => $composableBuilder(
+    column: $table.writtenAtMs,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ProfilesTableOrderingComposer get profileId {
+    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableOrderingComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MasterWritingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MasterWritingsTable> {
+  $$MasterWritingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get wordId =>
+      $composableBuilder(column: $table.wordId, builder: (column) => column);
+
+  GeneratedColumn<String> get prompt =>
+      $composableBuilder(column: $table.prompt, builder: (column) => column);
+
+  GeneratedColumn<String> get sentence =>
+      $composableBuilder(column: $table.sentence, builder: (column) => column);
+
+  GeneratedColumn<int> get writtenAtMs => $composableBuilder(
+    column: $table.writtenAtMs,
+    builder: (column) => column,
+  );
+
+  $$ProfilesTableAnnotationComposer get profileId {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MasterWritingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MasterWritingsTable,
+          MasterWriting,
+          $$MasterWritingsTableFilterComposer,
+          $$MasterWritingsTableOrderingComposer,
+          $$MasterWritingsTableAnnotationComposer,
+          $$MasterWritingsTableCreateCompanionBuilder,
+          $$MasterWritingsTableUpdateCompanionBuilder,
+          (MasterWriting, $$MasterWritingsTableReferences),
+          MasterWriting,
+          PrefetchHooks Function({bool profileId})
+        > {
+  $$MasterWritingsTableTableManager(
+    _$AppDatabase db,
+    $MasterWritingsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MasterWritingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MasterWritingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MasterWritingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<int> profileId = const Value.absent(),
+                Value<String> wordId = const Value.absent(),
+                Value<String> prompt = const Value.absent(),
+                Value<String> sentence = const Value.absent(),
+                Value<int> writtenAtMs = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MasterWritingsCompanion(
+                id: id,
+                profileId: profileId,
+                wordId: wordId,
+                prompt: prompt,
+                sentence: sentence,
+                writtenAtMs: writtenAtMs,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required int profileId,
+                required String wordId,
+                required String prompt,
+                required String sentence,
+                required int writtenAtMs,
+                Value<int> rowid = const Value.absent(),
+              }) => MasterWritingsCompanion.insert(
+                id: id,
+                profileId: profileId,
+                wordId: wordId,
+                prompt: prompt,
+                sentence: sentence,
+                writtenAtMs: writtenAtMs,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$MasterWritingsTable, MasterWriting>(table),
+                  $$MasterWritingsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({profileId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (profileId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.profileId,
+                        referencedTable: $$MasterWritingsTableReferences
+                            ._profileIdTable(db),
+                        referencedColumn: $$MasterWritingsTableReferences
+                            ._profileIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$MasterWritingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MasterWritingsTable,
+      MasterWriting,
+      $$MasterWritingsTableFilterComposer,
+      $$MasterWritingsTableOrderingComposer,
+      $$MasterWritingsTableAnnotationComposer,
+      $$MasterWritingsTableCreateCompanionBuilder,
+      $$MasterWritingsTableUpdateCompanionBuilder,
+      (MasterWriting, $$MasterWritingsTableReferences),
+      MasterWriting,
       PrefetchHooks Function({bool profileId})
     >;
 typedef $$ContentPacksTableCreateCompanionBuilder =
@@ -12890,6 +14389,10 @@ class $AppDatabaseManager {
       $$VocabularyAttemptsTableTableManager(_db, _db.vocabularyAttempts);
   $$PracticeResponsesTableTableManager get practiceResponses =>
       $$PracticeResponsesTableTableManager(_db, _db.practiceResponses);
+  $$MasteredWordsTableTableManager get masteredWords =>
+      $$MasteredWordsTableTableManager(_db, _db.masteredWords);
+  $$MasterWritingsTableTableManager get masterWritings =>
+      $$MasterWritingsTableTableManager(_db, _db.masterWritings);
   $$ContentPacksTableTableManager get contentPacks =>
       $$ContentPacksTableTableManager(_db, _db.contentPacks);
   $$ContentWordsTableTableManager get contentWords =>
