@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/app_brand.dart';
 import '../../shared/cozy_ui.dart';
+import '../../shared/context_tour.dart';
 import '../../shared/learning_card.dart';
 import '../vocabulary/learning_keyboard.dart';
 import 'learning.dart';
 import 'learning_providers.dart';
+import '../dashboard/daily_streak.dart';
 import 'master_repository.dart';
 import 'practice_deck.dart';
 import 'practice_session_screen.dart';
@@ -28,6 +30,7 @@ class MasterTestScreen extends ConsumerStatefulWidget {
 }
 
 class _MasterTestScreenState extends ConsumerState<MasterTestScreen> {
+  final _stepTarget = GlobalKey();
   final _writing = TextEditingController();
   final _writingId = newAttemptId();
   late final String _prompt;
@@ -82,6 +85,7 @@ class _MasterTestScreenState extends ConsumerState<MasterTestScreen> {
           );
       if (!mounted) return;
       ref.invalidate(masteredIdsProvider(widget.profileId));
+      ref.invalidate(dailyStreakProvider(widget.profileId));
       ref.invalidate(learningProgressProvider(widget.profileId));
       setState(() {
         _saving = false;
@@ -102,7 +106,25 @@ class _MasterTestScreenState extends ConsumerState<MasterTestScreen> {
   Widget build(BuildContext context) => PopScope(
     canPop: !_saving,
     child: Scaffold(
-      appBar: AppBar(title: const AppScreenTitle('Master test')),
+      appBar: AppBar(
+        title: const AppScreenTitle('Master test'),
+        actions: [
+          if (!_done)
+            IconButton(
+              tooltip: 'Page tutorial',
+              onPressed: () => showContextTour(context, [
+                TourStop(
+                  _stepTarget,
+                  _testPassed ? 'Write your reminder' : 'Take the full test',
+                  _testPassed
+                      ? 'Respond to the random prompt using this word. Your writing is ungraded and saved in its gallery.'
+                      : 'Answer every question. Any missed question returns at the end before you can write.',
+                ),
+              ]),
+              icon: const Icon(Icons.help_outline),
+            ),
+        ],
+      ),
       body: WarmPageBackground(
         child: Center(
           child: ConstrainedBox(
@@ -154,6 +176,7 @@ class _MasterTestScreenState extends ConsumerState<MasterTestScreen> {
                         ),
                         const SizedBox(height: 18),
                         FilledButton(
+                          key: _stepTarget,
                           onPressed: _takeTest,
                           child: const Text('Start full word test'),
                         ),
@@ -168,6 +191,7 @@ class _MasterTestScreenState extends ConsumerState<MasterTestScreen> {
                         ),
                         const SizedBox(height: 12),
                         LearningKeyboard(
+                          key: _stepTarget,
                           hanzi: _writing,
                           enabled: !_saving,
                           hanziLabel: 'Your writing',

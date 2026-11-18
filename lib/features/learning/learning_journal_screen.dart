@@ -4,10 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/app_database.dart';
 import '../../shared/app_brand.dart';
 import '../../shared/cozy_ui.dart';
+import '../../shared/context_tour.dart';
 import '../../shared/learning_card.dart';
 import '../../shared/robot_art.dart';
 import '../vocabulary/learning_keyboard.dart';
 import 'learning_journal_repository.dart';
+import '../dashboard/daily_streak.dart';
 import 'writing_prompts.dart';
 
 typedef _EntryPage = ({List<LearningEntry> entries, int total});
@@ -28,6 +30,8 @@ class LearningJournalScreen extends ConsumerStatefulWidget {
 }
 
 class _LearningJournalScreenState extends ConsumerState<LearningJournalScreen> {
+  final _newTarget = GlobalKey();
+  final _searchTarget = GlobalKey();
   final _search = TextEditingController();
   late Future<_EntryPage> _results;
   int _page = 0;
@@ -87,6 +91,26 @@ class _LearningJournalScreenState extends ConsumerState<LearningJournalScreen> {
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
       title: AppScreenTitle(_writing ? 'Free writing' : 'Notebook'),
+      actions: [
+        IconButton(
+          tooltip: 'Page tutorial',
+          onPressed: () => showContextTour(context, [
+            TourStop(
+              _newTarget,
+              _writing ? 'Start writing' : 'New notebook page',
+              _writing
+                  ? 'Get a fresh topic and write a response.'
+                  : 'Create a new page for your notes and ideas.',
+            ),
+            TourStop(
+              _searchTarget,
+              'Find what you saved',
+              'Search titles and text. Tap a saved page below to edit it.',
+            ),
+          ]),
+          icon: const Icon(Icons.help_outline),
+        ),
+      ],
     ),
     body: WarmPageBackground(
       child: Center(
@@ -106,24 +130,32 @@ class _LearningJournalScreenState extends ConsumerState<LearningJournalScreen> {
                     : RobotArtwork.tallOnPaper,
               ),
               const SizedBox(height: 16),
-              FilledButton.icon(
-                key: const ValueKey('new-learning-entry'),
-                onPressed: () => _edit(),
-                icon: const Icon(Icons.add),
-                label: Text(_writing ? 'New writing' : 'New note'),
+              KeyedSubtree(
+                key: _newTarget,
+                child: FilledButton.icon(
+                  key: const ValueKey('new-learning-entry'),
+                  onPressed: () => _edit(),
+                  icon: const Icon(Icons.add),
+                  label: Text(_writing ? 'New writing' : 'New note'),
+                ),
               ),
               const SizedBox(height: 16),
-              TextField(
-                key: const ValueKey('learning-entry-search'),
-                controller: _search,
-                onSubmitted: (_) => _refresh(firstPage: true),
-                decoration: InputDecoration(
-                  labelText: _writing ? 'Search your writing' : 'Search notes',
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: IconButton(
-                    tooltip: 'Search saved entries',
-                    onPressed: () => _refresh(firstPage: true),
-                    icon: const Icon(Icons.arrow_forward),
+              KeyedSubtree(
+                key: _searchTarget,
+                child: TextField(
+                  key: const ValueKey('learning-entry-search'),
+                  controller: _search,
+                  onSubmitted: (_) => _refresh(firstPage: true),
+                  decoration: InputDecoration(
+                    labelText: _writing
+                        ? 'Search your writing'
+                        : 'Search notes',
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: IconButton(
+                      tooltip: 'Search saved entries',
+                      onPressed: () => _refresh(firstPage: true),
+                      icon: const Icon(Icons.arrow_forward),
+                    ),
                   ),
                 ),
               ),
@@ -214,6 +246,12 @@ class _LearningJournalScreenState extends ConsumerState<LearningJournalScreen> {
   );
 
   String _preview(LearningEntry entry) {
+    if (!_writing)
+      return [
+        entry.hanzi,
+        entry.pinyin,
+        entry.english,
+      ].where((s) => s.isNotEmpty).join('\n');
     final body = [
       entry.hanzi,
       entry.pinyin,
@@ -243,6 +281,9 @@ class LearningEntryEditor extends ConsumerStatefulWidget {
 }
 
 class _LearningEntryEditorState extends ConsumerState<LearningEntryEditor> {
+  final _titleTarget = GlobalKey();
+  final _bodyTarget = GlobalKey();
+  final _saveTarget = GlobalKey();
   late final TextEditingController _title, _hanzi, _pinyin, _english;
   late String _prompt;
   bool _dirty = false, _saving = false, _allowPop = false;
@@ -257,7 +298,15 @@ class _LearningEntryEditorState extends ConsumerState<LearningEntryEditor> {
     _title = TextEditingController(
       text: widget.entry?.title ?? (_writing ? _prompt : ''),
     );
-    _hanzi = TextEditingController(text: widget.entry?.hanzi ?? '');
+    _hanzi = TextEditingController(
+      text: _writing
+          ? widget.entry?.hanzi ?? ''
+          : [
+              widget.entry?.hanzi ?? '',
+              widget.entry?.pinyin ?? '',
+              widget.entry?.english ?? '',
+            ].where((part) => part.isNotEmpty).join('\n\n'),
+    );
     _pinyin = TextEditingController(text: widget.entry?.pinyin ?? '');
     _english = TextEditingController(text: widget.entry?.english ?? '');
     for (final controller in [_title, _hanzi, _pinyin, _english]) {
@@ -327,11 +376,12 @@ class _LearningEntryEditorState extends ConsumerState<LearningEntryEditor> {
               title: _title.text,
               prompt: _writing ? _prompt : '',
               hanzi: _hanzi.text,
-              pinyin: _pinyin.text,
-              english: _english.text,
+              pinyin: _writing ? _pinyin.text : '',
+              english: _writing ? _english.text : '',
             ),
             id: widget.entry?.id,
           );
+      if (_writing) ref.invalidate(dailyStreakProvider(widget.profileId));
       if (mounted) _exit(true);
     } catch (error) {
       if (mounted) {
@@ -371,6 +421,7 @@ class _LearningEntryEditorState extends ConsumerState<LearningEntryEditor> {
       await ref
           .read(learningJournalRepositoryProvider)
           .delete(widget.profileId, entry.id);
+      if (_writing) ref.invalidate(dailyStreakProvider(widget.profileId));
       if (mounted) _exit(true);
     } catch (_) {
       if (mounted) {
@@ -392,6 +443,29 @@ class _LearningEntryEditorState extends ConsumerState<LearningEntryEditor> {
       appBar: AppBar(
         title: AppScreenTitle(_writing ? 'Free writing' : 'Notebook page'),
         actions: [
+          IconButton(
+            tooltip: 'Page tutorial',
+            onPressed: () => showContextTour(context, [
+              TourStop(
+                _titleTarget,
+                'Name this page',
+                'Use a short title so you can find it later.',
+              ),
+              TourStop(
+                _bodyTarget,
+                _writing ? 'Write your response' : 'Your notebook page',
+                _writing
+                    ? 'Write in Hanzi, Pinyin or English. Keyboard modes give Chinese suggestions.'
+                    : 'This single large area accepts mixed Chinese and English. Keyboard modes help you type Hanzi.',
+              ),
+              TourStop(
+                _saveTarget,
+                'Save your work',
+                'Save the page to this profile. Free writing counts toward today’s streak goal.',
+              ),
+            ]),
+            icon: const Icon(Icons.help_outline),
+          ),
           if (widget.entry != null)
             IconButton(
               tooltip: 'Delete entry',
@@ -410,6 +484,7 @@ class _LearningEntryEditorState extends ConsumerState<LearningEntryEditor> {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 850),
               child: SizedBox(
+                key: _saveTarget,
                 width: double.infinity,
                 child: FilledButton.icon(
                   key: const ValueKey('save-learning-entry'),
@@ -462,29 +537,36 @@ class _LearningEntryEditorState extends ConsumerState<LearningEntryEditor> {
                   ),
                   const SizedBox(height: 15),
                 ],
-                TextField(
-                  key: const ValueKey('learning-entry-title'),
-                  controller: _title,
-                  enabled: !_saving,
-                  maxLength: 120,
-                  decoration: InputDecoration(
-                    labelText: _writing ? 'Title' : 'Note title',
+                KeyedSubtree(
+                  key: _titleTarget,
+                  child: TextField(
+                    key: const ValueKey('learning-entry-title'),
+                    controller: _title,
+                    enabled: !_saving,
+                    maxLength: 120,
+                    decoration: InputDecoration(
+                      labelText: _writing ? 'Title' : 'Note title',
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
-                const Text(
-                  'Write in Hanzi, Pinyin or English. The Chinese keyboard works directly in the editor; All mode adds editable dictionary hints in the other fields.',
+                Text(
+                  _writing
+                      ? 'Write in Hanzi, Pinyin or English. The Chinese keyboard works directly in the editor.'
+                      : 'Write in any language on this page. Switch keyboard modes when you want Chinese suggestions.',
                 ),
                 const SizedBox(height: 12),
                 LearningKeyboard(
+                  key: _bodyTarget,
                   hanzi: _hanzi,
                   pinyin: _pinyin,
                   english: _english,
+                  singleField: !_writing,
                   hanziKey: const ValueKey('entry-hanzi'),
                   pinyinKey: const ValueKey('entry-pinyin'),
                   englishKey: const ValueKey('entry-english'),
                   enabled: !_saving,
-                  hanziLabel: 'Chinese writing',
+                  hanziLabel: _writing ? 'Chinese writing' : 'Your note',
                   pinyinLabel: 'Pinyin notes',
                   englishLabel: 'English notes',
                   hanziHint:
@@ -492,7 +574,8 @@ class _LearningEntryEditorState extends ConsumerState<LearningEntryEditor> {
                   hanziMaxLength: 10000,
                   pinyinMaxLength: 10000,
                   englishMaxLength: 10000,
-                  hanziMaxLines: 8,
+                  hanziMaxLines: _writing ? 8 : 20,
+                  hanziMinLines: _writing ? null : 16,
                   pinyinMaxLines: 6,
                   englishMaxLines: 6,
                 ),

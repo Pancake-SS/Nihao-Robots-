@@ -8,10 +8,12 @@ import '../../shared/app_brand.dart';
 import '../../shared/learning_card.dart';
 import '../../shared/robot_art.dart';
 import '../../shared/cozy_ui.dart';
+import '../../shared/context_tour.dart';
 import '../vocabulary/content_pack.dart';
 import 'learning.dart';
 import 'chinese_answer_input.dart';
 import 'learning_providers.dart';
+import '../dashboard/daily_streak.dart';
 import 'quiz_practice.dart';
 
 class QuizScreen extends ConsumerStatefulWidget {
@@ -29,6 +31,8 @@ class QuizScreen extends ConsumerStatefulWidget {
 }
 
 class _QuizScreenState extends ConsumerState<QuizScreen> {
+  final _questionTarget = GlobalKey();
+  final _checkTarget = GlobalKey();
   QuizSession? _session;
   SavedAttempt? _receipt;
   QuizPractice? _practice;
@@ -94,6 +98,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           .submit(_session!, _practice!.firstAnswers);
       if (!mounted) return;
       ref.invalidate(learningProgressProvider(widget.profileId));
+      ref.invalidate(dailyStreakProvider(widget.profileId));
       setState(() {
         _receipt = receipt;
         _saving = false;
@@ -122,6 +127,25 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
           title: AppScreenTitle(
             widget.review ? 'Vocabulary review' : 'First word quiz',
           ),
+          actions: [
+            if (session != null && practice != null && receipt == null)
+              IconButton(
+                tooltip: 'Page tutorial',
+                onPressed: () => showContextTour(context, [
+                  TourStop(
+                    _questionTarget,
+                    'Read the question',
+                    'Choose an answer or type it in the Chinese answer box.',
+                  ),
+                  TourStop(
+                    _checkTarget,
+                    'Check and continue',
+                    'Wrong answers return at the end. Your first correct answer earns a point.',
+                  ),
+                ]),
+                icon: const Icon(Icons.help_outline),
+              ),
+          ],
         ),
         body: _loading
             ? const Center(child: CircularProgressIndicator())
@@ -222,6 +246,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                               const SizedBox(height: 16),
                               Text(
                                 practice.current.prompt,
+                                key: _questionTarget,
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall,
@@ -296,6 +321,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                                 const SizedBox(height: 16),
                               ],
                               FilledButton(
+                                key: _checkTarget,
                                 onPressed: _saving || _conflict
                                     ? null
                                     : !practice.checked

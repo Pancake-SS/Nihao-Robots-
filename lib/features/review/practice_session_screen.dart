@@ -11,6 +11,7 @@ import '../vocabulary/vocabulary_repository.dart';
 import 'chinese_answer_input.dart';
 import 'learning.dart';
 import 'learning_providers.dart';
+import '../dashboard/daily_streak.dart';
 import 'practice_deck.dart';
 import 'practice_repository.dart';
 import 'master_repository.dart';
@@ -111,6 +112,7 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen> {
         _seen++;
       }
       ref.invalidate(learningProgressProvider(widget.profileId));
+      ref.invalidate(dailyStreakProvider(widget.profileId));
       setState(() => _saving = false);
       return true;
     } catch (e) {

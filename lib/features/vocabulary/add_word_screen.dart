@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../shared/context_tour.dart';
 import 'curriculum_repository.dart';
 import 'custom_word.dart';
 import 'learning_keyboard.dart';
@@ -20,6 +21,8 @@ class AddWordScreen extends ConsumerStatefulWidget {
 }
 
 class _AddWordScreenState extends ConsumerState<AddWordScreen> {
+  final _wordTarget = GlobalKey();
+  final _checkTarget = GlobalKey();
   final _hanzi = TextEditingController();
   final _pinyin = TextEditingController();
   final _meaning = TextEditingController();
@@ -86,7 +89,27 @@ class _AddWordScreenState extends ConsumerState<AddWordScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Add a word')),
+    appBar: AppBar(
+      title: const Text('Add a word'),
+      actions: [
+        IconButton(
+          tooltip: 'Page tutorial',
+          onPressed: () => showContextTour(context, [
+            TourStop(
+              _wordTarget,
+              'Enter the word',
+              'Type Hanzi, Pinyin and an English meaning. The keyboard modes can help with Chinese input.',
+            ),
+            TourStop(
+              _checkTarget,
+              'Check for matches',
+              'If a matching word already exists, it moves to the front of your learning queue.',
+            ),
+          ]),
+          icon: const Icon(Icons.help_outline),
+        ),
+      ],
+    ),
     body: Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 700),
@@ -99,6 +122,7 @@ class _AddWordScreenState extends ConsumerState<AddWordScreen> {
             ),
             const SizedBox(height: 16),
             LearningKeyboard(
+              key: _wordTarget,
               hanzi: _hanzi,
               pinyin: _pinyin,
               english: _meaning,
@@ -118,6 +142,7 @@ class _AddWordScreenState extends ConsumerState<AddWordScreen> {
               ),
             const SizedBox(height: 12),
             FilledButton(
+              key: _checkTarget,
               onPressed: _busy ? null : _continue,
               child: const Text('Check word and continue'),
             ),
@@ -145,6 +170,8 @@ class AddWordExamplesScreen extends ConsumerStatefulWidget {
 }
 
 class _AddWordExamplesScreenState extends ConsumerState<AddWordExamplesScreen> {
+  final _exampleTarget = GlobalKey();
+  final _saveTarget = GlobalKey();
   final _sentences = List.generate(5, (_) => TextEditingController());
   final _pinyin = List.generate(5, (_) => TextEditingController());
   final _translations = List.generate(5, (_) => TextEditingController());
@@ -224,7 +251,27 @@ class _AddWordExamplesScreenState extends ConsumerState<AddWordExamplesScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text('Examples for ${widget.hanzi}')),
+    appBar: AppBar(
+      title: Text('Examples for ${widget.hanzi}'),
+      actions: [
+        IconButton(
+          tooltip: 'Page tutorial',
+          onPressed: () => showContextTour(context, [
+            TourStop(
+              _exampleTarget,
+              'Five examples',
+              'Write five different Chinese sentences with this word. Add Pinyin and an English translation to each.',
+            ),
+            TourStop(
+              _saveTarget,
+              'Save your word',
+              'The new word and its examples go to the front of your learning queue.',
+            ),
+          ]),
+          icon: const Icon(Icons.help_outline),
+        ),
+      ],
+    ),
     body: Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 800),
@@ -241,22 +288,25 @@ class _AddWordExamplesScreenState extends ConsumerState<AddWordExamplesScreen> {
                 'Sentence ${i + 1}',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              LearningKeyboard(
-                key: ValueKey('custom-example-input-$i'),
-                hanzi: _sentences[i],
-                pinyin: _pinyin[i],
-                english: _translations[i],
-                initialMode: _keyboardMode,
-                onModeChanged: (mode) => setState(() => _keyboardMode = mode),
-                hanziKey: ValueKey('custom-example-hanzi-$i'),
-                pinyinKey: ValueKey('custom-example-pinyin-$i'),
-                englishKey: ValueKey('custom-example-english-$i'),
-                hanziLabel: 'Chinese sentence',
-                pinyinLabel: 'Sentence Pinyin',
-                englishLabel: 'English translation',
-                enabled: !_busy,
-                hanziMaxLength: 500,
-                hanziMaxLines: 2,
+              KeyedSubtree(
+                key: i == 0 ? _exampleTarget : null,
+                child: LearningKeyboard(
+                  key: ValueKey('custom-example-input-$i'),
+                  hanzi: _sentences[i],
+                  pinyin: _pinyin[i],
+                  english: _translations[i],
+                  initialMode: _keyboardMode,
+                  onModeChanged: (mode) => setState(() => _keyboardMode = mode),
+                  hanziKey: ValueKey('custom-example-hanzi-$i'),
+                  pinyinKey: ValueKey('custom-example-pinyin-$i'),
+                  englishKey: ValueKey('custom-example-english-$i'),
+                  hanziLabel: 'Chinese sentence',
+                  pinyinLabel: 'Sentence Pinyin',
+                  englishLabel: 'English translation',
+                  enabled: !_busy,
+                  hanziMaxLength: 500,
+                  hanziMaxLines: 2,
+                ),
               ),
               const Divider(height: 32),
             ],
@@ -277,6 +327,7 @@ class _AddWordExamplesScreenState extends ConsumerState<AddWordExamplesScreen> {
               ),
             const SizedBox(height: 12),
             FilledButton(
+              key: _saveTarget,
               onPressed: _busy ? null : _save,
               child: const Text('Save word and examples'),
             ),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/app_brand.dart';
 import '../../shared/cozy_ui.dart';
+import '../../shared/context_tour.dart';
 import '../../shared/learning_card.dart';
 import '../../shared/robot_art.dart';
 import '../vocabulary/learning_keyboard.dart';
@@ -111,6 +112,8 @@ class GrammarListScreen extends ConsumerStatefulWidget {
 }
 
 class _GrammarListScreenState extends ConsumerState<GrammarListScreen> {
+  final _searchTarget = GlobalKey();
+  final _filtersTarget = GlobalKey();
   final _search = TextEditingController();
   late Future<GrammarPage> _results;
   late Future<List<String>> _categories;
@@ -156,6 +159,24 @@ class _GrammarListScreenState extends ConsumerState<GrammarListScreen> {
       title: AppScreenTitle(
         widget.completed ? 'Completed grammar' : 'Pending grammar',
       ),
+      actions: [
+        IconButton(
+          tooltip: 'Page tutorial',
+          onPressed: () => showContextTour(context, [
+            TourStop(
+              _searchTarget,
+              'Search lessons',
+              'Find a pattern by Chinese text or English explanation. The Chinese keyboard offers Hanzi suggestions.',
+            ),
+            TourStop(
+              _filtersTarget,
+              'Narrow the lessons',
+              'Choose an HSK level or category, then tap a lesson below.',
+            ),
+          ]),
+          icon: const Icon(Icons.help_outline),
+        ),
+      ],
     ),
     body: WarmPageBackground(
       child: Center(
@@ -176,6 +197,7 @@ class _GrammarListScreenState extends ConsumerState<GrammarListScreen> {
               ),
               const SizedBox(height: 15),
               LearningKeyboard(
+                key: _searchTarget,
                 hanzi: _search,
                 enabled: true,
                 hanziLabel: 'Search grammar',
@@ -189,6 +211,7 @@ class _GrammarListScreenState extends ConsumerState<GrammarListScreen> {
               ),
               const SizedBox(height: 12),
               Wrap(
+                key: _filtersTarget,
                 spacing: 12,
                 runSpacing: 8,
                 children: [
@@ -367,6 +390,8 @@ class GrammarLessonScreen extends ConsumerStatefulWidget {
 }
 
 class _GrammarLessonScreenState extends ConsumerState<GrammarLessonScreen> {
+  final _explanationTarget = GlobalKey();
+  final _completeTarget = GlobalKey();
   late Future<GrammarLesson?> _lesson;
   bool _saving = false;
   String? _error;
@@ -410,7 +435,27 @@ class _GrammarLessonScreenState extends ConsumerState<GrammarLessonScreen> {
   Widget build(BuildContext context) {
     final audio = ref.watch(sentenceAudioSessionProvider);
     return Scaffold(
-      appBar: AppBar(title: const AppScreenTitle('Grammar lesson')),
+      appBar: AppBar(
+        title: const AppScreenTitle('Grammar lesson'),
+        actions: [
+          IconButton(
+            tooltip: 'Page tutorial',
+            onPressed: () => showContextTour(context, [
+              TourStop(
+                _explanationTarget,
+                'Understand the pattern',
+                'Read the explanation and structure, then use the examples below to see it in context.',
+              ),
+              TourStop(
+                _completeTarget,
+                'Save your progress',
+                'Mark the lesson complete when you understand it. You can reopen or move it back to Pending later.',
+              ),
+            ]),
+            icon: const Icon(Icons.help_outline),
+          ),
+        ],
+      ),
       body: WarmPageBackground(
         child: Center(
           child: ConstrainedBox(
@@ -446,6 +491,7 @@ class _GrammarLessonScreenState extends ConsumerState<GrammarLessonScreen> {
                     ),
                     const SizedBox(height: 18),
                     LearningCard(
+                      key: _explanationTarget,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -509,18 +555,21 @@ class _GrammarLessonScreenState extends ConsumerState<GrammarLessonScreen> {
                         ),
                       ),
                     const SizedBox(height: 18),
-                    FilledButton.icon(
-                      key: const ValueKey('grammar-complete-action'),
-                      onPressed: _saving
-                          ? null
-                          : () => _setCompleted(!lesson.completed),
-                      icon: Icon(lesson.completed ? Icons.undo : Icons.check),
-                      label: Text(
-                        _saving
-                            ? 'Saving…'
-                            : lesson.completed
-                            ? 'Move back to Pending'
-                            : 'Mark lesson completed',
+                    KeyedSubtree(
+                      key: _completeTarget,
+                      child: FilledButton.icon(
+                        key: const ValueKey('grammar-complete-action'),
+                        onPressed: _saving
+                            ? null
+                            : () => _setCompleted(!lesson.completed),
+                        icon: Icon(lesson.completed ? Icons.undo : Icons.check),
+                        label: Text(
+                          _saving
+                              ? 'Saving…'
+                              : lesson.completed
+                              ? 'Move back to Pending'
+                              : 'Mark lesson completed',
+                        ),
                       ),
                     ),
                     if (_error != null)

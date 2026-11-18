@@ -11,6 +11,8 @@ import '../onboarding/foundation_repository.dart';
 import '../onboarding/foundation_screen.dart';
 import '../profiles/profile.dart';
 import '../review/learning_providers.dart';
+import '../review/master_repository.dart';
+import 'daily_streak.dart';
 
 class HomeContent extends ConsumerWidget {
   const HomeContent({
@@ -26,9 +28,15 @@ class HomeContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final foundation = ref.watch(foundationStateProvider(profile.id));
-    // Existing persisted review records, not a fabricated streak or a fluency score.
     final reviewHistory = ref.watch(learningProgressProvider(profile.id));
     final started = reviewHistory.asData?.value.length;
+    final mastered = ref
+        .watch(masteredIdsProvider(profile.id))
+        .asData
+        ?.value
+        .length;
+    final streakState = ref.watch(dailyStreakProvider(profile.id));
+    final streak = streakState.asData?.value;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -59,10 +67,14 @@ class HomeContent extends ConsumerWidget {
               color: AppColors.yellow,
               artwork: RobotArtwork.orbOnPaper,
             );
-            const second = MetricCard(
+            final second = MetricCard(
               title: 'Daily streak',
-              value: '—',
-              caption: 'Daily activity tracking is coming soon',
+              value: streak?.count.toString() ?? '—',
+              caption: streak == null
+                  ? 'Reading activity history'
+                  : streak.today.complete
+                  ? 'All four daily goals complete today'
+                  : 'Complete all four daily goals to grow your streak',
               icon: Icons.local_fire_department_rounded,
               color: AppColors.peach,
               artwork: RobotArtwork.squareOnPaper,
@@ -72,7 +84,7 @@ class HomeContent extends ConsumerWidget {
                     children: [
                       Expanded(child: first),
                       const SizedBox(width: 17),
-                      const Expanded(child: second),
+                      Expanded(child: second),
                     ],
                   )
                 : Column(children: [first, const SizedBox(height: 14), second]);
@@ -85,58 +97,29 @@ class HomeContent extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SectionHeading(
-                title: 'This week',
-                caption: 'A little practice goes a long way',
+                title: 'Daily streak goals',
+                caption: 'Finish all four goals on the same day',
                 icon: Icons.spa_outlined,
               ),
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  for (final day in [
-                    'Mon',
-                    'Tue',
-                    'Wed',
-                    'Thu',
-                    'Fri',
-                    'Sat',
-                    'Sun',
-                  ])
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Text(
-                            day,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              color: AppColors.mutedInk,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const SizedBox(height: 7),
-                          Container(
-                            height: 29,
-                            width: 29,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.cream,
-                              border: Border.all(color: AppColors.border),
-                            ),
-                            child: const Icon(
-                              Icons.more_horiz,
-                              size: 16,
-                              color: AppColors.mutedInk,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Check-in history has not been implemented yet.',
-                style: TextStyle(fontSize: 11, color: AppColors.mutedInk),
-              ),
+              if (streakState.hasError)
+                TextButton(
+                  onPressed: () =>
+                      ref.invalidate(dailyStreakProvider(profile.id)),
+                  child: const Text('Could not load daily goals. Try again'),
+                )
+              else if (streak == null)
+                const LinearProgressIndicator()
+              else ...[
+                _goal('New words', streak.today.newWords, 10),
+                _goal('Quiz words', streak.today.quizWords, 20),
+                _goal('Master reviews', streak.today.masteredWords, 10),
+                _goal('Free writing', streak.today.writings, 1),
+                const SizedBox(height: 8),
+                const Text(
+                  'Quiz words count once per word each day from Vocabulary lessons and Master tests.',
+                ),
+              ],
             ],
           ),
         ),
@@ -144,7 +127,7 @@ class HomeContent extends ConsumerWidget {
         LearningCard(
           key: progressKey,
           background: const Color(0xFFFCFEF7),
-          child: JourneyProgress(count: started),
+          child: JourneyProgress(count: mastered),
         ),
         const SizedBox(height: 18),
         LearningCard(
@@ -244,4 +227,23 @@ class HomeContent extends ConsumerWidget {
       ],
     );
   }
+
+  Widget _goal(String title, int count, int target) => Padding(
+    padding: const EdgeInsets.only(bottom: 9),
+    child: Row(
+      children: [
+        Icon(
+          count >= target ? Icons.check_circle : Icons.circle_outlined,
+          color: count >= target ? const Color(0xFF3E9F62) : AppColors.mutedInk,
+          size: 20,
+        ),
+        const SizedBox(width: 9),
+        Expanded(child: Text(title)),
+        Text(
+          '$count / $target',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ],
+    ),
+  );
 }

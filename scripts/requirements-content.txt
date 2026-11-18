@@ -1,3 +1,4 @@
 # Import-only dependencies. The app does not run Python.
 pypinyin==0.55.0
 opencc-python-reimplemented==0.1.7
+lxml==6.1.3

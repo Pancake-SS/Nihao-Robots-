@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/app_brand.dart';
 import '../../shared/cozy_ui.dart';
+import '../../shared/context_tour.dart';
 import '../../shared/robot_art.dart';
 import '../vocabulary/learning_keyboard.dart';
 import '../vocabulary/vocabulary_repository.dart';
@@ -13,13 +14,10 @@ import 'master_test_screen.dart';
 import 'practice_method_screen.dart';
 
 class MasterScreen extends ConsumerWidget {
-  const MasterScreen({
-    required this.profileId,
-    required this.showPinyin,
-    super.key,
-  });
+  MasterScreen({required this.profileId, required this.showPinyin, super.key});
   final int profileId;
   final bool showPinyin;
+  final _targets = List.generate(4, (_) => GlobalKey());
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +28,37 @@ class MasterScreen extends ConsumerWidget {
         .where((word) => word.correctCount >= 25 && !ids.contains(word.wordId))
         .length;
     return Scaffold(
-      appBar: AppBar(title: const AppScreenTitle('Master')),
+      appBar: AppBar(
+        title: const AppScreenTitle('Master'),
+        actions: [
+          IconButton(
+            tooltip: 'Page tutorial',
+            onPressed: () => showContextTour(context, [
+              TourStop(
+                _targets[0],
+                'Ready words',
+                'Words with 25 correct quiz answers can take the Master test.',
+              ),
+              TourStop(
+                _targets[1],
+                'Instant master',
+                'Already know a word? Take its full test now without waiting for points.',
+              ),
+              TourStop(
+                _targets[2],
+                'Writing gallery',
+                'Read the sentence or story you wrote when each word became mastered.',
+              ),
+              TourStop(
+                _targets[3],
+                'Keep words sharp',
+                'A mastered word can return to Learn after three missed answers in its review.',
+              ),
+            ]),
+            icon: const Icon(Icons.help_outline),
+          ),
+        ],
+      ),
       body: WarmPageBackground(
         child: Center(
           child: ConstrainedBox(
@@ -52,6 +80,7 @@ class MasterScreen extends ConsumerWidget {
                 const SizedBox(height: 12),
                 _tile(
                   context,
+                  _targets[0],
                   Icons.emoji_events_outlined,
                   'Ready for Master test',
                   eligible == null
@@ -64,6 +93,7 @@ class MasterScreen extends ConsumerWidget {
                 ),
                 _tile(
                   context,
+                  _targets[1],
                   Icons.flash_on_outlined,
                   'Instant master',
                   'Already know a word? Take its Master test now.',
@@ -74,6 +104,7 @@ class MasterScreen extends ConsumerWidget {
                 ),
                 _tile(
                   context,
+                  _targets[2],
                   Icons.collections_bookmark_outlined,
                   'Writing gallery',
                   '${ids.length} mastered words · Revisit what you wrote',
@@ -81,6 +112,7 @@ class MasterScreen extends ConsumerWidget {
                 ),
                 _tile(
                   context,
+                  _targets[3],
                   Icons.fitness_center_outlined,
                   'Practice mastered words',
                   'Three missed answers for a word return it to Learn.',
@@ -99,11 +131,13 @@ class MasterScreen extends ConsumerWidget {
 
   Widget _tile(
     BuildContext context,
+    Key target,
     IconData icon,
     String title,
     String subtitle,
     Widget Function() page,
   ) => Card(
+    key: target,
     child: ListTile(
       leading: Icon(icon),
       title: Text(title),
@@ -260,7 +294,7 @@ class _MasterCandidatesScreenState
                       !progress.isLoading &&
                       !mastered.isLoading)
                     const Text(
-                      'No words are ready yet. Each correct first answer in Practice adds one point.',
+                      'No words are ready yet. Correct answers in lesson and Master quizzes add points.',
                     ),
                   for (final word in visible)
                     Card(

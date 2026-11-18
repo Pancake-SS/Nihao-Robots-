@@ -8,9 +8,10 @@ import 'learning_journal_screen.dart';
 import 'learning_resources_screen.dart';
 
 class LearningHomeContent extends StatelessWidget {
-  const LearningHomeContent({required this.profileId, super.key});
+  const LearningHomeContent({required this.profileId, this.targets, super.key});
 
   final int profileId;
+  final List<GlobalKey>? targets;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -34,6 +35,7 @@ class LearningHomeContent extends StatelessWidget {
       const SizedBox(height: 15),
       _destination(
         context,
+        target: targets?[0],
         key: 'learning-resources',
         icon: Icons.travel_explore_outlined,
         title: 'Explore online',
@@ -42,6 +44,7 @@ class LearningHomeContent extends StatelessWidget {
       ),
       _destination(
         context,
+        target: targets?[1],
         key: 'learning-classics',
         icon: Icons.auto_stories_outlined,
         title: 'Classical stories',
@@ -50,6 +53,7 @@ class LearningHomeContent extends StatelessWidget {
       ),
       _destination(
         context,
+        target: targets?[2],
         key: 'learning-writing',
         icon: Icons.draw_outlined,
         title: 'Free writing',
@@ -61,6 +65,7 @@ class LearningHomeContent extends StatelessWidget {
       ),
       _destination(
         context,
+        target: targets?[3],
         key: 'learning-notebook',
         icon: Icons.book_outlined,
         title: 'Notebook',
@@ -80,7 +85,9 @@ class LearningHomeContent extends StatelessWidget {
     required String title,
     required String subtitle,
     required WidgetBuilder builder,
+    Key? target,
   }) => Card(
+    key: target,
     child: ListTile(
       key: ValueKey(key),
       contentPadding: const EdgeInsets.all(16),

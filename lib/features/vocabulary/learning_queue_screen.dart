@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../shared/app_brand.dart';
+import '../../shared/context_tour.dart';
 
 import '../../app/theme.dart';
 import '../../shared/robot_art.dart';
@@ -28,6 +29,11 @@ class LearningQueueScreen extends ConsumerStatefulWidget {
 }
 
 class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
+  final _searchTarget = GlobalKey();
+  final _filterTarget = GlobalKey();
+  final _addTarget = GlobalKey();
+  final _pagingTarget = GlobalKey();
+  final _learnTarget = GlobalKey();
   final _search = TextEditingController();
   final _scroll = ScrollController();
   List<QueueWord> _words = [];
@@ -269,6 +275,37 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
         title: const AppScreenTitle('Learn words'),
         actions: [
           IconButton(
+            tooltip: 'Page tutorial',
+            onPressed: () => showContextTour(context, [
+              TourStop(
+                _searchTarget,
+                'Find a word',
+                'Search by Hanzi, Pinyin or English. Type Pinyin to get Chinese keyboard suggestions.',
+              ),
+              TourStop(
+                _filterTarget,
+                'Narrow the list',
+                'Filter by learning priority or a word category.',
+              ),
+              TourStop(
+                _addTarget,
+                'Add your own word',
+                'If a word is missing, enter its meaning and five examples. It appears at the front of your queue.',
+              ),
+              TourStop(
+                _pagingTarget,
+                'Browse 20 at a time',
+                'Use the arrows to move through the queue. Tap a word to select it.',
+              ),
+              TourStop(
+                _learnTarget,
+                'Start the lesson',
+                'Open the selected word, read its examples, then complete its quiz.',
+              ),
+            ]),
+            icon: const Icon(Icons.help_outline),
+          ),
+          IconButton(
             tooltip: 'Content attribution',
             onPressed: _attribution,
             icon: const Icon(Icons.info_outline),
@@ -339,6 +376,7 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
                   children: [
                     Expanded(
                       child: LearningKeyboard(
+                        key: _searchTarget,
                         hanzi: _search,
                         enabled: !_busy,
                         hanziKey: const ValueKey('queue-search'),
@@ -362,6 +400,7 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
                     ),
                     const SizedBox(width: 8),
                     IconButton.filledTonal(
+                      key: _filterTarget,
                       tooltip: filterLabel.isEmpty
                           ? 'Filter words'
                           : 'Filter words: $filterLabel',
@@ -379,11 +418,14 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: TextButton.icon(
-                    key: const ValueKey('add-custom-word'),
-                    onPressed: _busy ? null : _addWord,
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add word'),
+                  child: KeyedSubtree(
+                    key: _addTarget,
+                    child: TextButton.icon(
+                      key: const ValueKey('add-custom-word'),
+                      onPressed: _busy ? null : _addWord,
+                      icon: const Icon(Icons.add),
+                      label: const Text('Add word'),
+                    ),
                   ),
                 ),
               ),
@@ -533,6 +575,7 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
+                        key: _pagingTarget,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           IconButton(
@@ -553,6 +596,7 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
                         ],
                       ),
                       SizedBox(
+                        key: _learnTarget,
                         width: double.infinity,
                         child: FilledButton(
                           key: const ValueKey('learn-selected'),

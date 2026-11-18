@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../app/theme.dart';
 import 'cozy_ui.dart';
 import 'robot_art.dart';
-import 'ui_art.dart';
 
 class MetricCard extends StatelessWidget {
   const MetricCard({
@@ -102,156 +101,58 @@ class MetricCard extends StatelessWidget {
   );
 }
 
-/// Shared by the live dashboard and the dependency-free GUI preview gallery.
+/// Shows actual Master membership against the installed word catalogue.
 class JourneyProgress extends StatelessWidget {
-  const JourneyProgress({required this.count, super.key});
+  const JourneyProgress({required this.count, this.total = 11147, super.key});
   final int? count;
-  static const _goals = [500, 1000, 2000, 5000];
-  static const _labels = [
-    'Survival',
-    'Everyday',
-    'Deeper talks',
-    'Long-term goal',
-  ];
-  static const _colors = [
-    Color(0xFFE97B76),
-    Color(0xFF77B878),
-    Color(0xFF77A9DF),
-    Color(0xFFDB96BC),
-  ];
+  final int total;
 
   @override
   Widget build(BuildContext context) {
-    final value = (count ?? 0).clamp(0, 5000) / 5000;
+    final ratio = (count ?? 0).clamp(0, total) / total;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SectionHeading(
-          title: 'Fluency progression',
-          caption: 'Explore your vocabulary milestones, one step at a time',
+        const SectionHeading(
+          title: 'Mastered words',
+          caption: 'Your progress through the word library',
           icon: Icons.bar_chart_rounded,
-          action: TextButton.icon(
-            onPressed: () => _details(context),
-            icon: const Icon(Icons.info_outline, size: 17),
-            label: const Text('View Details'),
-          ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         Container(
-          padding: const EdgeInsets.fromLTRB(15, 19, 15, 16),
+          padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFFDCF0CF), Color(0xFFE7F5DD), Color(0xFFD6EBF7)],
-            ),
+            color: const Color(0xFFE7F5DD),
             borderRadius: BorderRadius.circular(17),
           ),
-          child: Stack(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Positioned.fill(
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: UiArt(
-                    art: UiArtwork.fluencyJourney,
-                    width: 370,
-                    height: 180,
-                    opacity: .14,
-                  ),
+              Text(
+                count == null
+                    ? 'Loading mastered words…'
+                    : '$count / $total words mastered',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 12),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(40),
+                child: LinearProgressIndicator(
+                  value: ratio.toDouble(),
+                  minHeight: 15,
+                  backgroundColor: Colors.white,
+                  color: const Color(0xFF3E9F62),
                 ),
               ),
-              Column(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(40),
-                    child: LinearProgressIndicator(
-                      value: value.toDouble(),
-                      minHeight: 12,
-                      backgroundColor: const Color(0xCCFFFFFF),
-                      color: const Color(0xFF79B783),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (var i = 0; i < _goals.length; i++)
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.flag_rounded,
-                                color: _colors[i],
-                                size: 26,
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${_goals[i]}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 13,
-                                ),
-                              ),
-                              Text(
-                                _labels[i],
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: AppColors.mutedInk,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                    ],
-                  ),
-                ],
+              const SizedBox(height: 8),
+              Text(
+                '${(ratio * 100).toStringAsFixed(1)}% of the library',
+                style: const TextStyle(fontSize: 12, color: AppColors.mutedInk),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 10),
-        Text(
-          count == null
-              ? 'Loading your saved vocabulary activity…'
-              : '$count words have saved quiz records. Milestones are goals, not fluency measurements.',
-          style: const TextStyle(fontSize: 11, color: AppColors.mutedInk),
-        ),
       ],
     );
   }
-
-  void _details(BuildContext context) => showDialog<void>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('Your word milestones'),
-      content: const SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              '🚩 500 — A survival-vocabulary target: greetings and simple orders.',
-            ),
-            SizedBox(height: 11),
-            Text('🚩 1,000 — A broader everyday-vocabulary target.'),
-            SizedBox(height: 11),
-            Text('🚩 2,000 — More vocabulary for richer conversations.'),
-            SizedBox(height: 11),
-            Text(
-              '🚩 5,000 — A long-term vocabulary goal, not a guarantee of fluency.',
-            ),
-            SizedBox(height: 18),
-            Text(
-              'These goals are not fluency scores. Counts here reflect words with saved quizzes. Fluency also depends on listening, grammar, comprehension and speaking.',
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Close'),
-        ),
-      ],
-    ),
-  );
 }

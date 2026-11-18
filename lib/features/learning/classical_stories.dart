@@ -10,11 +10,17 @@ class ClassicChapter {
     required this.sourceUrl,
     required this.revision,
     required this.paragraphs,
+    this.englishParagraphs = const [],
+    this.englishCredit = '',
+    this.englishSourceUrl = '',
+    this.englishLicense = '',
   });
 
   final String id, title, sourceUrl;
   final int revision;
   final List<String> paragraphs;
+  final List<String> englishParagraphs;
+  final String englishCredit, englishSourceUrl, englishLicense;
 
   factory ClassicChapter.fromJson(Map<String, dynamic> json) {
     final paragraphs = (json['paragraphs'] as List).cast<String>();
@@ -62,7 +68,7 @@ class ClassicCollection {
   }
 }
 
-List<ClassicCollection> parseClassics(String source) {
+List<ClassicCollection> parseClassics(String source, {String? englishSource}) {
   final json = jsonDecode(source) as Map<String, dynamic>;
   if (json['schemaVersion'] != 1) {
     throw const FormatException('Unsupported classical story pack.');
@@ -92,12 +98,62 @@ List<ClassicCollection> parseClassics(String source) {
       }
     }
   }
-  return collections;
+  if (englishSource == null) return collections;
+  final translated = jsonDecode(englishSource) as Map<String, dynamic>;
+  if (translated['schemaVersion'] != 1 || translated['translations'] is! List) {
+    throw const FormatException('Unsupported English story pack.');
+  }
+  final byId = <String, Map<String, dynamic>>{};
+  for (final raw in translated['translations'] as List) {
+    final item = raw as Map<String, dynamic>;
+    final id = item['id'] as String;
+    final paragraphs = item['paragraphs'];
+    if (!ids.contains(id) ||
+        byId.containsKey(id) ||
+        paragraphs is! List ||
+        paragraphs.isEmpty ||
+        paragraphs.any((value) => value is! String || value.trim().isEmpty) ||
+        (item['credit'] as String?)?.isEmpty != false ||
+        Uri.tryParse(item['sourceUrl'] as String? ?? '')?.hasScheme != true ||
+        (item['license'] as String?)?.isEmpty != false) {
+      throw const FormatException('Incomplete English story translation.');
+    }
+    byId[id] = item;
+  }
+  if (byId.length != ids.length) {
+    throw const FormatException('Not every story has an English translation.');
+  }
+  return [
+    for (final collection in collections)
+      ClassicCollection(
+        id: collection.id,
+        title: collection.title,
+        description: collection.description,
+        credit: collection.credit,
+        sourceUrl: collection.sourceUrl,
+        chapters: [
+          for (final chapter in collection.chapters)
+            ClassicChapter(
+              id: chapter.id,
+              title: chapter.title,
+              sourceUrl: chapter.sourceUrl,
+              revision: chapter.revision,
+              paragraphs: chapter.paragraphs,
+              englishParagraphs: (byId[chapter.id]!['paragraphs'] as List)
+                  .cast<String>(),
+              englishCredit: byId[chapter.id]!['credit'] as String,
+              englishSourceUrl: byId[chapter.id]!['sourceUrl'] as String,
+              englishLicense: byId[chapter.id]!['license'] as String,
+            ),
+        ],
+      ),
+  ];
 }
 
 final classicalStoriesProvider = FutureProvider<List<ClassicCollection>>((
   ref,
 ) async {
   final source = await rootBundle.loadString('assets/content/classics_v1.json');
-  return parseClassics(source);
+  final english = await rootBundle.loadString('assets/content/classics_english_v1.json');
+  return parseClassics(source, englishSource: english);
 });

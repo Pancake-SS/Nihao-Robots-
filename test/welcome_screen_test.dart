@@ -8,6 +8,7 @@ import 'package:ni_hao_robot/shared/cozy_ui.dart';
 import 'package:ni_hao_robot/shared/robot_art.dart';
 import 'package:ni_hao_robot/features/profiles/profile_providers.dart';
 import 'package:ni_hao_robot/features/profiles/profile.dart';
+import 'package:ni_hao_robot/features/dashboard/daily_streak.dart';
 
 import 'profile_test_repository.dart';
 import 'foundation_test_repository.dart';
@@ -44,6 +45,9 @@ void main() {
             profileRepositoryProvider.overrideWithValue(repository),
             foundationRepositoryProvider.overrideWithValue(
               TestFoundationRepository(),
+            ),
+            dailyStreakProvider(1).overrideWith(
+              (ref) async => const DailyStreak({}, 0, DailyActivity()),
             ),
           ],
           child: const NiHaoRobotApp(),

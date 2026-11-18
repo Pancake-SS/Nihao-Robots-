@@ -2,7 +2,7 @@
 
 A Windows-first, local-first Mandarin learning companion built toward Flutter + Dart, Riverpod and Drift/SQLite. Simplified Chinese, tone-marked Pinyin, English guidance, and the user's original robots.
 
-**Current status:** offline profiles, tours, introduction and Learn > Quiz > scheduled Review are implemented. Browse **11,147 words and 85,118 questions** in separate pages of 20, with search, priority/category filters and a selected-word Learn button. Add your own words with five example sentences; they become linked lessons at the front of your profile's queue. **10,810 words** have FMLD meaning/usage enrichment. **7,099 words have sourced examples; 4,600 have recordings**, using 4,118 offline recordings. Words and unrecorded examples use installed device Mandarin TTS. Typed answers convert Pinyin within the Hanzi field; custom-word editors offer English, Hanzi, Pinyin and All modes, with All filling three editable fields from a one-line dictionary choice. Each answer is checked immediately; missed questions return at the end until correct, while the saved first-try result remains honest. The supplied cozy UI artwork and varied robot designs are integrated. Question generation uses existing word data and favors related wrong answers without AI calls. Independent teacher/listening review remains pending. See [content/database design](docs/CONTENT_DATABASE.md) and [setup](docs/SETUP.md).
+**Current status:** offline profiles, introduction, Vocabulary, Master, Grammar and Learning are implemented. Browse **11,147 words and 85,118 questions** in pages of 20 with search and priority/category filters. Add a custom word with five examples to the front of the queue. **10,810 words** have FMLD meaning/usage enrichment; **7,099 words have sourced examples and 4,600 have recordings**, using 4,118 offline recordings. Words and unrecorded examples use installed device Mandarin TTS. Questions favor related wrong answers, check each answer and return missed questions at the end. Master tests require 25 correct points or can be started instantly, then save an ungraded writing prompt. Learning includes online resources, 139 offline classical readings with English companions, free writing and a single-page notebook. The Home page shows a green mastery bar and daily streak goals: ten new words, twenty quiz words, ten Master reviews and one saved writing piece. Profiles can be exported to and imported from a local JSON save. See [content/database design](docs/CONTENT_DATABASE.md), [classical story sources](docs/CLASSICAL_STORIES.md) and [setup](docs/SETUP.md).
 
 ## GitHub backup
 
@@ -18,6 +18,10 @@ The helper checks the remote, pushes without forcing and verifies the remote com
 It does not stage files or create commits. Uncommitted changes, local learner data,
 SDKs, caches and build outputs are not included. See [backup details](docs/GITHUB_BACKUP.md).
 
+## Move an account to another device
+
+On the profile chooser, select **Export account save** beside the profile and save the JSON file. Install the current app on the other device, select **Import account save**, and choose that file. Import creates a new profile with its queue, progress, custom words, Master writing, grammar completions, free writing and notebook pages. The bundled word library and story content ship with the app and are not copied into the save. Keep the file private because it contains your writing and learning history.
+
 ## Try the redesigned interface
 
 Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build_windows.ps1` from the project root, then launch the executable path printed by the helper. Keep its nearby DLLs and data folder together. In VS Code, **Terminal > Run Build Task** runs the same safe-path build. The patch's separate `lib/preview_main.dart` is sample-data-only source; this project has no web scaffold, so the actual Windows build is the supported way to try the design.
@@ -29,7 +33,7 @@ Vocabulary > **Browse words** opens the paged word browser. Select a card, use *
 - Read the full Master Plan and Coding Standards under `reference/`, the implementation brief, and existing project memory.
 - Rendered/inspected all 27 original PPT slides; extracted actual notes with `python-pptx` and inspected OOXML comment parts/relationships. No true PowerPoint comments exist. Generic note template footers are separated from requirements.
 - Inspected all 20 original PNGs: ten character pairs. Black-line variants have opaque white backing; white-line variants are transparent. The integrated artwork uses distinct robots across welcome, Home, Vocabulary, lesson and quiz screens; all 20 original files match their source hashes.
-- Local profiles replace slide 1 sign-in; Vocabulary Practice is separate from deferred primary Practice; failed mastery retains history. Full decisions: [decision log](docs/DECISION_LOG.md).
+- Local profiles replace slide 1 sign-in. Vocabulary lessons and Master tests supply quiz activity; the separate Practice destination has been removed. Failed Master reviews retain history. Full decisions: [decision log](docs/DECISION_LOG.md).
 
 ## Initial file tree
 
@@ -39,10 +43,12 @@ lib/
   app/                  # Application and shared theme
   data/                 # Drift schema, generated queries and native connection
   features/onboarding/  # Welcome, introduction content, persistence and activity
-  features/dashboard/   # Home and honest milestone explanations
+  features/dashboard/   # Home, mastery bar and daily streak
   features/vocabulary/  # Paginated learning queue and linked lessons
-  features/review/      # Quiz, transactional attempts and early review schedule
-  features/profiles/    # Validation, repository, Riverpod state and profile UI
+  features/review/      # Quiz, Master tests and Master review
+  features/profiles/    # Profiles and portable account saves
+  features/grammar/     # Pending and completed grammar lessons
+  features/learning/    # Stories, resources, writing and notebook
   shared/               # Original robot display, cards and contextual tours
 test/                   # Domain, SQLite, widget and UI/database-restart checks
 assets/mascots/          # Six byte-identical bundle copies
@@ -60,11 +66,8 @@ pubspec.lock            # Actual resolved dependency versions
 
 Schema v5 adds linked curriculum/audio/questions and per-profile queues alongside existing progress and immutable attempts; v1-v5 snapshots are retained. Migration, backup recovery, failed-import rollback and queue persistence are tested; see [migration notes](docs/MIGRATIONS.md). Core learning and bundled playback need no cloud account or network. Actual verification results and remaining native listening checks are recorded in [project memory](docs/PROJECT_MEMORY.md).
 
-## Prioritized roadmap
+## Remaining work
 
-1. **A1 — Native Windows verification:** machine prerequisites, debug build and window launch pass. Complete the native profile/lesson/restart/resize smoke checks. Persistence and responsive UI are already covered by the Flutter test harness.
-2. **A2 — Extend the working pilot:** obtain independent teacher review, add a readable attempt-history view, and select/test adaptive scheduling before claiming long-term mastery. The first journey already covers restart, profile isolation and exact due boundaries; no mastery is awarded.
-3. **B — Complete vocabulary and starter grammar:** three stacks, diverse exercises, truthful mastery and real distinct prerequisite-based grammar. Expand the imported candidate bank through explicit content and rights review.
-4. **Later:** primary Practice/Speaking, Immersion UI, optional AI/cloud/voice after design decisions. No current implementation claimed.
+Independent Mandarin teacher and listening review is still needed for imported examples, dictionary enrichment, generated questions and device TTS. Speaking is a placeholder. The Windows build script creates a portable package; keep the executable with its nearby DLLs and data folder.
 
 Canonical session handoff: [Project Memory](docs/PROJECT_MEMORY.md). Human mirror: [Development Journal](docs/Development_Journal.docx). Other source-derived documents: [slide requirements](docs/SLIDE_REQUIREMENTS.md), [asset manifest](docs/ASSET_MANIFEST.md), [design system](docs/DESIGN_SYSTEM.md).

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/app_brand.dart';
 import '../../shared/cozy_ui.dart';
+import '../../shared/context_tour.dart';
 import '../../shared/robot_art.dart';
 import 'classical_stories.dart';
 import 'learning_resources_screen.dart';
@@ -193,9 +194,13 @@ class ClassicReaderScreen extends ConsumerStatefulWidget {
 }
 
 class _ClassicReaderScreenState extends ConsumerState<ClassicReaderScreen> {
+  final _languageTarget = GlobalKey();
+  final _sizeTarget = GlobalKey();
+  final _navigationTarget = GlobalKey();
   late int _index;
   final _scroll = ScrollController();
   double _textSize = 22;
+  bool _english = false;
 
   @override
   void initState() {
@@ -230,10 +235,41 @@ class _ClassicReaderScreenState extends ConsumerState<ClassicReaderScreen> {
   @override
   Widget build(BuildContext context) {
     final chapter = widget.collection.chapters[_index];
+    final paragraphs = _english
+        ? chapter.englishParagraphs
+        : chapter.paragraphs;
     return Scaffold(
       appBar: AppBar(
         title: AppScreenTitle(chapter.title),
         actions: [
+          IconButton(
+            tooltip: 'View source',
+            onPressed: () => _openSource(
+              _english ? chapter.englishSourceUrl : chapter.sourceUrl,
+            ),
+            icon: const Icon(Icons.open_in_new),
+          ),
+          IconButton(
+            tooltip: 'Page tutorial',
+            onPressed: () => showContextTour(context, [
+              TourStop(
+                _languageTarget,
+                'Switch languages',
+                'Read the original Chinese or an attributed English translation of this chapter.',
+              ),
+              TourStop(
+                _sizeTarget,
+                'Adjust text size',
+                'Make the reading text larger or smaller.',
+              ),
+              TourStop(
+                _navigationTarget,
+                'Keep reading',
+                'Move to the previous or next story in this collection.',
+              ),
+            ]),
+            icon: const Icon(Icons.help_outline),
+          ),
           IconButton(
             tooltip: 'Smaller text',
             onPressed: _textSize <= 18
@@ -242,6 +278,7 @@ class _ClassicReaderScreenState extends ConsumerState<ClassicReaderScreen> {
             icon: const Icon(Icons.text_decrease),
           ),
           IconButton(
+            key: _sizeTarget,
             tooltip: 'Larger text',
             onPressed: _textSize >= 30
                 ? null
@@ -255,6 +292,7 @@ class _ClassicReaderScreenState extends ConsumerState<ClassicReaderScreen> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
           child: Row(
+            key: _navigationTarget,
             children: [
               Expanded(
                 child: OutlinedButton.icon(
@@ -284,7 +322,7 @@ class _ClassicReaderScreenState extends ConsumerState<ClassicReaderScreen> {
             child: ListView.builder(
               controller: _scroll,
               padding: const EdgeInsets.all(22),
-              itemCount: chapter.paragraphs.length + 2,
+              itemCount: paragraphs.length + 2,
               itemBuilder: (context, index) {
                 if (index == 0) {
                   return Column(
@@ -298,22 +336,57 @@ class _ClassicReaderScreenState extends ConsumerState<ClassicReaderScreen> {
                       Text(
                         '${_index + 1} of ${widget.collection.chapters.length}',
                       ),
+                      const SizedBox(height: 12),
+                      KeyedSubtree(
+                        key: _languageTarget,
+                        child: SegmentedButton<bool>(
+                          key: const ValueKey('classic-language'),
+                          segments: const [
+                            ButtonSegment(value: false, label: Text('Chinese')),
+                            ButtonSegment(value: true, label: Text('English')),
+                          ],
+                          selected: {_english},
+                          onSelectionChanged: chapter.englishParagraphs.isEmpty
+                              ? null
+                              : (selection) {
+                                  if (_scroll.hasClients) _scroll.jumpTo(0);
+                                  setState(() => _english = selection.first);
+                                },
+                        ),
+                      ),
+                      if (_english) ...[
+                        const SizedBox(height: 12),
+                        Text(chapter.englishCredit),
+                        Text('License: ${chapter.englishLicense}'),
+                      ],
                       const SizedBox(height: 14),
                     ],
                   );
                 }
-                if (index == chapter.paragraphs.length + 1) {
+                if (index == paragraphs.length + 1) {
                   return Padding(
                     padding: const EdgeInsets.only(top: 18, bottom: 12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Classical Chinese · simplified rendering'),
+                        Text(
+                          _english
+                              ? chapter.englishCredit
+                              : 'Classical Chinese · simplified rendering',
+                        ),
                         const SizedBox(height: 7),
                         TextButton.icon(
-                          onPressed: () => _openSource(chapter.sourceUrl),
+                          onPressed: () => _openSource(
+                            _english
+                                ? chapter.englishSourceUrl
+                                : chapter.sourceUrl,
+                          ),
                           icon: const Icon(Icons.open_in_new),
-                          label: const Text('View source on Wikisource'),
+                          label: Text(
+                            _english
+                                ? 'View English source'
+                                : 'View source on Wikisource',
+                          ),
                         ),
                       ],
                     ),
@@ -322,7 +395,7 @@ class _ClassicReaderScreenState extends ConsumerState<ClassicReaderScreen> {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 18),
                   child: SelectableText(
-                    chapter.paragraphs[index - 1],
+                    paragraphs[index - 1],
                     style: TextStyle(fontSize: _textSize, height: 1.75),
                   ),
                 );

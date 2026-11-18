@@ -32,6 +32,8 @@ class LearningKeyboard extends ConsumerStatefulWidget {
     this.hanziSuffixIcon,
     this.initialMode = LearningKeyboardMode.hanzi,
     this.onModeChanged,
+    this.singleField = false,
+    this.hanziMinLines,
     super.key,
   }) : assert((pinyin == null) == (english == null));
 
@@ -48,6 +50,8 @@ class LearningKeyboard extends ConsumerStatefulWidget {
   final Widget? hanziSuffixIcon;
   final LearningKeyboardMode initialMode;
   final ValueChanged<LearningKeyboardMode>? onModeChanged;
+  final bool singleField;
+  final int? hanziMinLines;
 
   @override
   ConsumerState<LearningKeyboard> createState() => _LearningKeyboardState();
@@ -86,17 +90,21 @@ class _LearningKeyboardState extends ConsumerState<LearningKeyboard> {
     super.dispose();
   }
 
-  TextEditingController get _active => switch (_mode) {
-    LearningKeyboardMode.english => widget.english ?? widget.hanzi,
-    LearningKeyboardMode.pinyin => widget.pinyin ?? widget.hanzi,
-    _ => widget.hanzi,
-  };
+  TextEditingController get _active => widget.singleField
+      ? widget.hanzi
+      : switch (_mode) {
+          LearningKeyboardMode.english => widget.english ?? widget.hanzi,
+          LearningKeyboardMode.pinyin => widget.pinyin ?? widget.hanzi,
+          _ => widget.hanzi,
+        };
 
-  FocusNode get _activeFocus => switch (_mode) {
-    LearningKeyboardMode.english => _englishFocus,
-    LearningKeyboardMode.pinyin => _pinyinFocus,
-    _ => _hanziFocus,
-  };
+  FocusNode get _activeFocus => widget.singleField
+      ? _hanziFocus
+      : switch (_mode) {
+          LearningKeyboardMode.english => _englishFocus,
+          LearningKeyboardMode.pinyin => _pinyinFocus,
+          _ => _hanziFocus,
+        };
 
   String get _query {
     if (_mode == LearningKeyboardMode.english) return '';
@@ -111,7 +119,9 @@ class _LearningKeyboardState extends ConsumerState<LearningKeyboard> {
 
   void _modeChanged(LearningKeyboardMode mode, {bool focus = true}) {
     if (!widget.enabled ||
-        (widget.pinyin == null && mode != LearningKeyboardMode.hanzi))
+        (widget.pinyin == null &&
+            !widget.singleField &&
+            mode != LearningKeyboardMode.hanzi))
       return;
     setState(() {
       _mode = mode;
@@ -153,9 +163,13 @@ class _LearningKeyboardState extends ConsumerState<LearningKeyboard> {
     if (!widget.enabled) return;
     final mode = _mode;
     _replaceQuery(
-      mode == LearningKeyboardMode.pinyin ? candidate.pinyin : candidate.hanzi,
+      mode == LearningKeyboardMode.all && widget.singleField
+          ? '${candidate.hanzi} · ${candidate.pinyin} · ${candidate.meaning.split(RegExp(r'[;/]')).first.trim()}'
+          : mode == LearningKeyboardMode.pinyin
+          ? candidate.pinyin
+          : candidate.hanzi,
     );
-    if (mode == LearningKeyboardMode.all) {
+    if (mode == LearningKeyboardMode.all && !widget.singleField) {
       _append(widget.pinyin!, candidate.pinyin);
       // Dictionary glosses are an editable draft, not a sentence translation.
       _append(
@@ -181,15 +195,19 @@ class _LearningKeyboardState extends ConsumerState<LearningKeyboard> {
           : engine?.candidates(query, limit: 1).firstOrNull;
       if (best != null) {
         final start = withoutSpace.length - query.length;
-        final result = value.replaceRange(start, value.length, best.hanzi);
+        final replacement =
+            _mode == LearningKeyboardMode.all && widget.singleField
+            ? '${best.hanzi} · ${best.pinyin} · ${best.meaning.split(RegExp(r'[;/]')).first.trim()}'
+            : best.hanzi;
+        final result = value.replaceRange(start, value.length, replacement);
         if (result.characters.length <= widget.hanziMaxLength) {
           widget.hanzi.value = TextEditingValue(
             text: result,
             selection: TextSelection.collapsed(
-              offset: start + best.hanzi.length,
+              offset: start + replacement.length,
             ),
           );
-          if (_mode == LearningKeyboardMode.all) {
+          if (_mode == LearningKeyboardMode.all && !widget.singleField) {
             _append(widget.pinyin!, best.pinyin);
             _append(
               widget.english!,
@@ -257,7 +275,7 @@ class _LearningKeyboardState extends ConsumerState<LearningKeyboard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (widget.pinyin != null) ...[
+        if (widget.pinyin != null || widget.singleField) ...[
           Wrap(
             key: const ValueKey('keyboard-modes'),
             spacing: 6,
@@ -285,6 +303,7 @@ class _LearningKeyboardState extends ConsumerState<LearningKeyboard> {
           focusNode: _hanziFocus,
           enabled: widget.enabled,
           maxLength: widget.hanziMaxLength,
+          minLines: widget.hanziMinLines,
           maxLines: widget.hanziMaxLines,
           decoration: InputDecoration(
             labelText: widget.hanziLabel,
@@ -292,13 +311,13 @@ class _LearningKeyboardState extends ConsumerState<LearningKeyboard> {
             suffixIcon: widget.hanziSuffixIcon,
           ),
           onTap: () {
-            if (_mode != LearningKeyboardMode.all)
+            if (_mode != LearningKeyboardMode.all && !widget.singleField)
               _modeChanged(LearningKeyboardMode.hanzi, focus: false);
           },
           onChanged: _changed,
           onFieldSubmitted: widget.onHanziSubmitted,
         ),
-        if (widget.pinyin case final pinyin?) ...[
+        if (widget.pinyin case final pinyin? when !widget.singleField) ...[
           TextField(
             key: widget.pinyinKey,
             controller: pinyin,

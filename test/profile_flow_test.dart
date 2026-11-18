@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ni_hao_robot/app/app.dart';
 import 'package:ni_hao_robot/features/profiles/profile_providers.dart';
+import 'package:ni_hao_robot/features/dashboard/daily_streak.dart';
 
 import 'profile_test_repository.dart';
 import 'foundation_test_repository.dart';
@@ -21,6 +22,12 @@ Future<void> mount(
         profileRepositoryProvider.overrideWithValue(repository),
         foundationRepositoryProvider.overrideWithValue(
           TestFoundationRepository(),
+        ),
+        dailyStreakProvider(1).overrideWith(
+          (ref) async => const DailyStreak({}, 0, DailyActivity()),
+        ),
+        dailyStreakProvider(2).overrideWith(
+          (ref) async => const DailyStreak({}, 0, DailyActivity()),
         ),
       ],
       child: const NiHaoRobotApp(),

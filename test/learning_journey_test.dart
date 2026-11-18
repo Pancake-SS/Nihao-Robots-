@@ -279,175 +279,123 @@ void main() {
     },
   );
 
-  testWidgets(
-    'learn, practise immediately, restart with points and isolate profiles',
-    (tester) async {
-      final directory = (await tester.runAsync(
-        () => Directory.systemTemp.createTemp('nihao-journey-test-'),
-      ))!;
-      final file = File('${directory.path}/learner.sqlite');
-      AppDatabase? db;
-      var clock = DateTime.utc(2026, 11, 4, 12);
-      var first = 0, second = 0;
-      Future<void> open({bool seed = false}) async {
-        db = AppDatabase(NativeDatabase(file));
-        await tester.runAsync(() async {
-          final profiles = SqliteProfileRepository(db!);
-          if (seed) {
-            first = (await profiles.create(const ProfileDraft(name: 'Mei')))
-                .selected!
-                .id;
-            second = (await profiles.create(const ProfileDraft(name: 'Other')))
-                .selected!
-                .id;
-            await profiles.select(first);
-          } else {
-            await profiles.load();
-          }
-        });
-        await tester.pumpWidget(
-          ProviderScope(
-            overrides: [
-              pinyinInputEngineProvider.overrideWith((ref) async => _keyboard),
-              appDatabaseProvider.overrideWithValue(db!),
-              curriculumRepositoryProvider.overrideWithValue(
-                StarterQueueFixture(
-                  db!,
-                  BundledVocabularyRepository(
-                    ContentTestBundle(),
-                    starterPaths,
-                  ),
-                ),
-              ),
-              vocabularyRepositoryProvider.overrideWithValue(
-                SqliteVocabularyRepository(
-                  db!,
-                  BundledVocabularyRepository(
-                    ContentTestBundle(),
-                    starterPaths,
-                  ),
-                ),
-              ),
-              learningClockProvider.overrideWithValue(() => clock),
-            ],
-            child: const NiHaoRobotApp(),
-          ),
-        );
-        await tester.pumpAndSettle();
-      }
-
-      try {
-        await open(seed: true);
-        await press(tester, find.text('Continue'));
-        await press(tester, find.byKey(const ValueKey('destination-1')));
-        await press(tester, find.text('Browse words'));
-        await press(tester, find.text('Learn 你好'));
-        expect(find.text('Example 5'), findsOneWidget);
-        expect(find.textContaining('teacher review pending'), findsNothing);
-        await tester.tap(
-          find.byTooltip('Sources and pronunciation information'),
-        );
-        await tester.pumpAndSettle();
-        expect(find.textContaining('teacher review pending'), findsWidgets);
-        await tester.tap(find.text('Close'));
-        await tester.pumpAndSettle();
-        await press(tester, find.text('Continue to Quiz'));
-        await answerQuiz(tester, word: loadExpandedGreeting());
-        expect(find.text('Attempt saved'), findsOneWidget);
-        expect(await db!.select(db!.vocabularyAttempts).get(), hasLength(1));
-        await press(tester, find.text('Done'));
-        expect(find.text('Continue to Quiz'), findsNothing);
-        await tester.pageBack();
-        await tester.pumpAndSettle();
-        await tester.pageBack();
-        await tester.pumpAndSettle();
-        await press(tester, find.text('Open practice'));
-        expect(find.text('1 word ready'), findsOneWidget);
-        await press(tester, find.text('Test one word'));
-        await press(
-          tester,
-          find.byKey(
-            ValueKey('practice-word-${loadExpandedGreeting().entry.id}'),
-          ),
-        );
-        await press(tester, find.text('Start full word test'));
-        final questions = loadExpandedGreeting().entry.questions;
-        for (var i = 0; i < questions.length; i++) {
-          final q = questions[i];
-          if (q.isTyped) {
-            await tester.enterText(
-              find.byKey(const ValueKey('practice-typed-answer')),
-              q.correctAnswer,
-            );
-            await tester.pumpAndSettle();
-          } else {
-            await press(
-              tester,
-              find.byKey(ValueKey('practice-answer-${q.correctOptionId}')),
-            );
-          }
-          await press(tester, find.text('Check answer'));
-          expect(find.text('Correct! +1 point'), findsOneWidget);
-          await press(
-            tester,
-            find.text(
-              i == questions.length - 1 ? 'Finish round' : 'Next question',
-            ),
-          );
+  testWidgets('learn a word, restart with progress and isolate profiles', (
+    tester,
+  ) async {
+    final directory = (await tester.runAsync(
+      () => Directory.systemTemp.createTemp('nihao-journey-test-'),
+    ))!;
+    final file = File('${directory.path}/learner.sqlite');
+    AppDatabase? db;
+    var clock = DateTime.utc(2026, 11, 4, 12);
+    var first = 0, second = 0;
+    Future<void> open({bool seed = false}) async {
+      db = AppDatabase(NativeDatabase(file));
+      await tester.runAsync(() async {
+        final profiles = SqliteProfileRepository(db!);
+        if (seed) {
+          first = (await profiles.create(const ProfileDraft(name: 'Mei')))
+              .selected!
+              .id;
+          second = (await profiles.create(const ProfileDraft(name: 'Other')))
+              .selected!
+              .id;
+          await profiles.select(first);
+        } else {
+          await profiles.load();
         }
-        expect(find.text('Session complete'), findsOneWidget);
-        expect(
-          (await db!.select(db!.practiceResponses).get()).where(
-            (response) => response.correct,
-          ),
-          hasLength(questions.length * 2),
-        );
-        await tester.pumpWidget(const SizedBox.shrink());
-        await tester.runAsync(db!.close);
-        db = null;
+      });
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            pinyinInputEngineProvider.overrideWith((ref) async => _keyboard),
+            appDatabaseProvider.overrideWithValue(db!),
+            curriculumRepositoryProvider.overrideWithValue(
+              StarterQueueFixture(
+                db!,
+                BundledVocabularyRepository(ContentTestBundle(), starterPaths),
+              ),
+            ),
+            vocabularyRepositoryProvider.overrideWithValue(
+              SqliteVocabularyRepository(
+                db!,
+                BundledVocabularyRepository(ContentTestBundle(), starterPaths),
+              ),
+            ),
+            learningClockProvider.overrideWithValue(() => clock),
+          ],
+          child: const NiHaoRobotApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
 
-        await open();
-        await press(tester, find.text('Continue'));
-        await press(tester, find.byKey(const ValueKey('destination-1')));
-        await press(tester, find.text('Open practice'));
-        expect(find.text('1 word ready'), findsOneWidget);
-        await press(tester, find.text('Test one word'));
-        expect(
-          find.byKey(
-            ValueKey('practice-word-${loadExpandedGreeting().entry.id}'),
-          ),
-          findsOneWidget,
-        );
-        expect(
-          (await db!.select(db!.practiceResponses).get()).where(
-            (response) => response.correct,
-          ),
-          hasLength(questions.length * 2),
-        );
-        await tester.pageBack();
-        await tester.pumpAndSettle();
-        await tester.pageBack();
-        await tester.pumpAndSettle();
-        await press(tester, find.text('Switch profile'));
-        await press(tester, find.byKey(ValueKey('profile-$second')));
-        await press(tester, find.text('Continue'));
-        await press(tester, find.byKey(const ValueKey('destination-1')));
-        await press(tester, find.text('Open practice'));
-        expect(find.text('0 words ready'), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      } finally {
-        await tester.pumpWidget(const SizedBox.shrink());
-        await tester.runAsync(() async {
-          await db?.close();
-          final prefix =
-              '${Directory.systemTemp.absolute.path}${Platform.pathSeparator}nihao-journey-test-';
-          if (!directory.absolute.path.startsWith(prefix))
-            throw StateError('Unexpected cleanup path');
-          await directory.delete(recursive: true);
-        });
-      }
-    },
-  );
+    try {
+      await open(seed: true);
+      await press(tester, find.text('Continue'));
+      await press(tester, find.byKey(const ValueKey('destination-1')));
+      await press(tester, find.text('Browse words'));
+      await press(tester, find.text('Learn 你好'));
+      expect(find.text('Example 5'), findsOneWidget);
+      expect(find.textContaining('teacher review pending'), findsNothing);
+      await tester.tap(find.byTooltip('Sources and pronunciation information'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('teacher review pending'), findsWidgets);
+      await tester.tap(find.text('Close'));
+      await tester.pumpAndSettle();
+      await press(tester, find.text('Continue to Quiz'));
+      await answerQuiz(tester, word: loadExpandedGreeting());
+      expect(find.text('Attempt saved'), findsOneWidget);
+      expect(await db!.select(db!.vocabularyAttempts).get(), hasLength(1));
+      await press(tester, find.text('Done'));
+      expect(find.text('Continue to Quiz'), findsNothing);
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(find.text('Open practice'), findsNothing);
+      expect(await db!.select(db!.vocabularyAttempts).get(), hasLength(1));
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.runAsync(db!.close);
+      db = null;
+
+      await open();
+      await press(tester, find.text('Continue'));
+      await press(tester, find.byKey(const ValueKey('destination-1')));
+      await press(tester, find.text('Browse words'));
+      expect(
+        (await db!.select(db!.vocabularyAttempts).get()).where(
+          (attempt) => attempt.profileId == first,
+        ),
+        hasLength(1),
+      );
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      await press(tester, find.text('Switch profile'));
+      await press(tester, find.byKey(ValueKey('profile-$second')));
+      await press(tester, find.text('Continue'));
+      await press(tester, find.byKey(const ValueKey('destination-1')));
+      await press(tester, find.text('Browse words'));
+      expect(find.text('Learn 你好'), findsOneWidget);
+      expect(
+        (await db!.select(db!.vocabularyAttempts).get()).where(
+          (attempt) => attempt.profileId == second,
+        ),
+        isEmpty,
+      );
+      expect(tester.takeException(), isNull);
+    } finally {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.runAsync(() async {
+        await db?.close();
+        final prefix =
+            '${Directory.systemTemp.absolute.path}${Platform.pathSeparator}nihao-journey-test-';
+        if (!directory.absolute.path.startsWith(prefix))
+          throw StateError('Unexpected cleanup path');
+        await directory.delete(recursive: true);
+      });
+    }
+  });
 
   testWidgets(
     'ambiguous save freezes submitted choices and retries one event at 200% text',

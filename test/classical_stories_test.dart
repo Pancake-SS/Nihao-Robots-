@@ -14,7 +14,10 @@ void main() {
     final source = await rootBundle.loadString(
       'assets/content/classics_v1.json',
     );
-    final collections = parseClassics(source);
+    final english = await rootBundle.loadString(
+      'assets/content/classics_english_v1.json',
+    );
+    final collections = parseClassics(source, englishSource: english);
     expect(collections.map((work) => work.chapters.length), [98, 33, 8]);
     expect(collections.first.chapters.first.title, '愚人食盐喻');
     expect(collections[1].chapters.first.title, '逍遥游');
@@ -25,6 +28,9 @@ void main() {
       expect(Uri.parse(chapter.sourceUrl).scheme, 'https');
       expect(chapter.paragraphs, isNotEmpty);
       expect(chapter.paragraphs.join(), isNot(contains('{{')));
+      expect(chapter.englishParagraphs, isNotEmpty);
+      expect(chapter.englishCredit, isNotEmpty);
+      expect(Uri.parse(chapter.englishSourceUrl).hasScheme, isTrue);
     }
   });
 
@@ -69,14 +75,14 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('chapter-baiyu_001')));
     await tester.pumpAndSettle();
     expect(find.text('愚人食盐喻'), findsWidgets);
+    await tester.tap(find.text('English'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('The Fool Who Ate Salt'), findsOneWidget);
+    await tester.tap(find.text('Chinese'));
+    await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('Larger text'));
     await tester.pump();
-    await tester.scrollUntilVisible(
-      find.text('View source on Wikisource'),
-      260,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(find.text('View source on Wikisource'));
+    await tester.tap(find.byTooltip('View source'));
     await tester.pump();
     expect(opened?.queryParameters['oldid'], isNotEmpty);
     await tester.tap(find.text('Next'));

@@ -110,14 +110,19 @@ void main() {
       'My reading notes',
     );
     await tester.ensureVisible(find.byKey(const ValueKey('entry-hanzi')));
-    await tester.enterText(find.byKey(const ValueKey('entry-hanzi')), '今天我看书。');
+    expect(find.byKey(const ValueKey('entry-pinyin')), findsNothing);
+    expect(find.byKey(const ValueKey('entry-english')), findsNothing);
+    await tester.enterText(
+      find.byKey(const ValueKey('entry-hanzi')),
+      '今天我看书。 My thoughts: 很有意思。',
+    );
     await tester.tap(find.byKey(const ValueKey('save-learning-entry')));
     await _waitFor(tester, find.text('1 saved notes'));
     final repo = LearningJournalRepository(db);
     final saved = (await tester.runAsync(
       () => repo.list(profile, LearningEntryKind.note),
     ))!;
-    expect(saved.single.hanzi, '今天我看书。');
+    expect(saved.single.hanzi, '今天我看书。 My thoughts: 很有意思。');
     expect(saved.single.title, 'My reading notes');
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox.shrink());

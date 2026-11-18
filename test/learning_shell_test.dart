@@ -208,9 +208,8 @@ void main() {
     'navigation, distinct mascots, honest milestones and contextual tours',
     (tester) async {
       await mountShell(tester, TestFoundationRepository());
-      await press(tester, 'View Details');
-      expect(find.textContaining('not fluency scores'), findsOneWidget);
-      await press(tester, 'Close');
+      expect(find.text('Mastered words'), findsWidgets);
+      expect(find.text('0 / 11147 words mastered'), findsOneWidget);
       await press(tester, 'Replay Tutorial');
       expect(find.text('Begin here'), findsOneWidget);
       // The autofocus Next control can be operated from the keyboard.
@@ -237,30 +236,24 @@ void main() {
         {
           RobotArtwork.wavingOnPaper,
           RobotArtwork.hoverOnPaper,
-          RobotArtwork.orbOnPaper,
           RobotArtwork.gogglesOnPaper,
         },
       );
       await press(tester, 'Replay Tutorial');
       expect(find.text('Learn in context'), findsOneWidget);
       await press(tester, 'Next');
-      expect(find.text('Vocabulary practice'), findsOneWidget);
-      await press(tester, 'Next');
-      expect(find.text('Mastery takes time'), findsOneWidget);
+      expect(find.text('Master words'), findsOneWidget);
       await press(tester, 'Done');
       await navigate(tester, 2);
       await press(tester, 'Replay Tutorial');
       expect(find.text('Patterns in context'), findsOneWidget);
       await press(tester, 'Done');
       await navigate(tester, 3);
-      expect(find.text('0 words ready'), findsOneWidget);
-      expect(find.text('Coming soon'), findsNothing);
-      await navigate(tester, 4);
       expect(find.text('Explore online'), findsOneWidget);
       expect(find.text('Classical stories'), findsOneWidget);
       expect(find.text('Free writing'), findsOneWidget);
       expect(find.text('Notebook'), findsOneWidget);
-      await navigate(tester, 5);
+      await navigate(tester, 4);
       expect(find.text('Coming soon'), findsOneWidget);
       expect(find.text('Replay Tutorial'), findsNothing);
       expect(tester.takeException(), isNull);

@@ -25,7 +25,6 @@ class AppSidebar extends StatelessWidget {
     'Home',
     'Vocabulary',
     'Grammar',
-    'Practice',
     'Learning',
     'Speaking',
   ];
@@ -34,7 +33,6 @@ class AppSidebar extends StatelessWidget {
     Icons.home_outlined,
     Icons.menu_book_outlined,
     Icons.import_contacts_outlined,
-    Icons.edit_note_outlined,
     Icons.explore_outlined,
     Icons.chat_bubble_outline_rounded,
   ];

@@ -12,7 +12,6 @@ import '../dashboard/home_content.dart';
 import '../grammar/grammar_screen.dart';
 import '../learning/learning_home.dart';
 import '../vocabulary/vocabulary_landing.dart';
-import '../review/review_screen.dart';
 import 'profile.dart';
 
 class ProfileHomeScreen extends StatefulWidget {
@@ -30,13 +29,13 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
   final _foundation = GlobalKey();
   final _progress = GlobalKey();
   final _grammar = GlobalKey();
-  final _vocabulary = List.generate(3, (_) => GlobalKey());
+  final _vocabulary = List.generate(2, (_) => GlobalKey());
+  final _learning = List.generate(4, (_) => GlobalKey());
   final _scroll = ScrollController();
   static const _names = [
     'Home',
     'Vocabulary',
     'Grammar',
-    'Practice',
     'Learning',
     'Speaking',
   ];
@@ -60,36 +59,60 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
         TourStop(
           _progress,
           'Progress with meaning',
-          'Word milestones are goals, not fluency scores. Counts and streaks will use actual learning records when lessons are available.',
+          'The green bar tracks words currently mastered. The daily checklist includes Master reviews and shows what remains for today.',
         ),
         TourStop(
           _navigation,
           'Find your way',
-          'Home, Vocabulary and Grammar each have a replayable tour. Practice opens your learned words and three question modes.',
+          'Use the sidebar to open Vocabulary, Grammar, Learning and Speaking. Replay this tutorial on each main page.',
         ),
       ],
       1 => [
         TourStop(
           _vocabulary[0],
           'Learn in context',
-          'Browse words opens the lesson catalogue. Reviewed packs will supply characters, Pinyin, meaning and five examples. The catalogue explains when no lessons are available.',
+          'Choose a word and finish its lesson quiz. New words and quiz activity count toward daily goals.',
         ),
         TourStop(
           _vocabulary[1],
-          'Vocabulary practice',
-          'Practice lets you replay a word test, choose a number of random words, or keep answering fresh questions.',
-        ),
-        TourStop(
-          _vocabulary[2],
-          'Mastery takes time',
+          'Master words',
           'After 25 correct points, take the full Master test and save an ungraded writing prompt. Instant master offers the same test sooner. Three missed answers during Master practice return the word to Learn while keeping its writing and points.',
         ),
       ],
-      _ => [
+      2 => [
         TourStop(
           _grammar,
           'Patterns in context',
           'Open Pending lessons to study a grammar pattern with a clear explanation, structure and examples. Mark it completed when you understand it, then revisit it under Completed lessons.',
+        ),
+      ],
+      3 => [
+        TourStop(
+          _learning[0],
+          'Online resources',
+          'Browse free Chinese videos, audio and stories.',
+        ),
+        TourStop(
+          _learning[1],
+          'Classical stories',
+          'Open a story and switch between the original Chinese and English.',
+        ),
+        TourStop(
+          _learning[2],
+          'Free writing',
+          'Pick a topic, write and save. One saved piece meets the daily writing goal.',
+        ),
+        TourStop(
+          _learning[3],
+          'Notebook',
+          'Keep personal notes on a single, roomy page.',
+        ),
+      ],
+      _ => [
+        TourStop(
+          _navigation,
+          'Speaking',
+          'This section is still being prepared.',
         ),
       ],
     };
@@ -175,11 +198,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
       showPinyin: widget.profile.showPinyin,
     ),
     2 => _grammarPanel(),
-    3 => PracticeContent(
-      profileId: widget.profile.id,
-      showPinyin: widget.profile.showPinyin,
-    ),
-    4 => LearningHomeContent(profileId: widget.profile.id),
+    3 => LearningHomeContent(profileId: widget.profile.id, targets: _learning),
     _ => _futurePanel(),
   };
 
@@ -219,7 +238,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
                               fontWeight: FontWeight.w800,
                             ),
                           ),
-                        if (_destination <= 2)
+                        if (_destination <= 3)
                           TextButton.icon(
                             onPressed: _tourOpen ? null : _tour,
                             icon: const Icon(
