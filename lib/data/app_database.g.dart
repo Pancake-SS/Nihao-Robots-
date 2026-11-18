@@ -4807,6 +4807,607 @@ class GrammarInstallsCompanion extends UpdateCompanion<GrammarInstall> {
   }
 }
 
+class $LearningEntriesTable extends LearningEntries
+    with TableInfo<$LearningEntriesTable, LearningEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LearningEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<int> profileId = GeneratedColumn<int>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES profiles (id)',
+    ),
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _promptMeta = const VerificationMeta('prompt');
+  @override
+  late final GeneratedColumn<String> prompt = GeneratedColumn<String>(
+    'prompt',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hanziMeta = const VerificationMeta('hanzi');
+  @override
+  late final GeneratedColumn<String> hanzi = GeneratedColumn<String>(
+    'hanzi',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _pinyinMeta = const VerificationMeta('pinyin');
+  @override
+  late final GeneratedColumn<String> pinyin = GeneratedColumn<String>(
+    'pinyin',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _englishMeta = const VerificationMeta(
+    'english',
+  );
+  @override
+  late final GeneratedColumn<String> english = GeneratedColumn<String>(
+    'english',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMsMeta = const VerificationMeta(
+    'createdAtMs',
+  );
+  @override
+  late final GeneratedColumn<int> createdAtMs = GeneratedColumn<int>(
+    'created_at_ms',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMsMeta = const VerificationMeta(
+    'updatedAtMs',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAtMs = GeneratedColumn<int>(
+    'updated_at_ms',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    profileId,
+    kind,
+    title,
+    prompt,
+    hanzi,
+    pinyin,
+    english,
+    createdAtMs,
+    updatedAtMs,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'learning_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LearningEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('prompt')) {
+      context.handle(
+        _promptMeta,
+        prompt.isAcceptableOrUnknown(data['prompt']!, _promptMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_promptMeta);
+    }
+    if (data.containsKey('hanzi')) {
+      context.handle(
+        _hanziMeta,
+        hanzi.isAcceptableOrUnknown(data['hanzi']!, _hanziMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hanziMeta);
+    }
+    if (data.containsKey('pinyin')) {
+      context.handle(
+        _pinyinMeta,
+        pinyin.isAcceptableOrUnknown(data['pinyin']!, _pinyinMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pinyinMeta);
+    }
+    if (data.containsKey('english')) {
+      context.handle(
+        _englishMeta,
+        english.isAcceptableOrUnknown(data['english']!, _englishMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_englishMeta);
+    }
+    if (data.containsKey('created_at_ms')) {
+      context.handle(
+        _createdAtMsMeta,
+        createdAtMs.isAcceptableOrUnknown(
+          data['created_at_ms']!,
+          _createdAtMsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMsMeta);
+    }
+    if (data.containsKey('updated_at_ms')) {
+      context.handle(
+        _updatedAtMsMeta,
+        updatedAtMs.isAcceptableOrUnknown(
+          data['updated_at_ms']!,
+          _updatedAtMsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMsMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LearningEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LearningEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      prompt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prompt'],
+      )!,
+      hanzi: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hanzi'],
+      )!,
+      pinyin: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pinyin'],
+      )!,
+      english: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}english'],
+      )!,
+      createdAtMs: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at_ms'],
+      )!,
+      updatedAtMs: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at_ms'],
+      )!,
+    );
+  }
+
+  @override
+  $LearningEntriesTable createAlias(String alias) {
+    return $LearningEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class LearningEntry extends DataClass implements Insertable<LearningEntry> {
+  final int id;
+  final int profileId;
+  final String kind;
+  final String title;
+  final String prompt;
+  final String hanzi;
+  final String pinyin;
+  final String english;
+  final int createdAtMs;
+  final int updatedAtMs;
+  const LearningEntry({
+    required this.id,
+    required this.profileId,
+    required this.kind,
+    required this.title,
+    required this.prompt,
+    required this.hanzi,
+    required this.pinyin,
+    required this.english,
+    required this.createdAtMs,
+    required this.updatedAtMs,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['profile_id'] = Variable<int>(profileId);
+    map['kind'] = Variable<String>(kind);
+    map['title'] = Variable<String>(title);
+    map['prompt'] = Variable<String>(prompt);
+    map['hanzi'] = Variable<String>(hanzi);
+    map['pinyin'] = Variable<String>(pinyin);
+    map['english'] = Variable<String>(english);
+    map['created_at_ms'] = Variable<int>(createdAtMs);
+    map['updated_at_ms'] = Variable<int>(updatedAtMs);
+    return map;
+  }
+
+  LearningEntriesCompanion toCompanion(bool nullToAbsent) {
+    return LearningEntriesCompanion(
+      id: Value(id),
+      profileId: Value(profileId),
+      kind: Value(kind),
+      title: Value(title),
+      prompt: Value(prompt),
+      hanzi: Value(hanzi),
+      pinyin: Value(pinyin),
+      english: Value(english),
+      createdAtMs: Value(createdAtMs),
+      updatedAtMs: Value(updatedAtMs),
+    );
+  }
+
+  factory LearningEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LearningEntry(
+      id: serializer.fromJson<int>(json['id']),
+      profileId: serializer.fromJson<int>(json['profileId']),
+      kind: serializer.fromJson<String>(json['kind']),
+      title: serializer.fromJson<String>(json['title']),
+      prompt: serializer.fromJson<String>(json['prompt']),
+      hanzi: serializer.fromJson<String>(json['hanzi']),
+      pinyin: serializer.fromJson<String>(json['pinyin']),
+      english: serializer.fromJson<String>(json['english']),
+      createdAtMs: serializer.fromJson<int>(json['createdAtMs']),
+      updatedAtMs: serializer.fromJson<int>(json['updatedAtMs']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'profileId': serializer.toJson<int>(profileId),
+      'kind': serializer.toJson<String>(kind),
+      'title': serializer.toJson<String>(title),
+      'prompt': serializer.toJson<String>(prompt),
+      'hanzi': serializer.toJson<String>(hanzi),
+      'pinyin': serializer.toJson<String>(pinyin),
+      'english': serializer.toJson<String>(english),
+      'createdAtMs': serializer.toJson<int>(createdAtMs),
+      'updatedAtMs': serializer.toJson<int>(updatedAtMs),
+    };
+  }
+
+  LearningEntry copyWith({
+    int? id,
+    int? profileId,
+    String? kind,
+    String? title,
+    String? prompt,
+    String? hanzi,
+    String? pinyin,
+    String? english,
+    int? createdAtMs,
+    int? updatedAtMs,
+  }) => LearningEntry(
+    id: id ?? this.id,
+    profileId: profileId ?? this.profileId,
+    kind: kind ?? this.kind,
+    title: title ?? this.title,
+    prompt: prompt ?? this.prompt,
+    hanzi: hanzi ?? this.hanzi,
+    pinyin: pinyin ?? this.pinyin,
+    english: english ?? this.english,
+    createdAtMs: createdAtMs ?? this.createdAtMs,
+    updatedAtMs: updatedAtMs ?? this.updatedAtMs,
+  );
+  LearningEntry copyWithCompanion(LearningEntriesCompanion data) {
+    return LearningEntry(
+      id: data.id.present ? data.id.value : this.id,
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      title: data.title.present ? data.title.value : this.title,
+      prompt: data.prompt.present ? data.prompt.value : this.prompt,
+      hanzi: data.hanzi.present ? data.hanzi.value : this.hanzi,
+      pinyin: data.pinyin.present ? data.pinyin.value : this.pinyin,
+      english: data.english.present ? data.english.value : this.english,
+      createdAtMs: data.createdAtMs.present
+          ? data.createdAtMs.value
+          : this.createdAtMs,
+      updatedAtMs: data.updatedAtMs.present
+          ? data.updatedAtMs.value
+          : this.updatedAtMs,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LearningEntry(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('kind: $kind, ')
+          ..write('title: $title, ')
+          ..write('prompt: $prompt, ')
+          ..write('hanzi: $hanzi, ')
+          ..write('pinyin: $pinyin, ')
+          ..write('english: $english, ')
+          ..write('createdAtMs: $createdAtMs, ')
+          ..write('updatedAtMs: $updatedAtMs')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    profileId,
+    kind,
+    title,
+    prompt,
+    hanzi,
+    pinyin,
+    english,
+    createdAtMs,
+    updatedAtMs,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LearningEntry &&
+          other.id == this.id &&
+          other.profileId == this.profileId &&
+          other.kind == this.kind &&
+          other.title == this.title &&
+          other.prompt == this.prompt &&
+          other.hanzi == this.hanzi &&
+          other.pinyin == this.pinyin &&
+          other.english == this.english &&
+          other.createdAtMs == this.createdAtMs &&
+          other.updatedAtMs == this.updatedAtMs);
+}
+
+class LearningEntriesCompanion extends UpdateCompanion<LearningEntry> {
+  final Value<int> id;
+  final Value<int> profileId;
+  final Value<String> kind;
+  final Value<String> title;
+  final Value<String> prompt;
+  final Value<String> hanzi;
+  final Value<String> pinyin;
+  final Value<String> english;
+  final Value<int> createdAtMs;
+  final Value<int> updatedAtMs;
+  const LearningEntriesCompanion({
+    this.id = const Value.absent(),
+    this.profileId = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.title = const Value.absent(),
+    this.prompt = const Value.absent(),
+    this.hanzi = const Value.absent(),
+    this.pinyin = const Value.absent(),
+    this.english = const Value.absent(),
+    this.createdAtMs = const Value.absent(),
+    this.updatedAtMs = const Value.absent(),
+  });
+  LearningEntriesCompanion.insert({
+    this.id = const Value.absent(),
+    required int profileId,
+    required String kind,
+    required String title,
+    required String prompt,
+    required String hanzi,
+    required String pinyin,
+    required String english,
+    required int createdAtMs,
+    required int updatedAtMs,
+  }) : profileId = Value(profileId),
+       kind = Value(kind),
+       title = Value(title),
+       prompt = Value(prompt),
+       hanzi = Value(hanzi),
+       pinyin = Value(pinyin),
+       english = Value(english),
+       createdAtMs = Value(createdAtMs),
+       updatedAtMs = Value(updatedAtMs);
+  static Insertable<LearningEntry> custom({
+    Expression<int>? id,
+    Expression<int>? profileId,
+    Expression<String>? kind,
+    Expression<String>? title,
+    Expression<String>? prompt,
+    Expression<String>? hanzi,
+    Expression<String>? pinyin,
+    Expression<String>? english,
+    Expression<int>? createdAtMs,
+    Expression<int>? updatedAtMs,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (profileId != null) 'profile_id': profileId,
+      if (kind != null) 'kind': kind,
+      if (title != null) 'title': title,
+      if (prompt != null) 'prompt': prompt,
+      if (hanzi != null) 'hanzi': hanzi,
+      if (pinyin != null) 'pinyin': pinyin,
+      if (english != null) 'english': english,
+      if (createdAtMs != null) 'created_at_ms': createdAtMs,
+      if (updatedAtMs != null) 'updated_at_ms': updatedAtMs,
+    });
+  }
+
+  LearningEntriesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? profileId,
+    Value<String>? kind,
+    Value<String>? title,
+    Value<String>? prompt,
+    Value<String>? hanzi,
+    Value<String>? pinyin,
+    Value<String>? english,
+    Value<int>? createdAtMs,
+    Value<int>? updatedAtMs,
+  }) {
+    return LearningEntriesCompanion(
+      id: id ?? this.id,
+      profileId: profileId ?? this.profileId,
+      kind: kind ?? this.kind,
+      title: title ?? this.title,
+      prompt: prompt ?? this.prompt,
+      hanzi: hanzi ?? this.hanzi,
+      pinyin: pinyin ?? this.pinyin,
+      english: english ?? this.english,
+      createdAtMs: createdAtMs ?? this.createdAtMs,
+      updatedAtMs: updatedAtMs ?? this.updatedAtMs,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (profileId.present) {
+      map['profile_id'] = Variable<int>(profileId.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (prompt.present) {
+      map['prompt'] = Variable<String>(prompt.value);
+    }
+    if (hanzi.present) {
+      map['hanzi'] = Variable<String>(hanzi.value);
+    }
+    if (pinyin.present) {
+      map['pinyin'] = Variable<String>(pinyin.value);
+    }
+    if (english.present) {
+      map['english'] = Variable<String>(english.value);
+    }
+    if (createdAtMs.present) {
+      map['created_at_ms'] = Variable<int>(createdAtMs.value);
+    }
+    if (updatedAtMs.present) {
+      map['updated_at_ms'] = Variable<int>(updatedAtMs.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LearningEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('profileId: $profileId, ')
+          ..write('kind: $kind, ')
+          ..write('title: $title, ')
+          ..write('prompt: $prompt, ')
+          ..write('hanzi: $hanzi, ')
+          ..write('pinyin: $pinyin, ')
+          ..write('english: $english, ')
+          ..write('createdAtMs: $createdAtMs, ')
+          ..write('updatedAtMs: $updatedAtMs')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $ContentPacksTable extends ContentPacks
     with TableInfo<$ContentPacksTable, ContentPack> {
   @override
@@ -8500,6 +9101,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $GrammarInstallsTable grammarInstalls = $GrammarInstallsTable(
     this,
   );
+  late final $LearningEntriesTable learningEntries = $LearningEntriesTable(
+    this,
+  );
   late final $ContentPacksTable contentPacks = $ContentPacksTable(this);
   late final $ContentWordsTable contentWords = $ContentWordsTable(this);
   late final $ContentExamplesTable contentExamples = $ContentExamplesTable(
@@ -8552,6 +9156,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     grammarExamples,
     grammarProgress,
     grammarInstalls,
+    learningEntries,
     contentPacks,
     contentWords,
     contentExamples,
@@ -8767,6 +9372,26 @@ final class $$ProfilesTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _grammarProgressRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$LearningEntriesTable, List<LearningEntry>>
+  _learningEntriesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.learningEntries,
+    aliasName: 'profiles__id__learning_entries__profile_id',
+  );
+
+  $$LearningEntriesTableProcessedTableManager get learningEntriesRefs {
+    final manager = $$LearningEntriesTableTableManager(
+      $_db,
+      $_db.learningEntries,
+    ).filter((f) => f.profileId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _learningEntriesRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -9027,6 +9652,31 @@ class $$ProfilesTableFilterComposer
           }) => $$GrammarProgressTableFilterComposer(
             $db: $db,
             $table: $db.grammarProgress,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> learningEntriesRefs(
+    Expression<bool> Function($$LearningEntriesTableFilterComposer f) f,
+  ) {
+    final $$LearningEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.learningEntries,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LearningEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.learningEntries,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -9345,6 +9995,31 @@ class $$ProfilesTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> learningEntriesRefs<T extends Object>(
+    Expression<T> Function($$LearningEntriesTableAnnotationComposer a) f,
+  ) {
+    final $$LearningEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.learningEntries,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LearningEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.learningEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
   Expression<T> learningQueueRefs<T extends Object>(
     Expression<T> Function($$LearningQueueTableAnnotationComposer a) f,
   ) {
@@ -9393,6 +10068,7 @@ class $$ProfilesTableTableManager
             bool masteredWordsRefs,
             bool masterWritingsRefs,
             bool grammarProgressRefs,
+            bool learningEntriesRefs,
             bool learningQueueRefs,
           })
         > {
@@ -9461,6 +10137,7 @@ class $$ProfilesTableTableManager
                 masteredWordsRefs = false,
                 masterWritingsRefs = false,
                 grammarProgressRefs = false,
+                learningEntriesRefs = false,
                 learningQueueRefs = false,
               }) {
                 return PrefetchHooks(
@@ -9474,6 +10151,7 @@ class $$ProfilesTableTableManager
                     if (masteredWordsRefs) db.masteredWords,
                     if (masterWritingsRefs) db.masterWritings,
                     if (grammarProgressRefs) db.grammarProgress,
+                    if (learningEntriesRefs) db.learningEntries,
                     if (learningQueueRefs) db.learningQueue,
                   ],
                   addJoins: null,
@@ -9639,6 +10317,26 @@ class $$ProfilesTableTableManager
                           referencedColumn: 'profile_id',
                           typedResults: items,
                         ),
+                      if (learningEntriesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          ProfileRow,
+                          $ProfilesTable,
+                          LearningEntry,
+                          $LearningEntriesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ProfilesTableReferences
+                              ._learningEntriesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProfilesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).learningEntriesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'profile_id',
+                          typedResults: items,
+                        ),
                       if (learningQueueRefs)
                         await $_getPrefetchedDataByColumns<
                           ProfileRow,
@@ -9688,6 +10386,7 @@ typedef $$ProfilesTableProcessedTableManager =
         bool masteredWordsRefs,
         bool masterWritingsRefs,
         bool grammarProgressRefs,
+        bool learningEntriesRefs,
         bool learningQueueRefs,
       })
     >;
@@ -13461,6 +14160,421 @@ typedef $$GrammarInstallsTableProcessedTableManager =
       ),
       GrammarInstall,
       PrefetchHooks Function()
+    >;
+typedef $$LearningEntriesTableCreateCompanionBuilder =
+    LearningEntriesCompanion Function({
+      Value<int> id,
+      required int profileId,
+      required String kind,
+      required String title,
+      required String prompt,
+      required String hanzi,
+      required String pinyin,
+      required String english,
+      required int createdAtMs,
+      required int updatedAtMs,
+    });
+typedef $$LearningEntriesTableUpdateCompanionBuilder =
+    LearningEntriesCompanion Function({
+      Value<int> id,
+      Value<int> profileId,
+      Value<String> kind,
+      Value<String> title,
+      Value<String> prompt,
+      Value<String> hanzi,
+      Value<String> pinyin,
+      Value<String> english,
+      Value<int> createdAtMs,
+      Value<int> updatedAtMs,
+    });
+
+final class $$LearningEntriesTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $LearningEntriesTable, LearningEntry> {
+  $$LearningEntriesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ProfilesTable _profileIdTable(_$AppDatabase db) =>
+      db.profiles.createAlias('learning_entries__profile_id__profiles__id');
+
+  $$ProfilesTableProcessedTableManager get profileId {
+    final $_column = $_itemColumn<int>('profile_id')!;
+
+    final manager = $$ProfilesTableTableManager(
+      $_db,
+      $_db.profiles,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_profileIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$LearningEntriesTableFilterComposer
+    extends Composer<_$AppDatabase, $LearningEntriesTable> {
+  $$LearningEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get prompt => $composableBuilder(
+    column: $table.prompt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hanzi => $composableBuilder(
+    column: $table.hanzi,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pinyin => $composableBuilder(
+    column: $table.pinyin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get english => $composableBuilder(
+    column: $table.english,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAtMs => $composableBuilder(
+    column: $table.createdAtMs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAtMs => $composableBuilder(
+    column: $table.updatedAtMs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ProfilesTableFilterComposer get profileId {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LearningEntriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $LearningEntriesTable> {
+  $$LearningEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get prompt => $composableBuilder(
+    column: $table.prompt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hanzi => $composableBuilder(
+    column: $table.hanzi,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pinyin => $composableBuilder(
+    column: $table.pinyin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get english => $composableBuilder(
+    column: $table.english,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAtMs => $composableBuilder(
+    column: $table.createdAtMs,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAtMs => $composableBuilder(
+    column: $table.updatedAtMs,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ProfilesTableOrderingComposer get profileId {
+    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableOrderingComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LearningEntriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LearningEntriesTable> {
+  $$LearningEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get prompt =>
+      $composableBuilder(column: $table.prompt, builder: (column) => column);
+
+  GeneratedColumn<String> get hanzi =>
+      $composableBuilder(column: $table.hanzi, builder: (column) => column);
+
+  GeneratedColumn<String> get pinyin =>
+      $composableBuilder(column: $table.pinyin, builder: (column) => column);
+
+  GeneratedColumn<String> get english =>
+      $composableBuilder(column: $table.english, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAtMs => $composableBuilder(
+    column: $table.createdAtMs,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get updatedAtMs => $composableBuilder(
+    column: $table.updatedAtMs,
+    builder: (column) => column,
+  );
+
+  $$ProfilesTableAnnotationComposer get profileId {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LearningEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LearningEntriesTable,
+          LearningEntry,
+          $$LearningEntriesTableFilterComposer,
+          $$LearningEntriesTableOrderingComposer,
+          $$LearningEntriesTableAnnotationComposer,
+          $$LearningEntriesTableCreateCompanionBuilder,
+          $$LearningEntriesTableUpdateCompanionBuilder,
+          (LearningEntry, $$LearningEntriesTableReferences),
+          LearningEntry,
+          PrefetchHooks Function({bool profileId})
+        > {
+  $$LearningEntriesTableTableManager(
+    _$AppDatabase db,
+    $LearningEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LearningEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LearningEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LearningEntriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> profileId = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> prompt = const Value.absent(),
+                Value<String> hanzi = const Value.absent(),
+                Value<String> pinyin = const Value.absent(),
+                Value<String> english = const Value.absent(),
+                Value<int> createdAtMs = const Value.absent(),
+                Value<int> updatedAtMs = const Value.absent(),
+              }) => LearningEntriesCompanion(
+                id: id,
+                profileId: profileId,
+                kind: kind,
+                title: title,
+                prompt: prompt,
+                hanzi: hanzi,
+                pinyin: pinyin,
+                english: english,
+                createdAtMs: createdAtMs,
+                updatedAtMs: updatedAtMs,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int profileId,
+                required String kind,
+                required String title,
+                required String prompt,
+                required String hanzi,
+                required String pinyin,
+                required String english,
+                required int createdAtMs,
+                required int updatedAtMs,
+              }) => LearningEntriesCompanion.insert(
+                id: id,
+                profileId: profileId,
+                kind: kind,
+                title: title,
+                prompt: prompt,
+                hanzi: hanzi,
+                pinyin: pinyin,
+                english: english,
+                createdAtMs: createdAtMs,
+                updatedAtMs: updatedAtMs,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$LearningEntriesTable, LearningEntry>(table),
+                  $$LearningEntriesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({profileId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (profileId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.profileId,
+                        referencedTable: $$LearningEntriesTableReferences
+                            ._profileIdTable(db),
+                        referencedColumn: $$LearningEntriesTableReferences
+                            ._profileIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$LearningEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LearningEntriesTable,
+      LearningEntry,
+      $$LearningEntriesTableFilterComposer,
+      $$LearningEntriesTableOrderingComposer,
+      $$LearningEntriesTableAnnotationComposer,
+      $$LearningEntriesTableCreateCompanionBuilder,
+      $$LearningEntriesTableUpdateCompanionBuilder,
+      (LearningEntry, $$LearningEntriesTableReferences),
+      LearningEntry,
+      PrefetchHooks Function({bool profileId})
     >;
 typedef $$ContentPacksTableCreateCompanionBuilder =
     ContentPacksCompanion Function({
@@ -17471,6 +18585,8 @@ class $AppDatabaseManager {
       $$GrammarProgressTableTableManager(_db, _db.grammarProgress);
   $$GrammarInstallsTableTableManager get grammarInstalls =>
       $$GrammarInstallsTableTableManager(_db, _db.grammarInstalls);
+  $$LearningEntriesTableTableManager get learningEntries =>
+      $$LearningEntriesTableTableManager(_db, _db.learningEntries);
   $$ContentPacksTableTableManager get contentPacks =>
       $$ContentPacksTableTableManager(_db, _db.contentPacks);
   $$ContentWordsTableTableManager get contentWords =>

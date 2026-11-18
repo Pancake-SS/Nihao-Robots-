@@ -10,6 +10,7 @@ import '../../shared/app_sidebar.dart';
 import '../../shared/ui_art.dart';
 import '../dashboard/home_content.dart';
 import '../grammar/grammar_screen.dart';
+import '../learning/learning_home.dart';
 import '../vocabulary/vocabulary_landing.dart';
 import '../review/review_screen.dart';
 import 'profile.dart';
@@ -36,6 +37,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
     'Vocabulary',
     'Grammar',
     'Practice',
+    'Learning',
     'Speaking',
   ];
 
@@ -130,13 +132,9 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
     children: [
       SunnyHero(
         title: _names[_destination],
-        subtitle: _destination == 3
-            ? 'Put what you know into everyday conversation.'
-            : 'Build confidence with spoken Mandarin.',
+        subtitle: 'Build confidence with spoken Mandarin.',
         tag: 'A space for tomorrow',
-        robot: _destination == 3
-            ? RobotArtwork.orbOnPaper
-            : RobotArtwork.tallOnPaper,
+        robot: RobotArtwork.tallOnPaper,
       ),
       const SizedBox(height: 18),
       LearningCard(
@@ -155,10 +153,8 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
                 icon: Icons.construction_outlined,
               ),
               const SizedBox(height: 12),
-              Text(
-                _destination == 3
-                    ? 'Conversation and practical writing activities will live here. Your current saved vocabulary reviews are available under Vocabulary → Practice.'
-                    : 'Speaking features will be planned separately. Existing pronunciation and audio functions are unchanged.',
+              const Text(
+                'Speaking features will be planned separately. Existing pronunciation and audio functions are unchanged.',
               ),
             ],
           ),
@@ -183,6 +179,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
       profileId: widget.profile.id,
       showPinyin: widget.profile.showPinyin,
     ),
+    4 => LearningHomeContent(profileId: widget.profile.id),
     _ => _futurePanel(),
   };
 

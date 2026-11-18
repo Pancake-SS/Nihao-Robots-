@@ -70,13 +70,13 @@ Riverpod/Drift are resolved and tested; see `docs/DEPENDENCIES.md` and `pubspec.
 $env:PUB_CACHE = Join-Path $env:LOCALAPPDATA 'NihaoRobotTools\pub-cache'
 $dartTool = Join-Path $env:LOCALAPPDATA 'NihaoRobotTools\flutter\bin\dart.bat'
 & $dartTool run build_runner build
-& $dartTool run drift_dev schema dump lib\data\app_database.dart docs\schema\drift_schema_v8.json
+& $dartTool run drift_dev schema dump lib\data\app_database.dart docs\schema\drift_schema_v9.json
 & $dartTool format lib test scripts\preview_profiles.dart
 ```
 
-The schema-v8 export command stalled at `Running build hooks` during this checkpoint, so `drift_schema_v8.json` is not yet committed. Generated database code and migration tests pass; retry that export when the CLI issue is resolved.
+The schema-v8 export command stalled at `Running build hooks` during the previous checkpoint, so `drift_schema_v8.json` was not committed. Generate separate v8/v9 historical snapshots when the CLI issue is resolved; do not overwrite an older snapshot.
 
-Schema v1 is the retained baseline; v2 adds introduction state, v3 vocabulary progress/attempts, v4 versioned content tables, v5 the relational curriculum and per-profile queue, v6 per-question correctness records, v7 Master membership and writing history, and v8 the shared grammar syllabus with profile-specific completion. Migrations are additive and tested. For later versions, use a new export filename and implement/test migration; never overwrite historical schemas. Read [migration and backup recovery](MIGRATIONS.md) before updating a real installation. The database is `ni_hao_robot.sqlite` under the OS app-support directory. Windows company/product metadata influences that directory: changing it requires a data-path migration. Unknown upgrades fail rather than dropping tables. Keep real databases intact; never use test reset logic on learner storage.
+Schema v1 is the retained baseline; v2 adds introduction state, v3 vocabulary progress/attempts, v4 versioned content tables, v5 the relational curriculum and per-profile queue, v6 per-question correctness records, v7 Master membership and writing history, v8 the shared grammar syllabus with profile-specific completion, and v9 private Writing/Notebook entries. Migrations are additive and tested. For later versions, use a new export filename and implement/test migration; never overwrite historical schemas. Read [migration and backup recovery](MIGRATIONS.md) before updating a real installation. The database is `ni_hao_robot.sqlite` under the OS app-support directory. Windows company/product metadata influences that directory: changing it requires a data-path migration. Unknown upgrades fail rather than dropping tables. Keep real databases intact; never use test reset logic on learner storage.
 
 Profile acceptance tests cover independent same-name profiles, invalid inputs, write rollback, persistent selection, temporary SQLite file reopening, and a UI-created profile continued after database/widget restart. Full native process testing is still a separate gate. Optional visual review: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\flutter.ps1 test --no-pub scripts\preview_profiles.dart`; PNGs go to `%TEMP%\nihao-profile-previews`.
 
@@ -116,6 +116,10 @@ The Windows build helper now prepares a pinned, Microsoft-signed NuGet CLI for f
 ## Grammar lessons (2026-11-17)
 
 Open **Grammar** in the sidebar, then **Pending lessons**. The 428 offline HSK grammar lessons are presented 20 at a time, with foundational patterns first. Search by Chinese point or English explanation; HSK level and category filters are available. Open a lesson for its explanation, structure when provided, examples and Mandarin speech button. **Mark lesson completed** moves it to **Completed lessons** for the current profile; **Move back to Pending** reverses that marker. There is no grammar quiz or Master threshold. Source and license details are in [GRAMMAR_CONTENT.md](GRAMMAR_CONTENT.md). Back up a closed existing learner database before opening a schema-8 build.
+
+## Learning: explore, write and keep notes (2026-11-18)
+
+Open **Learning** in the sidebar. **Explore online** filters a curated set of free-access external resources and opens the original site in your browser. **Free writing** gives a random topic; **Another topic** changes it before saving. **Notebook** holds your own titled notes. Both editors have the inline English/Hanzi/Pinyin/All keyboard and a visible Save button. Entries belong only to the current local profile. Back up a closed learner database before opening this schema-9 build. The resource list and access notes are documented in [LEARNING_RESOURCES.md](LEARNING_RESOURCES.md).
 
 Latest TTS/corpus build verified 2026-11-07 (176.1 seconds):
 `%TEMP%\nihao-windows-88a776f0c1894fa385ff402db2cba783\build\windows\x64\runner\Debug\ni_hao_robot.exe`.
@@ -178,3 +182,11 @@ bundled assets match the source and both native audio plugins are present. Keep
 the executable beside its DLLs and data folder. Mandarin voices are installed;
 no additional Windows Chinese keyboard installation is needed for the built-in
 quiz input.
+
+Latest Learning build verified 2026-11-18 (114.2 seconds):
+`%TEMP%\nihao-windows-45c4f01873274ddc92d0a00869e4c613\build\windows\x64\runner\Debug\ni_hao_robot.exe`.
+All 121 Flutter tests, 24 Python checks and Dart analysis pass. Every `lib/`
+source file matches the build snapshot; `url_launcher_windows_plugin.dll` is
+present for **Explore online**. Keep the executable with its DLLs and data
+folder. Windows may clear temporary build folders, so rebuild with
+`scripts\build_windows.ps1` when needed.

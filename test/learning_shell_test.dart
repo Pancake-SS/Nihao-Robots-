@@ -44,9 +44,8 @@ Future<void> mountShell(
       overrides: [
         foundationRepositoryProvider.overrideWithValue(repository),
         appDatabaseProvider.overrideWithValue(contentDb),
-        grammarCountsProvider(1).overrideWith(
-          (ref) async => const GrammarCounts(428, 0),
-        ),
+        grammarCountsProvider(1)
+            .overrideWith((ref) async => const GrammarCounts(428, 0)),
         learningProgressProvider(1).overrideWith((ref) async => []),
         curriculumRepositoryProvider.overrideWithValue(
           StarterQueueFixture(
@@ -257,6 +256,10 @@ void main() {
       expect(find.text('0 words ready'), findsOneWidget);
       expect(find.text('Coming soon'), findsNothing);
       await navigate(tester, 4);
+      expect(find.text('Explore online'), findsOneWidget);
+      expect(find.text('Free writing'), findsOneWidget);
+      expect(find.text('Notebook'), findsOneWidget);
+      await navigate(tester, 5);
       expect(find.text('Coming soon'), findsOneWidget);
       expect(find.text('Replay Tutorial'), findsNothing);
       expect(tester.takeException(), isNull);

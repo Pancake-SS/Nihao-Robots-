@@ -1,5 +1,9 @@
 # Application dependency record
 
+## External resource links - 2026-11-18
+
+Added `url_launcher 6.3.3` from the verified Flutter publisher (BSD-style license, installed notice inspected). The resolved Windows adapter is `url_launcher_windows 3.1.6`; exact hashes and other platform adapters are in `pubspec.lock`. The [official package page](https://pub.dev/packages/url_launcher) documents Windows support and opening links in the default browser. Only a learner's explicit **Open site** action launches a browser; the app does not stream, scrape or download third-party media in the background.
+
 ## Device speech and corpus annotation - 2026-11-07
 
 Added pinned `flutter_tts 4.2.5` (MIT, Daniel Lutton); installed source/license inspected. It supports Windows speech/voice selection using the native speech engine. Existing resolved versions are unchanged. [Official package documentation](https://pub.dev/packages/flutter_tts) and its Windows implementation were reviewed; use explicit voice selection because language-only selection can silently retain a default voice. The app filters for offline Mandarin locales.

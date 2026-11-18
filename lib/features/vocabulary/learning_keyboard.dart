@@ -24,6 +24,8 @@ class LearningKeyboard extends ConsumerStatefulWidget {
     this.pinyinMaxLength = 1000,
     this.englishMaxLength = 1000,
     this.hanziMaxLines = 1,
+    this.pinyinMaxLines = 1,
+    this.englishMaxLines = 1,
     this.onHanziChanged,
     this.onHanziSubmitted,
     this.hanziHint = 'Type Pinyin or paste Hanzi',
@@ -38,6 +40,7 @@ class LearningKeyboard extends ConsumerStatefulWidget {
   final Key? hanziKey, pinyinKey, englishKey;
   final String hanziLabel, pinyinLabel, englishLabel;
   final int hanziMaxLength, pinyinMaxLength, englishMaxLength, hanziMaxLines;
+  final int pinyinMaxLines, englishMaxLines;
   final bool enabled;
   final ValueChanged<String>? onHanziChanged;
   final ValueChanged<String>? onHanziSubmitted;
@@ -302,6 +305,7 @@ class _LearningKeyboardState extends ConsumerState<LearningKeyboard> {
             focusNode: _pinyinFocus,
             enabled: widget.enabled,
             maxLength: widget.pinyinMaxLength,
+            maxLines: widget.pinyinMaxLines,
             decoration: InputDecoration(labelText: widget.pinyinLabel),
             onTap: () =>
                 _modeChanged(LearningKeyboardMode.pinyin, focus: false),
@@ -313,6 +317,7 @@ class _LearningKeyboardState extends ConsumerState<LearningKeyboard> {
             focusNode: _englishFocus,
             enabled: widget.enabled,
             maxLength: widget.englishMaxLength,
+            maxLines: widget.englishMaxLines,
             decoration: InputDecoration(labelText: widget.englishLabel),
             onTap: () =>
                 _modeChanged(LearningKeyboardMode.english, focus: false),

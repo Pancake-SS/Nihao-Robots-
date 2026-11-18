@@ -188,6 +188,33 @@ class GrammarInstalls extends Table {
   ];
 }
 
+/// Private free-writing drafts and notebook pages. Grammar and Master writing
+/// remain separate activities with independent progress rules.
+class LearningEntries extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get profileId => integer().references(Profiles, #id)();
+  TextColumn get kind => text()();
+  TextColumn get title => text()();
+  TextColumn get prompt => text()();
+  TextColumn get hanzi => text()();
+  TextColumn get pinyin => text()();
+  TextColumn get english => text()();
+  IntColumn get createdAtMs => integer()();
+  IntColumn get updatedAtMs => integer()();
+
+  @override
+  List<String> get customConstraints => [
+    "CHECK (kind IN ('writing', 'note'))",
+    'CHECK (length(title) BETWEEN 1 AND 120)',
+    'CHECK (length(prompt) <= 500)',
+    'CHECK (length(hanzi) <= 10000)',
+    'CHECK (length(pinyin) <= 10000)',
+    'CHECK (length(english) <= 10000)',
+    'CHECK (created_at_ms >= 0)',
+    'CHECK (updated_at_ms >= created_at_ms)',
+  ];
+}
+
 // Shared, versioned learning content is independent of private learner history.
 class ContentPacks extends Table {
   TextColumn get id => text()();
@@ -345,6 +372,7 @@ class LearningQueue extends Table {
     GrammarExamples,
     GrammarProgress,
     GrammarInstalls,
+    LearningEntries,
     ContentPacks,
     ContentWords,
     ContentExamples,
@@ -362,13 +390,13 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (migrator) => migrator.createAll(),
     onUpgrade: (migrator, from, to) async {
-      if (from < 1 || from > 7 || to != 8) {
+      if (from < 1 || from > 8 || to != 9) {
         throw StateError('No migration from schema $from to $to.');
       }
       // Additive migration: existing profiles and selection are never rewritten.
@@ -442,10 +470,13 @@ class AppDatabase extends _$AppDatabase {
           await migrator.createTable(masteredWords);
           await migrator.createTable(masterWritings);
         }
-        await migrator.createTable(grammarLessons);
-        await migrator.createTable(grammarExamples);
-        await migrator.createTable(grammarProgress);
-        await migrator.createTable(grammarInstalls);
+        if (from < 8) {
+          await migrator.createTable(grammarLessons);
+          await migrator.createTable(grammarExamples);
+          await migrator.createTable(grammarProgress);
+          await migrator.createTable(grammarInstalls);
+        }
+        await migrator.createTable(learningEntries);
       });
     },
     beforeOpen: (_) async {

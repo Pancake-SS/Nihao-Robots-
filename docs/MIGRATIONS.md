@@ -1,5 +1,9 @@
 # Local database migrations and recovery
 
+## Version 1/2/3/4/5/6/7/8 to 9 (2026-11-18)
+
+Schema 9 adds `learning_entries` for Free writing and Notebook. Each entry belongs to a profile and stores its kind, title, writing prompt when applicable, Hanzi/Pinyin/English text and timestamps. Existing profile, vocabulary, grammar, Practice and Master records are preserved. Migration is additive and transactional; from schema 8 it creates only the new table. `test/learning_journal_repository_test.dart` covers a schema-8-shaped file upgrade, profile isolation, reopening, editing and deletion. Back up a closed learner database before opening a schema-9 build. Do not run an older executable against it.
+
 ## Version 1/2/3/4/5/6/7 to 8 (2026-11-17)
 
 Schema 8 adds four grammar tables: `grammar_lessons`, `grammar_examples`, `grammar_progress`, and `grammar_installs`. Shared lesson/example rows use stable lesson IDs; completion is stored per profile and can be reversed. No existing profile, vocabulary, Practice, Master, or writing row is rewritten. The migration is additive and transactional. The bundled 428-lesson grammar pack installs transactionally with a revision and digest marker. `test/grammar_repository_test.dart` covers import, pagination, search, profile isolation, reopening, reversing completion and a schema-7-shaped file upgrade that preserves its existing profile. Back up a closed learner database using the procedure below before opening it with schema 8. Older app builds cannot open the upgraded database. The Drift CLI v8 schema export stalled at build hooks on this machine; `drift_schema_v8.json` has not yet been generated.

@@ -87,7 +87,9 @@ void main() {
   );
 
   test('schema 7 upgrade adds grammar without losing a profile', () async {
-    final directory = await Directory.systemTemp.createTemp('nihao-grammar-v7-');
+    final directory = await Directory.systemTemp.createTemp(
+      'nihao-grammar-v7-',
+    );
     final file = File('${directory.path}/learner.sqlite');
     try {
       final previous = AppDatabase(NativeDatabase(file));
@@ -116,7 +118,7 @@ void main() {
         expect(
           (await upgraded.customSelect('PRAGMA user_version').getSingle())
               .read<int>('user_version'),
-          8,
+          9,
         );
       } finally {
         await upgraded.close();
