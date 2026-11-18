@@ -121,6 +121,8 @@ Open **Grammar** in the sidebar, then **Pending lessons**. The 428 offline HSK g
 
 Open **Learning** in the sidebar. **Explore online** filters a curated set of free-access external resources and opens the original site in your browser. **Free writing** gives a random topic; **Another topic** changes it before saving. **Notebook** holds your own titled notes. Both editors have the inline English/Hanzi/Pinyin/All keyboard and a visible Save button. Entries belong only to the current local profile. Back up a closed learner database before opening this schema-9 build. The resource list and access notes are documented in [LEARNING_RESOURCES.md](LEARNING_RESOURCES.md).
 
+**Classical stories** opens 139 offline readings from 百句譬喻经, 庄子 and 列子. Choose a work and chapter, search its chapter list, resize the text and use Previous/Next. These works use Classical Chinese; a source button opens the exact Wikisource revision when online. See [CLASSICAL_STORIES.md](CLASSICAL_STORIES.md) for attribution and refresh steps.
+
 Latest TTS/corpus build verified 2026-11-07 (176.1 seconds):
 `%TEMP%\nihao-windows-88a776f0c1894fa385ff402db2cba783\build\windows\x64\runner\Debug\ni_hao_robot.exe`.
 Keep its DLLs/data directory together. The native TTS/audio plugins, revision-2 curriculum and all 4,118 recording hashes match the source. The user-approved Windows Mandarin voice download was still running at this checkpoint; check `.dart_tool/mandarin-voice-install.json` before starting another installation. App compilation does not establish audible pronunciation quality.
@@ -183,10 +185,10 @@ the executable beside its DLLs and data folder. Mandarin voices are installed;
 no additional Windows Chinese keyboard installation is needed for the built-in
 quiz input.
 
-Latest Learning build verified 2026-11-18: a fresh safe-path build is copied to
+Latest Learning build verified 2026-11-19: a fresh safe-path build is copied to
 `build\windows\portable\` with `flutter_windows.dll`, every plugin DLL and the
 `data` folder. The current complete package is in
-`build\windows\portable\87f9b732566040558d2b188e03be7455\`. Launch it from
+`build\windows\portable\ebfa8b7639394175aa90df88f9b19ea8\`. Launch it from
 the project root with:
 
 ```powershell
@@ -196,6 +198,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\run_windows.ps1
 Do not copy or open `ni_hao_robot.exe` by itself: it needs the files beside it.
 `scripts\build_windows.ps1` now creates a new complete package and updates the
 launcher to use it. The app stayed open and responded after 12 seconds in a
-native launch check. All 121 Flutter tests, 24 Python checks and Dart analysis
-pass. The earlier executable under `%TEMP%` lost required files after its build
+native launch check. All 123 Flutter tests, 24 Python checks and Dart analysis
+pass. The package includes all 139 Classical stories, and its bundled story
+asset hash matches the source. The earlier executable under `%TEMP%` lost required files after its build
 and should not be used.

@@ -102,3 +102,7 @@ The user's uploaded HSK 3.0 JSON is the complete lesson catalogue, with beginner
 ## 2026-11-18: Learning means immersion and personal creation
 
 The user's latest request separates Learning from vocabulary relearning. Add a sixth sidebar destination, Learning, with three routes: Explore online, Free writing and Notebook. Keep vocabulary Practice and Master writing as their own flows. Start the resource hub with a reviewed, code-owned set of 19 free-access links. Open original sites in the system browser; copy no third-party media or transcripts. Make access labels honest where free and paid sections coexist. Store free-writing pieces and notes together in the additive schema-9 `learning_entries` table with profile ownership and distinct kinds. Use original randomized writing topics, no automatic grading, and the existing four-mode Chinese keyboard in both editors. Keep Save visible and confirm discarding unsaved edits.
+
+## 2026-11-19: Offline classical stories
+
+The three user-supplied Wikisource works are bundled as 139 ordered readings under a separate Classical stories page in Learning. Keep the text in simplified rendering with source credit and pinned chapter links. Mark it as Classical Chinese rather than graded modern Mandarin. Import with a small number of batch API requests, preserve source revisions, and reject incomplete or unprocessed markup. The original index links also appear in Explore online. No learner database change is needed.

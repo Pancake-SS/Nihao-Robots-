@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../shared/cozy_ui.dart';
 import '../../shared/robot_art.dart';
+import 'classical_stories_screen.dart';
 import 'learning_journal_repository.dart';
 import 'learning_journal_screen.dart';
 import 'learning_resources_screen.dart';
@@ -38,6 +39,14 @@ class LearningHomeContent extends StatelessWidget {
         title: 'Explore online',
         subtitle: 'Free stories, videos, podcasts and music.',
         builder: (_) => const LearningResourcesScreen(),
+      ),
+      _destination(
+        context,
+        key: 'learning-classics',
+        icon: Icons.auto_stories_outlined,
+        title: 'Classical stories',
+        subtitle: 'Buddhist parables, Zhuangzi and Liezi. Read offline.',
+        builder: (_) => const ClassicalStoriesScreen(),
       ),
       _destination(
         context,

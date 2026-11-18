@@ -7,7 +7,7 @@ import 'package:ni_hao_robot/features/learning/resource_catalogue.dart';
 
 void main() {
   test('curated resource links are unique, secure and filterable', () {
-    expect(learningResources.length, greaterThanOrEqualTo(18));
+    expect(learningResources.length, 22);
     expect(
       learningResources.map((resource) => resource.id).toSet().length,
       learningResources.length,
@@ -37,6 +37,19 @@ void main() {
         ),
       ),
       isEmpty,
+    );
+    expect(
+      learningResources
+          .where(
+            (resource) => resource.matches(
+              type: ResourceType.read,
+              level: ResourceLevel.advanced,
+              search: 'Wikisource',
+            ),
+          )
+          .map((resource) => resource.id)
+          .toSet(),
+      {'wikisource_baiyu', 'wikisource_zhuangzi', 'wikisource_liezi'},
     );
   });
 

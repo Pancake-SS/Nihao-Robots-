@@ -73,6 +73,7 @@ Use clearly named disposable profiles, keeping any existing profiles intact. The
 | Open Vocabulary | Three distinct original robots; Browse words, Practice and Master open | NOT RUN |
 | Open Grammar > Pending, then browse pages and filter by HSK level and category | Lessons appear 20 per page; beginner patterns are first; search finds Chinese or English text | NOT RUN |
 | Open Learning > Explore online; filter by Read/Watch and level, then open a resource | The matching source site opens in the default browser; a failed launch shows a retryable message | NOT RUN |
+| Open Learning > Classical stories; read a Baiyu parable, search for a Zhuangzi chapter, then open the pinned source | All three works load offline; Previous/Next and text size work; the source opens in a browser when online | NOT RUN |
 | Open Learning > Free writing; change the topic, type with the Chinese keyboard and save | The chosen topic and text appear in saved writing after app restart, independently of Master writing | NOT RUN |
 | Open Learning > Notebook; paste Chinese, add Pinyin/English notes, save, edit and delete | Text persists after scrolling/restart; Save stays visible; only the active profile can see the entry | NOT RUN |
 | Open a grammar lesson and play its example speech | Explanation, structure when available, Chinese/English examples and source credit are readable; Mandarin speech plays if the installed voice is available | NOT RUN |

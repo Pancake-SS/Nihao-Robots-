@@ -257,6 +257,7 @@ void main() {
       expect(find.text('Coming soon'), findsNothing);
       await navigate(tester, 4);
       expect(find.text('Explore online'), findsOneWidget);
+      expect(find.text('Classical stories'), findsOneWidget);
       expect(find.text('Free writing'), findsOneWidget);
       expect(find.text('Notebook'), findsOneWidget);
       await navigate(tester, 5);
