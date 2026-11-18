@@ -183,10 +183,19 @@ the executable beside its DLLs and data folder. Mandarin voices are installed;
 no additional Windows Chinese keyboard installation is needed for the built-in
 quiz input.
 
-Latest Learning build verified 2026-11-18 (114.2 seconds):
-`%TEMP%\nihao-windows-45c4f01873274ddc92d0a00869e4c613\build\windows\x64\runner\Debug\ni_hao_robot.exe`.
-All 121 Flutter tests, 24 Python checks and Dart analysis pass. Every `lib/`
-source file matches the build snapshot; `url_launcher_windows_plugin.dll` is
-present for **Explore online**. Keep the executable with its DLLs and data
-folder. Windows may clear temporary build folders, so rebuild with
-`scripts\build_windows.ps1` when needed.
+Latest Learning build verified 2026-11-18: a fresh safe-path build is copied to
+`build\windows\portable\` with `flutter_windows.dll`, every plugin DLL and the
+`data` folder. The current complete package is in
+`build\windows\portable\87f9b732566040558d2b188e03be7455\`. Launch it from
+the project root with:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\run_windows.ps1
+```
+
+Do not copy or open `ni_hao_robot.exe` by itself: it needs the files beside it.
+`scripts\build_windows.ps1` now creates a new complete package and updates the
+launcher to use it. The app stayed open and responded after 12 seconds in a
+native launch check. All 121 Flutter tests, 24 Python checks and Dart analysis
+pass. The earlier executable under `%TEMP%` lost required files after its build
+and should not be used.

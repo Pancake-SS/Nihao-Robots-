@@ -62,6 +62,7 @@ Use clearly named disposable profiles, keeping any existing profiles intact. The
 
 | Check | Expected result | Result |
 |---|---|---|
+| Launch the packaged app with `scripts\run_windows.ps1` | The window opens with its DLLs/assets and stays responsive | PASS: 2026-11-18, title Ni Hao Robot!, responding after 12 seconds |
 | Create profile `Smoke A`: 10 minutes, Travel, Pinyin off | Picker shows saved settings and selected profile | NOT RUN |
 | Continue; start introduction; advance to step 3; Save and leave | Home offers resume at step 3 | NOT RUN |
 | Switch; create `Smoke B` with default settings | B starts at step 1; A's position stays independent | NOT RUN |

@@ -22,7 +22,9 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "Package/plugin setup failed. Snapshot retained at $stageRoot" }
     & powershell -NoProfile -ExecutionPolicy Bypass -File $wrapper build windows "--$Configuration" --no-pub
     if ($LASTEXITCODE -ne 0) { throw "Windows build failed. Snapshot retained at $stageRoot" }
-    Write-Output (Join-Path $stageRoot "build\windows\x64\runner\$Configuration\ni_hao_robot.exe")
+    $runnerDirectory = Join-Path $stageRoot "build\windows\x64\runner\$Configuration"
+    & (Join-Path $PSScriptRoot 'package_windows.ps1') -SourceDirectory $runnerDirectory
+    if ($LASTEXITCODE -ne 0) { throw "Portable package failed. Snapshot retained at $stageRoot" }
 } finally {
     Pop-Location
 }
