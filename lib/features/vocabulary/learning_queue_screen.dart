@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'curriculum_repository.dart';
 import 'add_word_screen.dart';
+import 'import_words_screen.dart';
 import 'learning_priority.dart';
 import 'word_introduction_screen.dart';
 import 'learning_keyboard.dart';
@@ -225,6 +226,19 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
         builder: (_) => AddWordScreen(profileId: widget.profileId),
       ),
     );
+    await _showAddedWord(result);
+  }
+
+  Future<void> _importWords() async {
+    final result = await Navigator.of(context).push<AddedWordResult>(
+      MaterialPageRoute(
+        builder: (_) => ImportWordsScreen(profileId: widget.profileId),
+      ),
+    );
+    await _showAddedWord(result);
+  }
+
+  Future<void> _showAddedWord(AddedWordResult? result) async {
     if (!mounted || result == null) return;
     _search.clear();
     _query = '';
@@ -289,8 +303,8 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
               ),
               TourStop(
                 _addTarget,
-                'Add your own word',
-                'If a word is missing, enter its meaning and five examples. It appears at the front of your queue.',
+                'Add or import words',
+                'Enter one missing word yourself, or import CSV text with five examples per word. New words appear at the front of your queue.',
               ),
               TourStop(
                 _pagingTarget,
@@ -420,11 +434,23 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
                   alignment: Alignment.centerRight,
                   child: KeyedSubtree(
                     key: _addTarget,
-                    child: TextButton.icon(
-                      key: const ValueKey('add-custom-word'),
-                      onPressed: _busy ? null : _addWord,
-                      icon: const Icon(Icons.add),
-                      label: const Text('Add word'),
+                    child: Wrap(
+                      alignment: WrapAlignment.end,
+                      spacing: 8,
+                      children: [
+                        TextButton.icon(
+                          key: const ValueKey('add-custom-word'),
+                          onPressed: _busy ? null : _addWord,
+                          icon: const Icon(Icons.add),
+                          label: const Text('Add word'),
+                        ),
+                        TextButton.icon(
+                          key: const ValueKey('import-custom-words'),
+                          onPressed: _busy ? null : _importWords,
+                          icon: const Icon(Icons.upload_file_outlined),
+                          label: const Text('Import CSV'),
+                        ),
+                      ],
                     ),
                   ),
                 ),

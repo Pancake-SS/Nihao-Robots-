@@ -22,6 +22,10 @@ SDKs, caches and build outputs are not included. See [backup details](docs/GITHU
 
 On the profile chooser, select **Export account save** beside the profile and save the JSON file. Install the current app on the other device, select **Import account save**, and choose that file. Import creates a new profile with its queue, progress, custom words, Master writing, grammar completions, free writing and notebook pages. The bundled word library and story content ship with the app and are not copied into the save. Keep the file private because it contains your writing and learning history.
 
+## Import words from text
+
+Open **Vocabulary → Learn → Import CSV**. Paste CSV text or choose a `.csv`/`.txt` file, then select **Check CSV and preview**. Expand each word to review its five Chinese sentences, Pinyin and English translations before importing. The page can copy the exact CSV header or a prompt for ChatGPT based on a word or topic you enter. Import accepts up to 20 words at a time and saves the batch together; a conflicting word blocks it without partly adding words. For a single existing match, you can move that word to the front instead. Imported words use the same linked lessons, generated questions and Mandarin TTS as manually added words.
+
 ## Try the redesigned interface
 
 Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build_windows.ps1` from the project root, then launch the executable path printed by the helper. Keep its nearby DLLs and data folder together. In VS Code, **Terminal > Run Build Task** runs the same safe-path build. The patch's separate `lib/preview_main.dart` is sample-data-only source; this project has no web scaffold, so the actual Windows build is the supported way to try the design.

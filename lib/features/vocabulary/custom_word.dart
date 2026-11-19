@@ -12,9 +12,11 @@ class CustomWordDraft {
     required this.meaning,
     required this.examples,
     this.explanation = '',
+    this.imported = false,
   });
   final String hanzi, pinyin, meaning, explanation;
   final List<CustomSentence> examples;
+  final bool imported;
 
   static bool _safe(String text, int limit) =>
       text.trim().isNotEmpty &&

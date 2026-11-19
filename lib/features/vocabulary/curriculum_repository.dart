@@ -340,139 +340,174 @@ class CurriculumRepository {
   Future<QueueWord> addCustomWord(int profile, CustomWordDraft draft) async {
     draft.validate();
     await _queue(profile);
+    return database.transaction(() => _insertCustomWord(profile, draft));
+  }
+
+  /// Imports a small CSV batch as one transaction, preserving CSV order at
+  /// the front of the queue. A conflict rolls back every word in the batch.
+  Future<List<QueueWord>> importCustomWords(
+    int profile,
+    List<CustomWordDraft> drafts,
+  ) async {
+    if (drafts.isEmpty || drafts.length > 20) {
+      throw const FormatException('Import between 1 and 20 words at a time.');
+    }
+    for (final draft in drafts) {
+      draft.validate();
+    }
+    await _queue(profile);
     return database.transaction(() async {
-      final clash = await _customClash(
-        profile,
-        draft.hanzi,
-        draft.pinyin,
-        draft.meaning,
-      );
-      if (clash != null) throw CustomWordConflict(clash);
-      final random = Random.secure();
-      final suffix = List.generate(
-        16,
-        (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0'),
-      ).join();
-      final id = 'custom.p$profile.$suffix';
-      final pool = await database
-          .customSelect(
-            '''
+      final imported = <QueueWord>[];
+      for (final draft in drafts.reversed) {
+        imported.add(await _insertCustomWord(profile, draft));
+      }
+      return List<QueueWord>.unmodifiable(imported.reversed);
+    });
+  }
+
+  Future<QueueWord> _insertCustomWord(
+    int profile,
+    CustomWordDraft draft,
+  ) async {
+    final clash = await _customClash(
+      profile,
+      draft.hanzi,
+      draft.pinyin,
+      draft.meaning,
+    );
+    if (clash != null) throw CustomWordConflict(clash);
+    final random = Random.secure();
+    final suffix = List.generate(
+      16,
+      (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0'),
+    ).join();
+    final id = 'custom.p$profile.$suffix';
+    final pool = await database
+        .customSelect(
+          '''
         SELECT hanzi,pinyin,meaning FROM curriculum_words
         WHERE pack_id NOT LIKE 'custom.%'
           OR json_extract(metadata_json,'\$.ownerProfileId')=?
         ORDER BY default_position,id
       ''',
-            variables: [Variable(profile)],
-          )
-          .get();
-      final questions = CustomWordQuestions.build(
-        id,
-        draft,
-        pool.map(
-          (row) => CustomChoiceWord(
-            row.read<String>('hanzi'),
-            row.read<String>('pinyin'),
-            row.read<String>('meaning'),
-          ),
+          variables: [Variable(profile)],
+        )
+        .get();
+    final questions = CustomWordQuestions.build(
+      id,
+      draft,
+      pool.map(
+        (row) => CustomChoiceWord(
+          row.read<String>('hanzi'),
+          row.read<String>('pinyin'),
+          row.read<String>('meaning'),
         ),
-      );
-      final today = DateTime.now().toUtc().toIso8601String().substring(0, 10);
-      final word = <String, Object?>{
-        'id': id,
-        'hanzi': draft.hanzi.trim(),
-        'pinyin': draft.pinyin.trim(),
-        'meaning': draft.meaning.trim(),
-        'examples': [
-          for (var i = 0; i < 5; i++)
-            {
-              'hanzi': draft.examples[i].hanzi.trim(),
-              'pinyin': draft.examples[i].pinyin.trim(),
-              'meaning': draft.examples[i].meaning.trim(),
-              'traditional': null,
-              'sourceId': '$id.example.$i',
-              'sourceUrl': null,
-              'grammarTags': <String>[],
-              'credit': 'Written by this learner',
-            },
-        ],
-        'source': 'Learner-created content on this device.',
-        'license': 'User-created text; no external source license asserted.',
-        'reviewedBy': 'Learner; independent language review not performed',
-        'reviewedOn': today,
-        'reviewStatus': 'user-created',
-        'audio': null,
-        'questions': questions,
-        'details': null,
-        'customExplanation': draft.explanation.trim().isEmpty
-            ? null
-            : draft.explanation.trim(),
-      };
-      // The same lesson parser used by source content validates every linked
-      // example and question before any database write occurs.
-      VocabularyPack.parse(
-        jsonEncode({
-          'schemaVersion': 5,
-          'id': 'custom.p$profile',
-          'revision': 1,
-          'words': [word],
-        }),
-      );
-      final stored = {...word, 'ownerProfileId': profile};
-      final search =
-          '${draft.hanzi} ${draft.pinyin} ${draft.meaning} '
-                  '${PinyinInputEngine.normalize(draft.pinyin)}'
-              .toLowerCase();
-      await database.customStatement(
-        '''
+      ),
+    );
+    final today = DateTime.now().toUtc().toIso8601String().substring(0, 10);
+    final word = <String, Object?>{
+      'id': id,
+      'hanzi': draft.hanzi.trim(),
+      'pinyin': draft.pinyin.trim(),
+      'meaning': draft.meaning.trim(),
+      'examples': [
+        for (var i = 0; i < 5; i++)
+          {
+            'hanzi': draft.examples[i].hanzi.trim(),
+            'pinyin': draft.examples[i].pinyin.trim(),
+            'meaning': draft.examples[i].meaning.trim(),
+            'traditional': null,
+            'sourceId': '$id.example.$i',
+            'sourceUrl': null,
+            'grammarTags': <String>[],
+            'credit': draft.imported
+                ? 'Imported from learner-provided text'
+                : 'Written by this learner',
+          },
+      ],
+      'source': draft.imported
+          ? 'Imported from learner-provided text on this device.'
+          : 'Learner-created content on this device.',
+      'license': draft.imported
+          ? 'Learner-supplied text; source rights not independently verified.'
+          : 'User-created text; no external source license asserted.',
+      'reviewedBy': draft.imported
+          ? 'Imported by learner; independent language review not performed'
+          : 'Learner; independent language review not performed',
+      'reviewedOn': today,
+      'reviewStatus': 'user-created',
+      'audio': null,
+      'questions': questions,
+      'details': null,
+      'customExplanation': draft.explanation.trim().isEmpty
+          ? null
+          : draft.explanation.trim(),
+    };
+    // The same lesson parser used by source content validates every linked
+    // example and question before any database write occurs.
+    VocabularyPack.parse(
+      jsonEncode({
+        'schemaVersion': 5,
+        'id': 'custom.p$profile',
+        'revision': 1,
+        'words': [word],
+      }),
+    );
+    final stored = {...word, 'ownerProfileId': profile};
+    final search =
+        '${draft.hanzi} ${draft.pinyin} ${draft.meaning} '
+                '${PinyinInputEngine.normalize(draft.pinyin)}'
+            .toLowerCase();
+    await database.customStatement(
+      '''
         INSERT INTO curriculum_words(id,pack_id,revision,content_schema,hanzi,pinyin,meaning,search_text,default_position,metadata_json)
         VALUES(?,?,?,?,?,?,?,?,?,?)
       ''',
-        [
-          id,
-          'custom.p$profile',
-          1,
-          5,
-          draft.hanzi.trim(),
-          draft.pinyin.trim(),
-          draft.meaning.trim(),
-          search,
-          -1,
-          jsonEncode(stored),
-        ],
-      );
-      for (var i = 0; i < 5; i++) {
-        final sid = '$id.sentence.$i';
-        final example = (word['examples'] as List)[i];
-        await database.customStatement(
-          'INSERT INTO curriculum_sentences(id,payload_json) VALUES(?,?)',
-          [sid, jsonEncode(example)],
-        );
-        await database.customStatement(
-          'INSERT INTO curriculum_examples(word_id,sentence_id,position) VALUES(?,?,?)',
-          [id, sid, i],
-        );
-      }
-      for (var i = 0; i < questions.length; i++) {
-        await database.customStatement(
-          'INSERT INTO curriculum_questions(id,word_id,position,payload_json) VALUES(?,?,?,?)',
-          [questions[i]['id'], id, i, jsonEncode(questions[i])],
-        );
-      }
-      await database.customStatement(
-        'UPDATE learning_queue SET position=position+1 WHERE profile_id=?',
-        [profile],
-      );
-      await database.customStatement(
-        'INSERT INTO learning_queue(profile_id,word_id,position) VALUES(?,?,0)',
-        [profile, id],
-      );
-      return QueueWord(
+      [
         id,
+        'custom.p$profile',
+        1,
+        5,
         draft.hanzi.trim(),
         draft.pinyin.trim(),
         draft.meaning.trim(),
+        search,
+        -1,
+        jsonEncode(stored),
+      ],
+    );
+    for (var i = 0; i < 5; i++) {
+      final sid = '$id.sentence.$i';
+      final example = (word['examples'] as List)[i];
+      await database.customStatement(
+        'INSERT INTO curriculum_sentences(id,payload_json) VALUES(?,?)',
+        [sid, jsonEncode(example)],
       );
-    });
+      await database.customStatement(
+        'INSERT INTO curriculum_examples(word_id,sentence_id,position) VALUES(?,?,?)',
+        [id, sid, i],
+      );
+    }
+    for (var i = 0; i < questions.length; i++) {
+      await database.customStatement(
+        'INSERT INTO curriculum_questions(id,word_id,position,payload_json) VALUES(?,?,?,?)',
+        [questions[i]['id'], id, i, jsonEncode(questions[i])],
+      );
+    }
+    await database.customStatement(
+      'UPDATE learning_queue SET position=position+1 WHERE profile_id=?',
+      [profile],
+    );
+    await database.customStatement(
+      'INSERT INTO learning_queue(profile_id,word_id,position) VALUES(?,?,0)',
+      [profile, id],
+    );
+    return QueueWord(
+      id,
+      draft.hanzi.trim(),
+      draft.pinyin.trim(),
+      draft.meaning.trim(),
+    );
   }
 
   Future<QueuePage> page(

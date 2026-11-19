@@ -49,7 +49,72 @@ const draft = CustomWordDraft(
   ],
 );
 
+CustomWordDraft importedDraft(String hanzi, String pinyin, String meaning) =>
+    CustomWordDraft(
+      hanzi: hanzi,
+      pinyin: pinyin,
+      meaning: meaning,
+      imported: true,
+      examples: [
+        for (var i = 1; i <= 5; i++)
+          CustomSentence(
+            '我喜欢$hanzi$i。',
+            'Wǒ xǐhuan $pinyin $i.',
+            'I like $meaning number $i.',
+          ),
+      ],
+    );
+
 void main() {
+  test(
+    'CSV batches keep row order and roll back if one word clashes',
+    () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
+      final profile = (await SqliteProfileRepository(
+        db,
+      ).create(const ProfileDraft(name: 'Importer'))).selected!.id;
+      final repo = fullCurriculum(db);
+      final first = importedDraft(
+        '机器人咖啡馆',
+        'jī qì rén kā fēi guǎn',
+        'robot cafe',
+      );
+      final second = importedDraft(
+        '机器人书店',
+        'jī qì rén shū diàn',
+        'robot bookshop',
+      );
+      final saved = await repo.importCustomWords(profile, [first, second]);
+      expect(saved.map((word) => word.hanzi), [first.hanzi, second.hanzi]);
+      expect(
+        (await repo.page(profile)).words.take(2).map((word) => word.id),
+        saved.map((word) => word.id),
+      );
+      final lesson = (await repo.lesson(saved.first.id))!;
+      expect(lesson.entry.examples, hasLength(5));
+      expect(lesson.entry.questions.length, greaterThanOrEqualTo(7));
+      expect(
+        lesson.entry.examples.first.credit,
+        'Imported from learner-provided text',
+      );
+      final third = importedDraft(
+        '机器人茶馆',
+        'jī qì rén chá guǎn',
+        'robot tea house',
+      );
+      await expectLater(
+        repo.importCustomWords(profile, [first, third]),
+        throwsA(isA<CustomWordConflict>()),
+      );
+      expect(
+        (await repo.page(profile, category: WordCategory.customWords)).words,
+        hasLength(2),
+      );
+      expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
+    },
+  );
+
   test(
     'custom questions prefer related choices and reject missing examples',
     () {

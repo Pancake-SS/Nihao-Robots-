@@ -102,6 +102,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('import-custom-words')), findsOneWidget);
       expect(find.byType(LearningKeyboard), findsOneWidget);
       expect(find.byKey(const ValueKey('queue-search')), findsOneWidget);
       await tester.enterText(
