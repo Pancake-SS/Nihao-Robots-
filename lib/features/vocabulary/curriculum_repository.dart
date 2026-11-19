@@ -281,8 +281,9 @@ class CurriculumRepository {
     int profile,
     String hanzi,
     String pinyin,
-    String meaning,
-  ) async {
+    String meaning, {
+    String? excludeId,
+  }) async {
     final rows = await database
         .customSelect(
           '''
@@ -302,6 +303,7 @@ class CurriculumRepository {
     CustomWordClash? best;
     var bestScore = 0;
     for (final row in rows) {
+      if (row.read<String>('id') == excludeId) continue;
       final fields = <String>[];
       if (row.read<String>('hanzi') == hanzi.trim()) fields.add('Hanzi');
       if (wantedPinyin.isNotEmpty &&
@@ -362,6 +364,176 @@ class CurriculumRepository {
         imported.add(await _insertCustomWord(profile, draft));
       }
       return List<QueueWord>.unmodifiable(imported.reversed);
+    });
+  }
+
+  Future<Map<String, dynamic>?> _ownedCustomMetadata(
+    int profile,
+    String id,
+  ) async {
+    final row = await database
+        .customSelect(
+          'SELECT metadata_json FROM curriculum_words WHERE id=? AND pack_id=?',
+          variables: [Variable(id), Variable('custom.p$profile')],
+        )
+        .getSingleOrNull();
+    if (row == null) return null;
+    final metadata =
+        jsonDecode(row.read<String>('metadata_json')) as Map<String, dynamic>;
+    return metadata['ownerProfileId'] == profile ? metadata : null;
+  }
+
+  /// Returns only words created by this profile, including already learned
+  /// and mastered words.
+  Future<CustomWordDraft?> editableCustomWord(int profile, String id) async {
+    await ready();
+    final metadata = await _ownedCustomMetadata(profile, id);
+    if (metadata == null) return null;
+    final examples = metadata['examples'] as List;
+    return CustomWordDraft(
+      hanzi: metadata['hanzi'] as String,
+      pinyin: metadata['pinyin'] as String,
+      meaning: metadata['meaning'] as String,
+      examples: [
+        for (final raw in examples)
+          CustomSentence(
+            (raw as Map<String, dynamic>)['hanzi'] as String,
+            raw['pinyin'] as String,
+            raw['meaning'] as String,
+          ),
+      ],
+      explanation: metadata['customExplanation'] as String? ?? '',
+      imported: (metadata['source'] as String).startsWith('Imported'),
+    );
+  }
+
+  /// Edits the existing lesson in place. The word, sentence, and question IDs
+  /// stay stable so queue placement, progress, and past attempts remain linked.
+  Future<void> updateCustomWord(
+    int profile,
+    String id,
+    CustomWordDraft draft,
+  ) async {
+    draft.validate();
+    await ready();
+    await database.transaction(() async {
+      final metadata = await _ownedCustomMetadata(profile, id);
+      if (metadata == null) {
+        throw StateError('Only your custom words can be edited.');
+      }
+      final clash = await _customClash(
+        profile,
+        draft.hanzi,
+        draft.pinyin,
+        draft.meaning,
+        excludeId: id,
+      );
+      if (clash != null) throw CustomWordConflict(clash);
+      final pool = await database
+          .customSelect(
+            '''
+        SELECT hanzi,pinyin,meaning FROM curriculum_words
+        WHERE pack_id NOT LIKE 'custom.%'
+          OR json_extract(metadata_json,'\$.ownerProfileId')=?
+        ORDER BY default_position,id
+      ''',
+            variables: [Variable(profile)],
+          )
+          .get();
+      final questions = CustomWordQuestions.build(
+        id,
+        draft,
+        pool
+            .where((row) => row.read<String>('hanzi') != metadata['hanzi'])
+            .map(
+              (row) => CustomChoiceWord(
+                row.read<String>('hanzi'),
+                row.read<String>('pinyin'),
+                row.read<String>('meaning'),
+              ),
+            ),
+      );
+      metadata['hanzi'] = draft.hanzi.trim();
+      metadata['pinyin'] = draft.pinyin.trim();
+      metadata['meaning'] = draft.meaning.trim();
+      metadata['examples'] = [
+        for (var i = 0; i < 5; i++)
+          {
+            'hanzi': draft.examples[i].hanzi.trim(),
+            'pinyin': draft.examples[i].pinyin.trim(),
+            'meaning': draft.examples[i].meaning.trim(),
+            'traditional': null,
+            'sourceId': '$id.example.$i',
+            'sourceUrl': null,
+            'grammarTags': <String>[],
+            'credit': 'Edited by this learner',
+          },
+      ];
+      metadata['questions'] = questions;
+      metadata['customExplanation'] = draft.explanation.trim().isEmpty
+          ? null
+          : draft.explanation.trim();
+      metadata['source'] = 'Learner-edited content on this device.';
+      metadata['license'] =
+          'Learner-supplied text; source rights not independently verified.';
+      metadata['reviewedBy'] =
+          'Edited by learner; independent language review not performed';
+      metadata['reviewedOn'] = DateTime.now()
+          .toUtc()
+          .toIso8601String()
+          .substring(0, 10);
+      final revisionRow = await database
+          .customSelect(
+            'SELECT revision FROM curriculum_words WHERE id=?',
+            variables: [Variable(id)],
+          )
+          .getSingle();
+      final revision = revisionRow.read<int>('revision') + 1;
+      final preview = {...metadata}..remove('ownerProfileId');
+      VocabularyPack.parse(
+        jsonEncode({
+          'schemaVersion': 5,
+          'id': 'custom.p$profile',
+          'revision': revision,
+          'words': [preview],
+        }),
+      );
+      final search =
+          '${draft.hanzi} ${draft.pinyin} ${draft.meaning} '
+                  '${PinyinInputEngine.normalize(draft.pinyin)}'
+              .toLowerCase();
+      await database.customStatement(
+        '''
+        UPDATE curriculum_words
+        SET revision=?, hanzi=?, pinyin=?, meaning=?, search_text=?, metadata_json=?
+        WHERE id=?
+      ''',
+        [
+          revision,
+          draft.hanzi.trim(),
+          draft.pinyin.trim(),
+          draft.meaning.trim(),
+          search,
+          jsonEncode(metadata),
+          id,
+        ],
+      );
+      for (var i = 0; i < 5; i++) {
+        await database.customStatement(
+          'UPDATE curriculum_sentences SET payload_json=? WHERE id=?',
+          [jsonEncode((metadata['examples'] as List)[i]), '$id.sentence.$i'],
+        );
+      }
+      await database.customStatement(
+        'DELETE FROM curriculum_questions WHERE word_id=?',
+        [id],
+      );
+      for (var i = 0; i < questions.length; i++) {
+        await database.customStatement(
+          'INSERT INTO curriculum_questions(id,word_id,position,payload_json) VALUES(?,?,?,?)',
+          [questions[i]['id'], id, i, jsonEncode(questions[i])],
+        );
+      }
     });
   }
 

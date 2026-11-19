@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'curriculum_repository.dart';
 import 'add_word_screen.dart';
 import 'import_words_screen.dart';
+import 'edit_custom_word_screen.dart';
 import 'learning_priority.dart';
 import 'word_introduction_screen.dart';
 import 'learning_keyboard.dart';
@@ -236,6 +237,25 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
       ),
     );
     await _showAddedWord(result);
+  }
+
+  Future<void> _editSelected() async {
+    final id = _selected;
+    if (id == null || _busy || !id.startsWith('custom.p${widget.profileId}.')) {
+      return;
+    }
+    final changed = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) =>
+            EditCustomWordScreen(profileId: widget.profileId, wordId: id),
+      ),
+    );
+    if (!mounted || changed != true) return;
+    await _load(page: _page);
+    if (mounted) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Custom word updated.')));
+    }
   }
 
   Future<void> _showAddedWord(AddedWordResult? result) async {
@@ -624,16 +644,38 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
                       SizedBox(
                         key: _learnTarget,
                         width: double.infinity,
-                        child: FilledButton(
-                          key: const ValueKey('learn-selected'),
-                          onPressed: _busy || selected == null ? null : _learn,
-                          child: Text(
-                            selected == null
-                                ? 'Learn selected word'
-                                : 'Learn ${selected.hanzi}',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        child: Row(
+                          children: [
+                            if (selected != null &&
+                                selected.id.startsWith(
+                                  'custom.p${widget.profileId}.',
+                                )) ...[
+                              TextButton.icon(
+                                key: const ValueKey(
+                                  'edit-selected-custom-word',
+                                ),
+                                onPressed: _busy ? null : _editSelected,
+                                icon: const Icon(Icons.edit_outlined),
+                                label: const Text('Edit'),
+                              ),
+                              const SizedBox(width: 8),
+                            ],
+                            Expanded(
+                              child: FilledButton(
+                                key: const ValueKey('learn-selected'),
+                                onPressed: _busy || selected == null
+                                    ? null
+                                    : _learn,
+                                child: Text(
+                                  selected == null
+                                      ? 'Learn selected word'
+                                      : 'Learn ${selected.hanzi}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],

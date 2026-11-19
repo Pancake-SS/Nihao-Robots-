@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:drift/drift.dart' show Variable;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +12,7 @@ import 'package:ni_hao_robot/features/profiles/profile.dart';
 import 'package:ni_hao_robot/features/profiles/sqlite_profile_repository.dart';
 import 'package:ni_hao_robot/features/vocabulary/curriculum_repository.dart';
 import 'package:ni_hao_robot/features/vocabulary/custom_word.dart';
+import 'package:ni_hao_robot/features/vocabulary/edit_custom_word_screen.dart';
 import 'package:ni_hao_robot/features/vocabulary/pinyin_input.dart';
 
 import 'curriculum_fixture.dart';
@@ -66,6 +68,101 @@ CustomWordDraft importedDraft(String hanzi, String pinyin, String meaning) =>
     );
 
 void main() {
+  test(
+    'editing a custom word keeps its identity, progress, and lesson links',
+    () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
+      final profiles = SqliteProfileRepository(db);
+      final owner = (await profiles.create(const ProfileDraft(name: 'Owner')))
+          .selected!
+          .id;
+      final other = (await profiles.create(const ProfileDraft(name: 'Other')))
+          .selected!
+          .id;
+      final repo = fullCurriculum(db);
+      final saved = await repo.addCustomWord(owner, draft);
+      final queueBefore = await db
+          .customSelect(
+            'SELECT position FROM learning_queue WHERE profile_id=? AND word_id=?',
+            variables: [Variable(owner), Variable(saved.id)],
+          )
+          .getSingle();
+      final original = await repo.editableCustomWord(owner, saved.id);
+      expect(original?.examples, hasLength(5));
+      expect(await repo.editableCustomWord(other, saved.id), isNull);
+      await db.customStatement(
+        '''
+      INSERT INTO vocabulary_progress(profile_id,word_id,stage,due_at_ms,version,successful_reviews)
+      VALUES(?,?,'review',0,1,12)
+    ''',
+        [owner, saved.id],
+      );
+      final edited = CustomWordDraft(
+        hanzi: draft.hanzi,
+        pinyin: draft.pinyin,
+        meaning: 'robot coffee shop',
+        examples: [
+          CustomSentence(
+            draft.examples.first.hanzi,
+            draft.examples.first.pinyin,
+            'This robot coffee shop is spacious.',
+          ),
+          ...draft.examples.skip(1),
+        ],
+        explanation: 'A place for coffee with robots.',
+      );
+      await expectLater(
+        repo.updateCustomWord(other, saved.id, edited),
+        throwsStateError,
+      );
+      await repo.updateCustomWord(owner, saved.id, edited);
+      final lesson = (await repo.lesson(saved.id))!;
+      expect(lesson.entry.id, saved.id);
+      expect(lesson.revision, 2);
+      expect(lesson.entry.meaning, edited.meaning);
+      expect(
+        lesson.entry.examples.first.meaning,
+        edited.examples.first.meaning,
+      );
+      expect(lesson.entry.customExplanation, edited.explanation);
+      expect(lesson.entry.questions, isNotEmpty);
+      final queueAfter = await db
+          .customSelect(
+            'SELECT position FROM learning_queue WHERE profile_id=? AND word_id=?',
+            variables: [Variable(owner), Variable(saved.id)],
+          )
+          .getSingle();
+      expect(
+        queueAfter.read<int>('position'),
+        queueBefore.read<int>('position'),
+      );
+      final progress = await db
+          .customSelect(
+            'SELECT successful_reviews FROM vocabulary_progress WHERE profile_id=? AND word_id=?',
+            variables: [Variable(owner), Variable(saved.id)],
+          )
+          .getSingle();
+      expect(progress.read<int>('successful_reviews'), 12);
+      final conflicting = CustomWordDraft(
+        hanzi: edited.hanzi,
+        pinyin: edited.pinyin,
+        meaning: 'robot bookshop',
+        examples: edited.examples,
+      );
+      await repo.addCustomWord(
+        owner,
+        importedDraft('机器人书店', 'jī qì rén shū diàn', 'robot bookshop'),
+      );
+      await expectLater(
+        repo.updateCustomWord(owner, saved.id, conflicting),
+        throwsA(isA<CustomWordConflict>()),
+      );
+      expect((await repo.lesson(saved.id))!.entry.meaning, edited.meaning);
+      expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
+    },
+  );
+
   test(
     'CSV batches keep row order and roll back if one word clashes',
     () async {
@@ -281,5 +378,81 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox.shrink());
     await db.close();
+  }, timeout: const Timeout(Duration(minutes: 2)));
+
+  testWidgets('edit form preloads a custom word for editing', (tester) async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final profile = (await SqliteProfileRepository(
+      db,
+    ).create(const ProfileDraft(name: 'Edit form'))).selected!.id;
+    final repo = fullCurriculum(db);
+    await tester.runAsync(repo.ready);
+    final saved = (await tester.runAsync(
+      () => repo.addCustomWord(profile, draft),
+    ))!;
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          curriculumRepositoryProvider.overrideWithValue(repo),
+          pinyinInputEngineProvider.overrideWith(
+            (ref) async => PinyinInputEngine([]),
+          ),
+        ],
+        child: MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => FilledButton(
+                onPressed: () => Navigator.push<bool>(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => EditCustomWordScreen(
+                      profileId: profile,
+                      wordId: saved.id,
+                    ),
+                  ),
+                ),
+                child: const Text('Open edit'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Open edit'));
+    await tester.pump();
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 500)),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<TextFormField>(
+            find.byKey(const ValueKey('edit-custom-hanzi')),
+          )
+          .controller!
+          .text,
+      draft.hanzi,
+    );
+    expect(
+      tester
+          .widget<TextField>(find.byKey(const ValueKey('edit-custom-meaning')))
+          .controller!
+          .text,
+      draft.meaning,
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('edit-custom-meaning')),
+      'robot coffee house',
+    );
+    expect(
+      tester
+          .widget<TextField>(find.byKey(const ValueKey('edit-custom-meaning')))
+          .controller!
+          .text,
+      'robot coffee house',
+    );
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
   }, timeout: const Timeout(Duration(minutes: 2)));
 }

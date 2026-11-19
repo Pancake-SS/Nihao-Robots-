@@ -26,6 +26,8 @@ On the profile chooser, select **Export account save** beside the profile and sa
 
 Open **Vocabulary → Learn → Import CSV**. Paste CSV text or choose a `.csv`/`.txt` file, then select **Check CSV and preview**. Expand each word to review its five Chinese sentences, Pinyin and English translations before importing. The page can copy the exact CSV header or a prompt for ChatGPT based on a word or topic you enter. Import accepts up to 20 words at a time and saves the batch together; a conflicting word blocks it without partly adding words. For a single existing match, you can move that word to the front instead. Imported words use the same linked lessons, generated questions and Mandarin TTS as manually added words.
 
+To correct a custom word, select it in **Learn** and choose **Edit**, or use **Edit custom word** on its lesson page. You can change the word, all five examples, and its explanation. Saving updates its questions and keeps the word's progress; words supplied by the app cannot be edited.
+
 ## Try the redesigned interface
 
 Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build_windows.ps1` from the project root, then launch the executable path printed by the helper. Keep its nearby DLLs and data folder together. In VS Code, **Terminal > Run Build Task** runs the same safe-path build. The patch's separate `lib/preview_main.dart` is sample-data-only source; this project has no web scaffold, so the actual Windows build is the supported way to try the design.

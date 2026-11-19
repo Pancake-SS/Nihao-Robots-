@@ -13,8 +13,10 @@ import '../review/word_quiz_entry.dart';
 import 'vocabulary_repository.dart';
 import 'sentence_audio.dart';
 import 'word_teaching.dart';
+import 'curriculum_repository.dart';
+import 'edit_custom_word_screen.dart';
 
-class WordIntroductionScreen extends ConsumerWidget {
+class WordIntroductionScreen extends ConsumerStatefulWidget {
   const WordIntroductionScreen({
     required this.word,
     required this.showPinyin,
@@ -26,13 +28,58 @@ class WordIntroductionScreen extends ConsumerWidget {
   final int profileId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<WordIntroductionScreen> createState() =>
+      _WordIntroductionScreenState();
+}
+
+class _WordIntroductionScreenState
+    extends ConsumerState<WordIntroductionScreen> {
+  late CatalogueWord _word;
+
+  @override
+  void initState() {
+    super.initState();
+    _word = widget.word;
+  }
+
+  Future<void> _edit() async {
+    final changed = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => EditCustomWordScreen(
+          profileId: widget.profileId,
+          wordId: _word.entry.id,
+        ),
+      ),
+    );
+    if (!mounted || changed != true) return;
+    final updated = await ref
+        .read(curriculumRepositoryProvider)
+        .lesson(_word.entry.id);
+    if (mounted && updated != null) {
+      setState(() => _word = updated);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Custom word updated.')));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final word = _word;
+    final showPinyin = widget.showPinyin;
+    final profileId = widget.profileId;
     final entry = word.entry;
     final audioSession = ref.watch(sentenceAudioSessionProvider);
     return Scaffold(
       appBar: AppBar(
         title: const AppScreenTitle('Meet a word'),
         actions: [
+          if (entry.id.startsWith('custom.p$profileId.'))
+            IconButton(
+              key: const ValueKey('edit-custom-lesson'),
+              tooltip: 'Edit custom word',
+              icon: const Icon(Icons.edit_outlined),
+              onPressed: _edit,
+            ),
           IconButton(
             tooltip: 'Sources and pronunciation information',
             icon: const Icon(Icons.info_outline),
