@@ -110,6 +110,7 @@ void main() {
         findsOneWidget,
       );
     }
+    expect(AppSidebar.labels, isNot(contains('Practice')));
     expect(tester.takeException(), isNull);
   });
 
@@ -236,11 +237,22 @@ void main() {
         {
           RobotArtwork.wavingOnPaper,
           RobotArtwork.hoverOnPaper,
+          RobotArtwork.orbOnPaper,
           RobotArtwork.gogglesOnPaper,
         },
       );
+      await press(tester, 'Open practice');
+      expect(find.text('Test one word'), findsOneWidget);
+      expect(find.text('Random questions'), findsOneWidget);
+      expect(find.text('Endless questions'), findsOneWidget);
+      expect(find.text('Relearn a word'), findsOneWidget);
+      expect(find.byKey(const ValueKey('destination-5')), findsNothing);
+      await tester.pageBack();
+      await tester.pumpAndSettle();
       await press(tester, 'Replay Tutorial');
       expect(find.text('Learn in context'), findsOneWidget);
+      await press(tester, 'Next');
+      expect(find.text('Practice your words'), findsOneWidget);
       await press(tester, 'Next');
       expect(find.text('Master words'), findsOneWidget);
       await press(tester, 'Done');

@@ -117,7 +117,7 @@ class HomeContent extends ConsumerWidget {
                 _goal('Free writing', streak.today.writings, 1),
                 const SizedBox(height: 8),
                 const Text(
-                  'Quiz words count once per word each day from Vocabulary lessons and Master tests.',
+                  'Quiz words count once per word each day from lessons, Practice and Master tests.',
                 ),
               ],
             ],

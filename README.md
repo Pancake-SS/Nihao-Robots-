@@ -33,7 +33,7 @@ Vocabulary > **Browse words** opens the paged word browser. Select a card, use *
 - Read the full Master Plan and Coding Standards under `reference/`, the implementation brief, and existing project memory.
 - Rendered/inspected all 27 original PPT slides; extracted actual notes with `python-pptx` and inspected OOXML comment parts/relationships. No true PowerPoint comments exist. Generic note template footers are separated from requirements.
 - Inspected all 20 original PNGs: ten character pairs. Black-line variants have opaque white backing; white-line variants are transparent. The integrated artwork uses distinct robots across welcome, Home, Vocabulary, lesson and quiz screens; all 20 original files match their source hashes.
-- Local profiles replace slide 1 sign-in. Vocabulary lessons and Master tests supply quiz activity; the separate Practice destination has been removed. Failed Master reviews retain history. Full decisions: [decision log](docs/DECISION_LOG.md).
+- Local profiles replace slide 1 sign-in. Practice opens from Vocabulary and has no separate sidebar destination. Vocabulary lessons, Practice and Master tests supply quiz activity; failed Master reviews retain history. Full decisions: [decision log](docs/DECISION_LOG.md).
 
 ## Initial file tree
 

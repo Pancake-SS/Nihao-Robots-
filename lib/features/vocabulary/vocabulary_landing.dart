@@ -4,6 +4,7 @@ import '../../app/theme.dart';
 import '../../shared/cozy_ui.dart';
 import '../../shared/vocabulary_card.dart';
 import '../../shared/robot_art.dart';
+import '../review/review_screen.dart';
 import '../review/master_screen.dart';
 import 'learning_queue_screen.dart';
 
@@ -25,7 +26,7 @@ class VocabularyLanding extends StatelessWidget {
       const SunnyHero(
         title: 'Vocabulary',
         subtitle: 'Grow your Chinese word bank, step by step.',
-        tag: 'Learn and master',
+        tag: 'Learn, practice and master',
         robot: RobotArtwork.wavingOnPaper,
       ),
       const SizedBox(height: 19),
@@ -57,8 +58,28 @@ class VocabularyLanding extends StatelessWidget {
             ),
             VocabularyStackCard(
               key: targets[1],
+              title: 'Practice',
+              label: '02  ·  RECALL',
+              color: AppColors.blue,
+              background: const Color(0xFFE9F4FF),
+              icon: Icons.forum_outlined,
+              artwork: RobotArtwork.orbOnPaper,
+              description: 'Repeat a word test, choose random questions, or keep practicing.',
+              status: 'Ready whenever you are',
+              actionLabel: 'Open practice',
+              action: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => ReviewScreen(
+                    profileId: profileId,
+                    showPinyin: showPinyin,
+                  ),
+                ),
+              ),
+            ),
+            VocabularyStackCard(
+              key: targets[2],
               title: 'Master',
-              label: '02  ·  REMEMBER',
+              label: '03  ·  REMEMBER',
               color: AppColors.leaf,
               background: Color(0xFFEDF7E5),
               icon: Icons.star_outline_rounded,

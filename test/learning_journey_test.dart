@@ -353,7 +353,10 @@ void main() {
       await tester.pumpAndSettle();
       await tester.pageBack();
       await tester.pumpAndSettle();
-      expect(find.text('Open practice'), findsNothing);
+      await press(tester, find.text('Open practice'));
+      expect(find.text('1 word ready'), findsOneWidget);
+      await tester.pageBack();
+      await tester.pumpAndSettle();
       expect(await db!.select(db!.vocabularyAttempts).get(), hasLength(1));
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.runAsync(db!.close);

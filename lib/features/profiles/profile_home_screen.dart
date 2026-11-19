@@ -29,7 +29,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
   final _foundation = GlobalKey();
   final _progress = GlobalKey();
   final _grammar = GlobalKey();
-  final _vocabulary = List.generate(2, (_) => GlobalKey());
+  final _vocabulary = List.generate(3, (_) => GlobalKey());
   final _learning = List.generate(4, (_) => GlobalKey());
   final _scroll = ScrollController();
   static const _names = [
@@ -75,6 +75,11 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
         ),
         TourStop(
           _vocabulary[1],
+          'Practice your words',
+          'Choose a learned word for a full test, answer random questions, try endless mode, or reopen a lesson.',
+        ),
+        TourStop(
+          _vocabulary[2],
           'Master words',
           'After 25 correct points, take the full Master test and save an ungraded writing prompt. Instant master offers the same test sooner. Three missed answers during Master practice return the word to Learn while keeping its writing and points.',
         ),
