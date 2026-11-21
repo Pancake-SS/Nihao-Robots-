@@ -105,7 +105,7 @@ class PracticeContent extends ConsumerWidget {
           PracticeRoute.relearn,
           Icons.menu_book_outlined,
           'Relearn a word',
-          'Search by Hanzi or English and revisit its lesson.',
+          'Browse learned words or search, then revisit a lesson.',
         ),
         if (count == 0)
           const Padding(

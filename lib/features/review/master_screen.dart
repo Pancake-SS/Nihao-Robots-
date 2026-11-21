@@ -171,13 +171,16 @@ class _MasterCandidatesScreenState
   final _search = TextEditingController();
   List<MasterWord>? _results;
   bool _loading = false;
+  bool _hasMore = false;
   int _page = 0;
+  int _request = 0;
+  String _query = '';
   String? _error;
 
   @override
   void initState() {
     super.initState();
-    if (widget.instant) Future.microtask(_find);
+    if (widget.instant) Future.microtask(() => _loadInstantPage(0, ''));
   }
 
   @override
@@ -186,23 +189,38 @@ class _MasterCandidatesScreenState
     super.dispose();
   }
 
-  Future<void> _find() async {
+  Future<void> _loadInstantPage(int page, String query) async {
+    final request = ++_request;
     setState(() {
       _loading = true;
       _error = null;
     });
     try {
-      final results = await ref
+      final result = await ref
           .read(masterRepositoryProvider)
-          .searchAll(widget.profileId, _search.text);
-      if (mounted) setState(() => _results = results);
+          .browseAvailable(widget.profileId, query: query, offset: page * 20);
+      if (!mounted || request != _request) return;
+      if (result.words.isEmpty && page > 0) {
+        await _loadInstantPage(page - 1, query);
+        return;
+      }
+      setState(() {
+        _results = result.words;
+        _hasMore = result.hasMore;
+        _page = page;
+        _query = query;
+      });
     } catch (_) {
-      if (mounted)
+      if (mounted && request == _request)
         setState(() => _error = 'Could not search words. Try again.');
     } finally {
-      if (mounted) setState(() => _loading = false);
+      if (mounted && request == _request) {
+        setState(() => _loading = false);
+      }
     }
   }
+
+  void _find() => _loadInstantPage(0, _search.text.trim());
 
   Future<void> _open(String id, String hanzi) async {
     if (widget.instant) {
@@ -226,6 +244,7 @@ class _MasterCandidatesScreenState
     if (mounted) {
       ref.invalidate(masteredIdsProvider(widget.profileId));
       ref.invalidate(learningProgressProvider(widget.profileId));
+      if (widget.instant) _loadInstantPage(_page, _query);
     }
   }
 
@@ -256,7 +275,9 @@ class _MasterCandidatesScreenState
               padding: const EdgeInsets.all(20),
               children: [
                 Text(
-                  widget.instant ? 'Search for a word you already know.' : 'These words have earned 25 correct points. Choose one for its Master test.',
+                  widget.instant
+                      ? 'Browse words you already know, or search to find one quickly.'
+                      : 'These words have earned 25 correct points. Choose one for its Master test.',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 if (widget.instant) ...[
@@ -273,21 +294,51 @@ class _MasterCandidatesScreenState
                     ),
                     onHanziSubmitted: (_) => _find(),
                   ),
+                  if (_query.isNotEmpty)
+                    TextButton(
+                      onPressed: () {
+                        _search.clear();
+                        _loadInstantPage(0, '');
+                      },
+                      child: const Text('Show all words'),
+                    ),
                   if (_loading) const LinearProgressIndicator(),
                   if (_error != null) Text(_error!),
                   if (_results?.isEmpty == true)
-                    const Text('No matching words.'),
+                    const Text('No matching unmastered words.'),
                   for (final word in _results ?? <MasterWord>[])
-                    if (!ids.contains(word.id))
-                      Card(
-                        child: ListTile(
-                          key: ValueKey('instant-master-${word.id}'),
-                          title: Text(word.hanzi),
-                          subtitle: Text('${word.pinyin} · ${word.meaning}'),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () => _open(word.id, word.hanzi),
-                        ),
+                    Card(
+                      child: ListTile(
+                        key: ValueKey('instant-master-${word.id}'),
+                        title: Text(word.hanzi),
+                        subtitle: Text('${word.pinyin} · ${word.meaning}'),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => _open(word.id, word.hanzi),
                       ),
+                    ),
+                  if (_page > 0 || _hasMore)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: TextButton(
+                            onPressed: _loading || _page == 0
+                                ? null
+                                : () => _loadInstantPage(_page - 1, _query),
+                            child: const Text('Previous 20'),
+                          ),
+                        ),
+                        Text('Page ${_page + 1}'),
+                        Flexible(
+                          child: TextButton(
+                            onPressed: _loading || !_hasMore
+                                ? null
+                                : () => _loadInstantPage(_page + 1, _query),
+                            child: const Text('Next 20'),
+                          ),
+                        ),
+                      ],
+                    ),
                 ] else ...[
                   if (progress.isLoading || mastered.isLoading)
                     const LinearProgressIndicator(),
@@ -407,7 +458,7 @@ class MasterPracticeScreen extends StatelessWidget {
                 (
                   PracticeRoute.relearn,
                   'Revisit a mastered lesson',
-                  'Search and review the lesson.',
+                  'Browse mastered words or search, then review a lesson.',
                 ),
               ])
                 Card(

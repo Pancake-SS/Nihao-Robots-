@@ -38,7 +38,19 @@ class _PracticeMethodScreenState extends ConsumerState<PracticeMethodScreen> {
   List<RelearnWord>? _results;
   String? _selected, _message;
   bool _searching = false;
+  bool _hasMore = false;
   int _page = 0;
+  int _request = 0;
+  String _query = '';
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.route == PracticeRoute.oneWord ||
+        widget.route == PracticeRoute.relearn) {
+      Future.microtask(() => _loadPage(0, ''));
+    }
+  }
 
   @override
   void dispose() {
@@ -55,40 +67,54 @@ class _PracticeMethodScreenState extends ConsumerState<PracticeMethodScreen> {
     PracticeRoute.relearn => 'Relearn a word',
   };
 
-  Future<void> _searchWords(Set<String> available) async {
-    final query = _search.text.trim();
-    if (query.isEmpty) {
-      setState(() {
-        _results = null;
-        _selected = null;
-        _page = 0;
-      });
-      return;
-    }
+  Future<void> _loadPage(int page, String query) async {
+    final request = ++_request;
     setState(() {
       _searching = true;
       _message = null;
     });
     try {
-      final results = await ref
+      final result = await ref
           .read(practiceRepositoryProvider)
-          .relearnSearch(widget.profileId, query, mastered: widget.masterMode);
-      if (mounted)
+          .browseLearned(
+            widget.profileId,
+            query: query,
+            mastered: widget.masterMode,
+            offset: page * 20,
+          );
+      if (mounted && request == _request) {
+        if (result.words.isEmpty && page > 0) {
+          await _loadPage(page - 1, query);
+          return;
+        }
         setState(() {
-          _results = results
-              .where((word) => available.contains(word.id))
-              .toList();
+          _results = result.words;
+          _hasMore = result.hasMore;
+          _page = page;
+          _query = query;
           _selected = _results!.firstOrNull?.id;
         });
+      }
     } catch (_) {
-      if (mounted) setState(() => _message = 'Could not search. Try again.');
+      if (mounted && request == _request) {
+        setState(() => _message = 'Could not load words. Try again.');
+      }
     } finally {
-      if (mounted) setState(() => _searching = false);
+      if (mounted && request == _request) {
+        setState(() => _searching = false);
+      }
     }
   }
 
-  Future<void> _start(PracticeMode mode, List<WordProgress> words) async {
+  void _searchWords() => _loadPage(0, _search.text.trim());
+
+  Future<void> _start(
+    PracticeMode mode,
+    List<WordProgress> words, {
+    String? selectedId,
+  }) async {
     final ids = [for (final word in words) word.wordId];
+    final chosen = selectedId ?? _selected;
     if (ids.isEmpty) return;
     var count = 0;
     if (mode == PracticeMode.randomWords) {
@@ -98,7 +124,7 @@ class _PracticeMethodScreenState extends ConsumerState<PracticeMethodScreen> {
         return;
       }
     }
-    if (mode == PracticeMode.singleWord && !ids.contains(_selected)) {
+    if (mode == PracticeMode.singleWord && !ids.contains(chosen)) {
       setState(() => _message = 'Choose a word first.');
       return;
     }
@@ -108,7 +134,7 @@ class _PracticeMethodScreenState extends ConsumerState<PracticeMethodScreen> {
         builder: (_) => PracticeSessionScreen(
           profileId: widget.profileId,
           mode: mode,
-          wordIds: mode == PracticeMode.singleWord ? [_selected!] : ids,
+          wordIds: mode == PracticeMode.singleWord ? [chosen!] : ids,
           count: count,
           masterPractice: widget.masterMode,
         ),
@@ -117,17 +143,22 @@ class _PracticeMethodScreenState extends ConsumerState<PracticeMethodScreen> {
     if (mounted) {
       ref.invalidate(learningProgressProvider(widget.profileId));
       ref.invalidate(masteredIdsProvider(widget.profileId));
+      if (widget.route == PracticeRoute.oneWord) {
+        _loadPage(_page, _query);
+      }
     }
   }
 
   Future<void> _relearn() async {
     if (_results?.any((word) => word.id == _selected) != true) {
-      setState(
-        () => _message = 'Search by Hanzi or English and choose a word.',
-      );
+      setState(() => _message = 'Choose a word first.');
       return;
     }
-    final word = await ref.read(vocabularyLessonProvider(_selected!).future);
+    await _relearnWord(_selected!);
+  }
+
+  Future<void> _relearnWord(String id) async {
+    final word = await ref.read(vocabularyLessonProvider(id).future);
     if (!mounted) return;
     if (word == null) {
       setState(() => _message = 'This lesson is unavailable.');
@@ -188,9 +219,6 @@ class _PracticeMethodScreenState extends ConsumerState<PracticeMethodScreen> {
         .where((word) => widget.masterMode == mastered.contains(word.wordId))
         .toList();
     final available = {for (final word in words) word.wordId};
-    final ids = _results == null
-        ? words.skip(_page * 20).take(20).map((word) => word.wordId).toList()
-        : _results!.map((word) => word.id).toList();
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
@@ -201,25 +229,26 @@ class _PracticeMethodScreenState extends ConsumerState<PracticeMethodScreen> {
             'Each mastered word has three missed-answer chances in this session. A third miss returns it to Learn; past points and writing remain saved.',
           ),
         if (widget.route == PracticeRoute.oneWord) ...[
-          const Text('Pick a word, then replay all of its questions.'),
+          const Text('Browse your learned words and choose one to test.'),
           const SizedBox(height: 14),
-          _searchField(available),
-          if (_results != null)
+          _searchField(),
+          if (_query.isNotEmpty)
             TextButton(
               onPressed: () {
                 _search.clear();
-                _searchWords(available);
+                _loadPage(0, '');
               },
               child: const Text('Show all words'),
             ),
-          if (ids.isEmpty)
+          if (_results?.isEmpty == true)
             const Padding(
               padding: EdgeInsets.all(12),
-              child: Text('No matching words yet.'),
+              child: Text('No matching learned words.'),
             ),
-          for (final id in ids) _wordRow(id),
-          if (_results == null && words.length > 20)
-            _pageControls(words.length),
+          if (_results == null && _searching)
+            const Center(child: CircularProgressIndicator()),
+          for (final word in _results ?? <RelearnWord>[]) _wordRow(word, words),
+          if (_page > 0 || _hasMore) _pageControls(),
           const SizedBox(height: 12),
           FilledButton(
             onPressed: _selected != null && available.contains(_selected)
@@ -268,14 +297,24 @@ class _PracticeMethodScreenState extends ConsumerState<PracticeMethodScreen> {
           ),
         ] else ...[
           const Text(
-            'Type Hanzi or an English meaning. Pinyin is not used to match words because it can overlap.',
+            'Browse words to revisit a lesson. Search by Hanzi or English to narrow the list.',
           ),
           const SizedBox(height: 14),
-          _searchField(available),
+          _searchField(),
+          if (_query.isNotEmpty)
+            TextButton(
+              onPressed: () {
+                _search.clear();
+                _loadPage(0, '');
+              },
+              child: const Text('Show all words'),
+            ),
           if (_results?.isEmpty == true)
             const Text('No learned word matches that search.'),
-          for (final id in _results?.map((word) => word.id) ?? <String>[])
-            _wordRow(id),
+          if (_results == null && _searching)
+            const Center(child: CircularProgressIndicator()),
+          for (final word in _results ?? <RelearnWord>[]) _wordRow(word, words),
+          if (_page > 0 || _hasMore) _pageControls(),
           const SizedBox(height: 12),
           FilledButton(
             onPressed:
@@ -294,7 +333,7 @@ class _PracticeMethodScreenState extends ConsumerState<PracticeMethodScreen> {
     );
   }
 
-  Widget _searchField(Set<String> available) => Column(
+  Widget _searchField() => Column(
     children: [
       LearningKeyboard(
         hanzi: _search,
@@ -304,42 +343,59 @@ class _PracticeMethodScreenState extends ConsumerState<PracticeMethodScreen> {
         hanziSuffixIcon: IconButton(
           tooltip: 'Search practice words',
           icon: const Icon(Icons.search),
-          onPressed: _searching ? null : () => _searchWords(available),
+          onPressed: _searching ? null : _searchWords,
         ),
-        onHanziSubmitted: (_) => _searchWords(available),
+        onHanziSubmitted: (_) => _searchWords(),
       ),
       if (_searching) const LinearProgressIndicator(),
     ],
   );
 
-  Widget _wordRow(String id) {
-    final lesson = ref.watch(vocabularyLessonProvider(id)).asData?.value;
-    final result = _results?.where((word) => word.id == id).firstOrNull;
+  Widget _wordRow(RelearnWord word, List<WordProgress> words) {
+    final id = word.id;
+    final relearn = widget.route == PracticeRoute.relearn;
     return Card(
       child: ListTile(
         key: ValueKey('practice-word-$id'),
         selected: _selected == id,
-        title: Text(lesson?.entry.hanzi ?? result?.hanzi ?? 'Loading word…'),
-        subtitle: Text(lesson?.entry.meaning ?? result?.meaning ?? ''),
-        trailing: _selected == id ? const Icon(Icons.check_circle) : null,
+        title: Text(word.hanzi),
+        subtitle: Text(
+          [
+            if (widget.showPinyin) word.pinyin,
+            word.meaning,
+          ].where((part) => part.isNotEmpty).join(' · '),
+        ),
+        trailing: IconButton(
+          tooltip: relearn ? 'Open ${word.hanzi} lesson' : 'Test ${word.hanzi}',
+          icon: Icon(relearn ? Icons.menu_book_outlined : Icons.play_arrow),
+          onPressed: () => relearn
+              ? _relearnWord(id)
+              : _start(PracticeMode.singleWord, words, selectedId: id),
+        ),
         onTap: () => setState(() => _selected = id),
       ),
     );
   }
 
-  Widget _pageControls(int total) => Row(
+  Widget _pageControls() => Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      TextButton(
-        onPressed: _page == 0 ? null : () => setState(() => _page--),
-        child: const Text('Previous 20'),
+      Flexible(
+        child: TextButton(
+          onPressed: _searching || _page == 0
+              ? null
+              : () => _loadPage(_page - 1, _query),
+          child: const Text('Previous 20'),
+        ),
       ),
       Text('Page ${_page + 1}'),
-      TextButton(
-        onPressed: (_page + 1) * 20 >= total
-            ? null
-            : () => setState(() => _page++),
-        child: const Text('Next 20'),
+      Flexible(
+        child: TextButton(
+          onPressed: _searching || !_hasMore
+              ? null
+              : () => _loadPage(_page + 1, _query),
+          child: const Text('Next 20'),
+        ),
       ),
     ],
   );

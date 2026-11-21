@@ -7,8 +7,14 @@ import '../vocabulary/vocabulary_repository.dart';
 import 'learning.dart';
 
 class RelearnWord {
-  const RelearnWord(this.id, this.hanzi, this.meaning);
-  final String id, hanzi, meaning;
+  const RelearnWord(this.id, this.hanzi, this.pinyin, this.meaning);
+  final String id, hanzi, pinyin, meaning;
+}
+
+class RelearnPage {
+  const RelearnPage(this.words, this.hasMore);
+  final List<RelearnWord> words;
+  final bool hasMore;
 }
 
 class PracticeRepository {
@@ -79,44 +85,65 @@ class PracticeRepository {
     String query, {
     bool? mastered,
   }) async {
+    if (query.trim().isEmpty) return const [];
+    return (await browseLearned(
+      profileId,
+      query: query,
+      mastered: mastered,
+    )).words;
+  }
+
+  /// Browse learned words in small pages. Search uses Hanzi and English only,
+  /// since Pinyin can identify several unrelated words.
+  Future<RelearnPage> browseLearned(
+    int profileId, {
+    String query = '',
+    bool? mastered,
+    int offset = 0,
+  }) async {
     final term = query.trim().toLowerCase();
-    if (term.isEmpty) return const [];
+    if (term.length > 500 || offset < 0 || offset > 20000) {
+      throw ArgumentError('Invalid learned-word page.');
+    }
     final rows = await database
         .customSelect(
           'WITH words AS ('
-          'SELECT id, hanzi, meaning FROM curriculum_words '
+          'SELECT id, hanzi, pinyin, meaning, default_position FROM curriculum_words '
           'UNION ALL '
-          'SELECT c.id, c.hanzi, json_extract(c.metadata_json, \'\$.meaning\') '
+          'SELECT c.id, c.hanzi, c.pinyin, json_extract(c.metadata_json, \'\$.meaning\'), '
+          '1000000 + c.position '
           'FROM content_words c WHERE NOT EXISTS '
           '(SELECT 1 FROM curriculum_words w WHERE w.id = c.id)) '
-          'SELECT w.id, w.hanzi, w.meaning FROM words w '
+          'SELECT w.id, w.hanzi, w.pinyin, w.meaning FROM words w '
           'JOIN vocabulary_progress p ON p.word_id = w.id '
+          'LEFT JOIN learning_queue q ON q.profile_id = p.profile_id AND q.word_id = w.id '
           'WHERE p.profile_id = ? AND '
-          '(w.hanzi LIKE ? OR lower(w.meaning) LIKE ?) '
+          "instr(lower(w.hanzi || ' ' || COALESCE(w.meaning,'')), ?) > 0 "
           '${mastered == null
               ? ''
               : mastered
               ? 'AND EXISTS (SELECT 1 FROM mastered_words m WHERE m.profile_id = p.profile_id AND m.word_id = w.id) '
               : 'AND NOT EXISTS (SELECT 1 FROM mastered_words m WHERE m.profile_id = p.profile_id AND m.word_id = w.id) '}'
           'ORDER BY CASE WHEN w.hanzi = ? OR lower(w.meaning) = ? THEN 0 ELSE 1 END, '
-          'w.id LIMIT 20',
+          'COALESCE(q.position, w.default_position), w.id LIMIT 21 OFFSET ?',
           variables: [
             Variable.withInt(profileId),
-            Variable.withString('%$term%'),
-            Variable.withString('%$term%'),
+            Variable.withString(term),
             Variable.withString(query.trim()),
             Variable.withString(term),
+            Variable.withInt(offset),
           ],
         )
         .get();
-    return [
-      for (final row in rows)
+    return RelearnPage([
+      for (final row in rows.take(20))
         RelearnWord(
           row.read<String>('id'),
           row.read<String>('hanzi'),
+          row.read<String>('pinyin'),
           row.read<String>('meaning'),
         ),
-    ];
+    ], rows.length > 20);
   }
 }
 

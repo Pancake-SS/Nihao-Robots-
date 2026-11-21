@@ -16,6 +16,12 @@ class MasterWord {
   final String id, hanzi, pinyin, meaning;
 }
 
+class MasterPage {
+  const MasterPage(this.words, this.hasMore);
+  final List<MasterWord> words;
+  final bool hasMore;
+}
+
 class MasterRepository {
   MasterRepository(this.database, this.lookup, {this.ready});
   final AppDatabase database;
@@ -31,10 +37,26 @@ class MasterRepository {
 
   /// All shared words plus only this profile's custom words. Empty search
   /// shows the first twenty curriculum words for instant mastery.
-  Future<List<MasterWord>> searchAll(int profileId, String query) async {
+  Future<List<MasterWord>> searchAll(int profileId, String query) async =>
+      (await _searchPage(profileId, query, 0, availableOnly: false)).words;
+
+  Future<MasterPage> browseAvailable(
+    int profileId, {
+    String query = '',
+    int offset = 0,
+  }) => _searchPage(profileId, query, offset, availableOnly: true);
+
+  Future<MasterPage> _searchPage(
+    int profileId,
+    String query,
+    int offset, {
+    required bool availableOnly,
+  }) async {
     await ready?.call();
     final term = query.trim().toLowerCase();
-    if (term.length > 100) throw ArgumentError('Search is too long.');
+    if (term.length > 100 || offset < 0 || offset > 20000) {
+      throw ArgumentError('Invalid Master page.');
+    }
     final rows = await database
         .customSelect(
           'WITH words AS ('
@@ -50,26 +72,29 @@ class MasterRepository {
           '(SELECT 1 FROM curriculum_words w WHERE w.id = c.id)) '
           'SELECT id, hanzi, pinyin, meaning FROM words '
           'WHERE instr(lower(hanzi || \' \' || pinyin || \' \' || meaning), ?) > 0 '
+          '${availableOnly ? 'AND NOT EXISTS (SELECT 1 FROM mastered_words m WHERE m.profile_id = ? AND m.word_id = words.id) ' : ''}'
           'ORDER BY CASE WHEN hanzi = ? OR lower(meaning) = ? THEN 0 ELSE 1 END, '
-          'default_position, id LIMIT 20',
+          'default_position, id LIMIT 21 OFFSET ?',
           variables: [
             Variable.withInt(profileId),
             Variable.withInt(profileId),
             Variable.withString(term),
+            if (availableOnly) Variable.withInt(profileId),
             Variable.withString(query.trim()),
             Variable.withString(term),
+            Variable.withInt(offset),
           ],
         )
         .get();
-    return [
-      for (final row in rows)
+    return MasterPage([
+      for (final row in rows.take(20))
         MasterWord(
           row.read<String>('id'),
           row.read<String>('hanzi'),
           row.read<String>('pinyin'),
           row.read<String>('meaning'),
         ),
-    ];
+    ], rows.length > 20);
   }
 
   /// Regular Master requires a passed full quiz in the UI and 25 points here.
