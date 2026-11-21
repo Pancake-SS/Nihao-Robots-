@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,35 +16,6 @@ class MasterWord {
   final String id, hanzi, pinyin, meaning;
 }
 
-class MasterWriting {
-  const MasterWriting(this.prompt, this.sentence, this.writtenAt);
-  final String prompt, sentence;
-  final DateTime writtenAt;
-}
-
-abstract final class MasterPrompts {
-  static const topics = [
-    'Write a short poem using',
-    'Write a sentence from a story using',
-    'Describe an experience using',
-    'Write a line of dialogue using',
-    'Describe a place using',
-    'Share a memory using',
-    'Imagine the future using',
-    'Give someone advice using',
-    'Describe a person using',
-    'Write a question using',
-  ];
-
-  static String choose(String hanzi, {Random? random}) {
-    final picker = random ?? Random();
-    return '${topics[picker.nextInt(topics.length)]} $hanzi.';
-  }
-
-  static bool accepts(String prompt) =>
-      topics.any((topic) => prompt.startsWith('$topic '));
-}
-
 class MasterRepository {
   MasterRepository(this.database, this.lookup, {this.ready});
   final AppDatabase database;
@@ -58,25 +27,6 @@ class MasterRepository {
       database.masteredWords,
     )..where((row) => row.profileId.equals(profileId))).get();
     return {for (final row in rows) row.wordId};
-  }
-
-  Future<List<MasterWriting>> writings(int profileId, String wordId) async {
-    final rows =
-        await (database.select(database.masterWritings)
-              ..where(
-                (row) =>
-                    row.profileId.equals(profileId) & row.wordId.equals(wordId),
-              )
-              ..orderBy([(row) => OrderingTerm.desc(row.writtenAtMs)]))
-            .get();
-    return [
-      for (final row in rows)
-        MasterWriting(
-          row.prompt,
-          row.sentence,
-          DateTime.fromMillisecondsSinceEpoch(row.writtenAtMs, isUtc: true),
-        ),
-    ];
   }
 
   /// All shared words plus only this profile's custom words. Empty search
@@ -122,40 +72,25 @@ class MasterRepository {
     ];
   }
 
-  /// The writing is deliberately ungraded. A successful full quiz is a UI
-  /// prerequisite; this transaction records the final writing and membership.
+  /// A successful full quiz is a UI prerequisite. Keep legacy writing rows in
+  /// storage for old account saves, but new Master tests require no writing.
   Future<void> completeTest({
-    required String writingId,
     required int profileId,
     required String wordId,
-    required String prompt,
-    required String sentence,
     required bool instant,
   }) async {
-    final text = sentence.trim();
-    if (!RegExp(r'^[a-f0-9]{32}$').hasMatch(writingId) ||
-        !MasterPrompts.accepts(prompt) ||
-        text.isEmpty ||
-        text.runes.length > 1000) {
-      throw ArgumentError('Write a response before saving Master status.');
-    }
     final word = await lookup(wordId);
     if (word == null || word.entry.questions.isEmpty) {
       throw const MasterConflict('This lesson is unavailable.');
     }
     await database.transaction(() async {
-      final existing = await (database.select(
-        database.masterWritings,
-      )..where((row) => row.id.equals(writingId))).getSingleOrNull();
-      if (existing != null) {
-        if (existing.profileId != profileId ||
-            existing.wordId != wordId ||
-            existing.prompt != prompt ||
-            existing.sentence != text) {
-          throw const MasterConflict('This writing ID was already used.');
-        }
-        return;
-      }
+      final existing =
+          await (database.select(database.masteredWords)..where(
+                (row) =>
+                    row.profileId.equals(profileId) & row.wordId.equals(wordId),
+              ))
+              .getSingleOrNull();
+      if (existing != null) return;
       final profile = await (database.select(
         database.profiles,
       )..where((row) => row.id.equals(profileId))).getSingleOrNull();
@@ -211,18 +146,6 @@ class MasterRepository {
             );
       }
       await database
-          .into(database.masterWritings)
-          .insert(
-            MasterWritingsCompanion.insert(
-              id: writingId,
-              profileId: profileId,
-              wordId: wordId,
-              prompt: prompt,
-              sentence: text,
-              writtenAtMs: time,
-            ),
-          );
-      await database
           .into(database.masteredWords)
           .insertOnConflictUpdate(
             MasteredWordsCompanion.insert(
@@ -234,8 +157,8 @@ class MasterRepository {
     });
   }
 
-  /// Returning to Learn keeps immutable answers, correctness points and the
-  /// writing gallery. A later Learn quiz uses a new attempt version.
+  /// Returning to Learn keeps immutable answers, correctness points and any
+  /// legacy writing data. A later Learn quiz uses a new attempt version.
   Future<bool> returnToLearn(int profileId, String wordId) async {
     return database.transaction(() async {
       final removed =

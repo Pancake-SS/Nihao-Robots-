@@ -85,9 +85,9 @@ Use clearly named disposable profiles, keeping any existing profiles intact. The
 | Search by Hanzi or English and relearn, then close and relaunch offline | The matching lesson opens; correctness points and profile selection persist | NOT RUN |
 | Switch to B and open Practice | A's learned word and correctness points do not appear in B's list | NOT RUN |
 | Open Practice and choose each of its four methods | Each method opens its own page; one word, counted random, endless and relearn controls are clear | NOT RUN |
-| Reach 25 correct points for a word, then open Vocabulary > Master | The word appears in Ready for Master test; full quiz leads to a randomized, ungraded writing prompt | NOT RUN |
-| Search a known word under Instant master | Full test and writing prompt are required; saved writing appears in the word gallery | NOT RUN |
-| Practise a mastered word and miss three answers | It returns to Learn; previous writing and points remain available | NOT RUN |
+| Reach 25 correct points for a word, then open Vocabulary > Master | The word appears in Ready for Master test; passing the full quiz moves it straight into Master | NOT RUN |
+| Search a known word under Instant master | Passing the full test moves the word into Master without a writing prompt | NOT RUN |
+| Practise a mastered word and miss three answers | It returns to Learn; correctness points remain available | NOT RUN |
 | Open primary Practice and Speaking | Practice is usable; Speaking remains pending | NOT RUN |
 | Resize to approximately 1440×900, 900×700 and 360×640 | Scroll/navigation remain usable; no clipped controls or overflow | NOT RUN |
 | Increase Windows text scaling to 200%, then restore its prior value | Introduction and tutorial actions remain reachable | NOT RUN |

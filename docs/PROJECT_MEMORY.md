@@ -1,6 +1,6 @@
 # Ni Hao Robot! — Project Memory
 
-_Last updated: 2026-11-19 | State: Classical stories verified in Learning_
+_Last updated: 2026-11-21 | State: Master quiz simplified; home milestone flags added_
 
 ## Project vision and invariants
 - Science-informed Mandarin learning companion for beginners: Simplified Chinese, tone-marked Pinyin, clear English explanations.
@@ -11,6 +11,7 @@ _Last updated: 2026-11-19 | State: Classical stories verified in Learning_
 - Top-level Practice and Vocabulary Practice share the question flow. Learning now holds immersion resources, Classical stories, Free writing and Notebook; Speaking remains pending.
 - Slide visuals set mood/structure, not pixel-perfect implementation. Speaker notes and any comments matter for actual behavior.
 - Maintain verified educational content, deterministic grading and correctness points, durable learner progress, and tested migrations.
+- Current Master flow: 25 correct points or Instant master unlocks the full quiz; passing it grants Master status immediately. There is no Master writing step or gallery. Older saved Master writing remains in account archives. Home flags mark 100, 500, and each thousand through 11,000 mastered words.
 
 ## Sources read and independently verified
 - `reference/Mandarin_Learning_App_Master_Plan(1).md` — full product plan; `reference/CODING_STANDARDS(1).md` — full testing/security/architecture standards.

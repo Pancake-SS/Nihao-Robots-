@@ -56,7 +56,7 @@ class DailyStreakRepository {
       1,
     );
     await add(
-      "SELECT strftime('%Y-%m-%d', p.answered_at_ms / 1000, 'unixepoch', 'localtime') AS day, COUNT(DISTINCT p.word_id) AS total FROM practice_responses p WHERE p.profile_id = ? AND EXISTS (SELECT 1 FROM master_writings m WHERE m.profile_id = p.profile_id AND m.word_id = p.word_id AND m.written_at_ms <= p.answered_at_ms) GROUP BY day",
+      "SELECT strftime('%Y-%m-%d', p.answered_at_ms / 1000, 'unixepoch', 'localtime') AS day, COUNT(DISTINCT p.word_id) AS total FROM practice_responses p WHERE p.profile_id = ? AND (EXISTS (SELECT 1 FROM mastered_words m WHERE m.profile_id = p.profile_id AND m.word_id = p.word_id AND m.mastered_at_ms <= p.answered_at_ms) OR EXISTS (SELECT 1 FROM master_writings old WHERE old.profile_id = p.profile_id AND old.word_id = p.word_id AND old.written_at_ms <= p.answered_at_ms)) GROUP BY day",
       2,
     );
     await add(

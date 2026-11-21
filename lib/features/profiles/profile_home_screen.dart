@@ -59,7 +59,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
         TourStop(
           _progress,
           'Progress with meaning',
-          'The green bar tracks words currently mastered. The daily checklist includes Master reviews and shows what remains for today.',
+          'The green bar tracks words currently mastered. Flags mark goals from 100 through 11,000 words. The daily checklist shows what remains for today.',
         ),
         TourStop(
           _navigation,
@@ -81,7 +81,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
         TourStop(
           _vocabulary[2],
           'Master words',
-          'After 25 correct points, take the full Master test and save an ungraded writing prompt. Instant master offers the same test sooner. Three missed answers during Master practice return the word to Learn while keeping its writing and points.',
+          'After 25 correct points, pass the full Master test to master a word. Instant master offers the same test sooner. Three missed answers during Master practice return the word to Learn while keeping its points.',
         ),
       ],
       2 => [

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
@@ -43,82 +42,70 @@ class _VersionSixDatabase extends AppDatabase {
 }
 
 void main() {
-  test(
-    '25 correct points unlock mastery; writing survives return to Learn',
-    () async {
-      final db = AppDatabase(NativeDatabase.memory());
-      addTearDown(db.close);
-      final profile = (await SqliteProfileRepository(
-        db,
-      ).create(const ProfileDraft(name: 'Learner'))).selected!.id;
-      final other = (await SqliteProfileRepository(
-        db,
-      ).create(const ProfileDraft(name: 'Other'))).selected!.id;
-      final word = loadPilot();
-      final id = word.entry.id;
-      final lookup = (String candidate) async => candidate == id ? word : null;
-      final learning = SqliteLearningRepository(
-        db,
-        catalogue: () async => [word],
-        lookup: lookup,
-      );
-      final master = MasterRepository(db, lookup);
-      final first = await learning.begin(profile, id, review: false);
-      await learning.submit(first, correctAnswers(word));
-      final initialHistory =
-          (await db.select(db.vocabularyAttempts).get()).length;
-      final prompt = MasterPrompts.choose(word.entry.hanzi, random: Random(0));
-      Future<void> complete(String writingId, {bool instant = false}) =>
-          master.completeTest(
-            writingId: writingId,
-            profileId: profile,
-            wordId: id,
-            prompt: prompt,
-            sentence: '我用这个词写一个故事。',
-            instant: instant,
+  test('25 correct points unlock mastery without writing', () async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final profile = (await SqliteProfileRepository(
+      db,
+    ).create(const ProfileDraft(name: 'Learner'))).selected!.id;
+    final other = (await SqliteProfileRepository(
+      db,
+    ).create(const ProfileDraft(name: 'Other'))).selected!.id;
+    final word = loadPilot();
+    final id = word.entry.id;
+    final lookup = (String candidate) async => candidate == id ? word : null;
+    final learning = SqliteLearningRepository(
+      db,
+      catalogue: () async => [word],
+      lookup: lookup,
+    );
+    final master = MasterRepository(db, lookup);
+    final first = await learning.begin(profile, id, review: false);
+    await learning.submit(first, correctAnswers(word));
+    final initialHistory =
+        (await db.select(db.vocabularyAttempts).get()).length;
+    Future<void> complete({bool instant = false}) =>
+        master.completeTest(profileId: profile, wordId: id, instant: instant);
+    expect(() => complete(), throwsA(isA<MasterConflict>()));
+    final current = await learning.progress(profile);
+    final needed = 25 - current.single.correctCount;
+    for (var i = 0; i < needed; i++) {
+      await db
+          .into(db.practiceResponses)
+          .insert(
+            PracticeResponsesCompanion.insert(
+              id: newAttemptId(),
+              profileId: profile,
+              wordId: id,
+              questionId: word.entry.questions.first.id,
+              correct: true,
+              answeredAtMs: DateTime.now().millisecondsSinceEpoch,
+            ),
           );
-      expect(() => complete('a' * 32), throwsA(isA<MasterConflict>()));
-      final current = await learning.progress(profile);
-      final needed = 25 - current.single.correctCount;
-      for (var i = 0; i < needed; i++) {
-        await db
-            .into(db.practiceResponses)
-            .insert(
-              PracticeResponsesCompanion.insert(
-                id: newAttemptId(),
-                profileId: profile,
-                wordId: id,
-                questionId: word.entry.questions.first.id,
-                correct: true,
-                answeredAtMs: DateTime.now().millisecondsSinceEpoch,
-              ),
-            );
-      }
-      expect((await learning.progress(profile)).single.correctCount, 25);
-      await complete('a' * 32);
-      await complete('a' * 32);
-      expect(await master.masteredIds(profile), contains(id));
-      expect(await master.masteredIds(other), isEmpty);
-      expect(await master.writings(profile, id), hasLength(1));
-      expect(await master.writings(other, id), isEmpty);
-      expect(await master.returnToLearn(profile, id), isTrue);
-      expect(await master.returnToLearn(profile, id), isFalse);
-      expect(await master.masteredIds(profile), isEmpty);
-      expect(await master.writings(profile, id), hasLength(1));
-      expect(await learning.progress(profile), isEmpty);
-      final again = await learning.begin(profile, id, review: false);
-      expect(again.versionBefore, greaterThan(first.versionBefore));
-      await learning.submit(again, correctAnswers(word));
-      expect(
-        await db.select(db.vocabularyAttempts).get(),
-        hasLength(initialHistory + 1),
-      );
-      expect(
-        (await learning.progress(profile)).single.correctCount,
-        greaterThanOrEqualTo(25),
-      );
-    },
-  );
+    }
+    expect((await learning.progress(profile)).single.correctCount, 25);
+    await complete();
+    await complete();
+    expect(await master.masteredIds(profile), contains(id));
+    expect(await master.masteredIds(other), isEmpty);
+    expect(await db.select(db.masterWritings).get(), isEmpty);
+    expect(await master.returnToLearn(profile, id), isTrue);
+    expect(await master.returnToLearn(profile, id), isFalse);
+    expect(await master.masteredIds(profile), isEmpty);
+    expect(await db.select(db.masterWritings).get(), isEmpty);
+    expect(await learning.progress(profile), isEmpty);
+    final again = await learning.begin(profile, id, review: false);
+    expect(again.versionBefore, greaterThan(first.versionBefore));
+    await learning.submit(again, correctAnswers(word));
+    expect(
+      await db.select(db.vocabularyAttempts).get(),
+      hasLength(initialHistory + 1),
+    );
+    expect(
+      (await learning.progress(profile)).single.correctCount,
+      greaterThanOrEqualTo(25),
+    );
+  });
 
   test('instant master works before 25 points', () async {
     final db = AppDatabase(NativeDatabase.memory());
@@ -132,15 +119,12 @@ void main() {
       (id) async => id == word.entry.id ? word : null,
     );
     await master.completeTest(
-      writingId: 'b' * 32,
       profileId: profile,
       wordId: word.entry.id,
-      prompt: MasterPrompts.choose(word.entry.hanzi, random: Random(1)),
-      sentence: '一句话',
       instant: true,
     );
     expect(await master.masteredIds(profile), contains(word.entry.id));
-    expect(await master.writings(profile, word.entry.id), hasLength(1));
+    expect(await db.select(db.masterWritings).get(), isEmpty);
   });
 
   test(
@@ -284,14 +268,7 @@ void main() {
       db,
       (candidate) async => candidate == id ? word : null,
     );
-    await master.completeTest(
-      writingId: 'c' * 32,
-      profileId: profile,
-      wordId: id,
-      prompt: MasterPrompts.choose(word.entry.hanzi, random: Random(2)),
-      sentence: '我写了一个故事。',
-      instant: true,
-    );
+    await master.completeTest(profileId: profile, wordId: id, instant: true);
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -335,49 +312,50 @@ void main() {
     }
     expect(find.text('Word returned to Learn'), findsOneWidget);
     expect(await master.masteredIds(profile), isEmpty);
-    expect(await master.writings(profile, id), hasLength(1));
+    expect(await db.select(db.masterWritings).get(), isEmpty);
     await tester.pumpWidget(const SizedBox.shrink());
     await db.close();
   });
 
-  testWidgets('Master menu and gallery remain usable in a narrow window', (
-    tester,
-  ) async {
-    tester.view.physicalSize = const Size(360, 640);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    final db = AppDatabase(NativeDatabase.memory());
-    final profile = (await SqliteProfileRepository(
-      db,
-    ).create(const ProfileDraft(name: 'Small screen'))).selected!.id;
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [appDatabaseProvider.overrideWithValue(db)],
-        child: MaterialApp(
-          theme: buildTheme(),
-          home: MasterScreen(profileId: profile, showPinyin: true),
+  testWidgets(
+    'Master menu and mastered list remain usable in a narrow window',
+    (tester) async {
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final db = AppDatabase(NativeDatabase.memory());
+      final profile = (await SqliteProfileRepository(
+        db,
+      ).create(const ProfileDraft(name: 'Small screen'))).selected!.id;
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [appDatabaseProvider.overrideWithValue(db)],
+          child: MaterialApp(
+            theme: buildTheme(),
+            home: MasterScreen(profileId: profile, showPinyin: true),
+          ),
         ),
-      ),
-    );
-    await tester.pumpAndSettle();
-    expect(find.text('Ready for Master test'), findsOneWidget);
-    expect(find.text('Instant master'), findsOneWidget);
-    await tester.scrollUntilVisible(
-      find.text('Writing gallery'),
-      250,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(find.text('Writing gallery'));
-    await tester.pumpAndSettle();
-    expect(
-      find.text(
-        'No mastered words yet. Take a Master test when a word reaches 25 points, or choose Instant master.',
-      ),
-      findsOneWidget,
-    );
-    expect(tester.takeException(), equals(null));
-    await tester.pumpWidget(const SizedBox.shrink());
-    await db.close();
-  });
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Ready for Master test'), findsOneWidget);
+      expect(find.text('Instant master'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('Mastered words'),
+        250,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('Mastered words'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text(
+          'No mastered words yet. Take a Master test when a word reaches 25 points, or choose Instant master.',
+        ),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), equals(null));
+      await tester.pumpWidget(const SizedBox.shrink());
+      await db.close();
+    },
+  );
 }

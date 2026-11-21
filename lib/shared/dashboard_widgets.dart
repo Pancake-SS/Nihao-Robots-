@@ -107,9 +107,30 @@ class JourneyProgress extends StatelessWidget {
   final int? count;
   final int total;
 
+  static const milestones = <int>[
+    100,
+    500,
+    1000,
+    2000,
+    3000,
+    4000,
+    5000,
+    6000,
+    7000,
+    8000,
+    9000,
+    10000,
+    11000,
+  ];
+
+  static String goalLabel(int goal) =>
+      goal >= 1000 ? '${goal ~/ 1000}k' : '$goal';
+
   @override
   Widget build(BuildContext context) {
     final ratio = (count ?? 0).clamp(0, total) / total;
+    final mastered = count ?? 0;
+    final nextGoal = milestones.where((goal) => goal > mastered).firstOrNull;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -149,10 +170,79 @@ class JourneyProgress extends StatelessWidget {
                 '${(ratio * 100).toStringAsFixed(1)}% of the library',
                 style: const TextStyle(fontSize: 12, color: AppColors.mutedInk),
               ),
+              const SizedBox(height: 12),
+              Text(
+                count == null
+                    ? 'Loading your next goal…'
+                    : nextGoal == null
+                    ? 'All milestone flags reached!'
+                    : '${nextGoal - mastered} words until the ${goalLabel(nextGoal)} flag',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 10),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    for (var i = 0; i < milestones.length; i++)
+                      _MilestoneFlag(
+                        goal: milestones[i],
+                        previous: i == 0 ? 0 : milestones[i - 1],
+                        count: mastered,
+                      ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
       ],
+    );
+  }
+}
+
+class _MilestoneFlag extends StatelessWidget {
+  const _MilestoneFlag({
+    required this.goal,
+    required this.previous,
+    required this.count,
+  });
+
+  final int goal, previous, count;
+
+  @override
+  Widget build(BuildContext context) {
+    final reached = count >= goal;
+    final progress = ((count - previous) / (goal - previous)).clamp(0.0, 1.0);
+    return Semantics(
+      label:
+          '${JourneyProgress.goalLabel(goal)} mastered-word goal '
+          '${reached ? 'reached' : 'not reached'}',
+      child: SizedBox(
+        key: ValueKey('mastery-flag-$goal'),
+        width: 76,
+        child: Column(
+          children: [
+            Icon(
+              reached ? Icons.flag : Icons.outlined_flag,
+              size: 22,
+              color: reached ? const Color(0xFF2D8C51) : AppColors.mutedInk,
+            ),
+            Text(JourneyProgress.goalLabel(goal)),
+            const SizedBox(height: 5),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3),
+              child: LinearProgressIndicator(
+                value: progress,
+                minHeight: 5,
+                borderRadius: BorderRadius.circular(8),
+                color: const Color(0xFF3E9F62),
+                backgroundColor: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

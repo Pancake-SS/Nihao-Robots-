@@ -84,7 +84,7 @@ class VocabularyLanding extends StatelessWidget {
               background: Color(0xFFEDF7E5),
               icon: Icons.star_outline_rounded,
               artwork: RobotArtwork.gogglesOnPaper,
-              description: 'Take a Master test, save your writing, and keep your words sharp.',
+              description: 'Pass a Master test, then keep your words sharp with reviews.',
               status: 'Ready at 25 correct points',
               actionLabel: 'Open Master',
               action: () => Navigator.of(context).push(

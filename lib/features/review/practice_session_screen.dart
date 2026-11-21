@@ -243,7 +243,7 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen> {
                           Text(
                             _demotedWordId == null
                                 ? '$_seen questions answered · $_pointsAdded correctness points earned'
-                                : 'Three missed answers used this word’s chances. Its writing gallery and correctness points are saved.',
+                                : 'Three missed answers used this word’s chances. Its correctness points are saved.',
                           ),
                           if (eligible &&
                               !widget.masterPractice &&

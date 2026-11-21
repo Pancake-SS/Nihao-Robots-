@@ -106,3 +106,7 @@ The user's latest request separates Learning from vocabulary relearning. Add a s
 ## 2026-11-19: Offline classical stories
 
 The three user-supplied Wikisource works are bundled as 139 ordered readings under a separate Classical stories page in Learning. Keep the text in simplified rendering with source credit and pinned chapter links. Mark it as Classical Chinese rather than graded modern Mandarin. Import with a small number of batch API requests, preserve source revisions, and reject incomplete or unprocessed markup. The original index links also appear in Explore online. No learner database change is needed.
+
+## 2026-11-21: Simpler Master and visible milestones
+
+The user removed the post-quiz Master writing requirement and gallery. A passed full quiz now grants Master status directly, including Instant master. Keep the separate Free writing feature and keep historical `master_writings` rows in account saves without showing them in Master. The Mastered words page is a paged practice list. The home mastery bar uses current Master membership and shows flag goals at 100, 500, then each thousand through 11,000 words; the installed library still contains 11,147 words. Daily Master reviews count responses after the current Master timestamp or a historical Master writing timestamp.

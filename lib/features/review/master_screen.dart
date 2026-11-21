@@ -8,7 +8,7 @@ import '../../shared/robot_art.dart';
 import '../vocabulary/learning_keyboard.dart';
 import '../vocabulary/vocabulary_repository.dart';
 import 'learning_providers.dart';
-import 'master_gallery_screen.dart';
+import 'mastered_words_screen.dart';
 import 'master_repository.dart';
 import 'master_test_screen.dart';
 import 'practice_method_screen.dart';
@@ -46,8 +46,8 @@ class MasterScreen extends ConsumerWidget {
               ),
               TourStop(
                 _targets[2],
-                'Writing gallery',
-                'Read the sentence or story you wrote when each word became mastered.',
+                'Mastered words',
+                'See the words in Master and practice one again.',
               ),
               TourStop(
                 _targets[3],
@@ -68,13 +68,13 @@ class MasterScreen extends ConsumerWidget {
               children: [
                 const SunnyHero(
                   title: 'Master',
-                  subtitle: 'Prove you know a word, then keep its story in your gallery.',
+                  subtitle: 'Prove you know a word and keep it sharp.',
                   tag: 'Remember for longer',
                   robot: RobotArtwork.gogglesOnPaper,
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  'A word is ready after 25 correct answers. The Master test repeats its full quiz, then gives you a writing prompt. Your writing is saved without grading.',
+                  'A word is ready after 25 correct answers. Pass its full quiz to move it into Master.',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const SizedBox(height: 12),
@@ -106,9 +106,12 @@ class MasterScreen extends ConsumerWidget {
                   context,
                   _targets[2],
                   Icons.collections_bookmark_outlined,
-                  'Writing gallery',
-                  '${ids.length} mastered words · Revisit what you wrote',
-                  () => MasterGalleryScreen(profileId: profileId),
+                  'Mastered words',
+                  '${ids.length} words in Master · Practice one again',
+                  () => MasteredWordsScreen(
+                    profileId: profileId,
+                    showPinyin: showPinyin,
+                  ),
                 ),
                 _tile(
                   context,
@@ -374,7 +377,7 @@ class MasterPracticeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               const Text(
-                'Each mastered word has three missed-answer chances in a session. On the third miss, it returns to Learn. Your writing and points stay saved.',
+                'Each mastered word has three missed-answer chances in a session. On the third miss, it returns to Learn. Correctness points stay saved.',
               ),
               const SizedBox(height: 16),
               for (final choice in <(PracticeRoute, String, String)>[
