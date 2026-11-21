@@ -62,6 +62,8 @@ The implemented flow is Create Local Profile > Choose > Continue > Home. Vocabul
 
 Practice opens a menu of four separate pages: one-word test, counted random questions, endless questions, and relearning. Vocabulary > Master offers a test for words with 25 correct points. Instant master lets an experienced learner take the same full test before reaching 25 points. Passing the full quiz moves the word straight into Master. The Mastered words list lets you practice a specific word again; a word returns to Learn after three missed answers in a session. Its correctness points remain saved. Historical Master writing from older app versions remains in account saves but is no longer requested or shown.
 
+Instant master is also available for the selected word on Vocabulary > Learn and at the end of its lesson. A confirmation explains that it skips the point threshold but still requires the full quiz. Choosing **Not now** returns to learning without changing the word.
+
 ## Dependencies, code generation and data preservation
 
 Riverpod/Drift are resolved and tested; see `docs/DEPENDENCIES.md` and `pubspec.lock`. Do not hand-edit `lib/data/app_database.g.dart`. To regenerate or export schema after an intentional change:

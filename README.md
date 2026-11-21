@@ -28,6 +28,8 @@ Open **Vocabulary → Learn → Import CSV**. Paste CSV text or choose a `.csv`/
 
 To correct a custom word, select it in **Learn** and choose **Edit**, or use **Edit custom word** on its lesson page. You can change the word, all five examples, and its explanation. Saving updates its questions and keeps the word's progress; words supplied by the app cannot be edited.
 
+If you already know a word in **Learn**, select **Instant master** beside its Learn button or at the end of its lesson. Confirm the prompt to start the full Master test without waiting for 25 correct points. Cancel to keep learning normally.
+
 ## Try the redesigned interface
 
 Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build_windows.ps1` from the project root, then launch the executable path printed by the helper. Keep its nearby DLLs and data folder together. In VS Code, **Terminal > Run Build Task** runs the same safe-path build. The patch's separate `lib/preview_main.dart` is sample-data-only source; this project has no web scaffold, so the actual Windows build is the supported way to try the design.

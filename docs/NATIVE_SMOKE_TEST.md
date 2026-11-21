@@ -86,6 +86,7 @@ Use clearly named disposable profiles, keeping any existing profiles intact. The
 | Switch to B and open Practice | A's learned word and correctness points do not appear in B's list | NOT RUN |
 | Open Practice and choose each of its four methods | Each method opens its own page; one word, counted random, endless and relearn controls are clear | NOT RUN |
 | Reach 25 correct points for a word, then open Vocabulary > Master | The word appears in Ready for Master test; passing the full quiz moves it straight into Master | NOT RUN |
+| Select an unlearned word in Vocabulary > Learn and choose Instant master | A confirmation explains the full test; Not now leaves the word untouched, while Start Master test opens the challenge | NOT RUN |
 | Search a known word under Instant master | Passing the full test moves the word into Master without a writing prompt | NOT RUN |
 | Practise a mastered word and miss three answers | It returns to Learn; correctness points remain available | NOT RUN |
 | Open primary Practice and Speaking | Practice is usable; Speaking remains pending | NOT RUN |

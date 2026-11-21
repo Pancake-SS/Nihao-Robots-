@@ -42,7 +42,7 @@ class MasterScreen extends ConsumerWidget {
               TourStop(
                 _targets[1],
                 'Instant master',
-                'Already know a word? Take its full test now without waiting for points.',
+                'Already know a word? Confirm your choice, then take its full test without waiting for points.',
               ),
               TourStop(
                 _targets[2],
@@ -205,16 +205,25 @@ class _MasterCandidatesScreenState
   }
 
   Future<void> _open(String id, String hanzi) async {
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => MasterTestScreen(
-          profileId: widget.profileId,
-          wordId: id,
-          hanzi: hanzi,
-          instant: widget.instant,
+    if (widget.instant) {
+      await offerInstantMaster(
+        context,
+        profileId: widget.profileId,
+        wordId: id,
+        hanzi: hanzi,
+      );
+    } else {
+      await Navigator.of(context).push<bool>(
+        MaterialPageRoute(
+          builder: (_) => MasterTestScreen(
+            profileId: widget.profileId,
+            wordId: id,
+            hanzi: hanzi,
+            instant: false,
+          ),
         ),
-      ),
-    );
+      );
+    }
     if (mounted) {
       ref.invalidate(masteredIdsProvider(widget.profileId));
       ref.invalidate(learningProgressProvider(widget.profileId));

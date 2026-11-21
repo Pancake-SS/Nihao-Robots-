@@ -11,6 +11,46 @@ import 'master_repository.dart';
 import 'practice_deck.dart';
 import 'practice_session_screen.dart';
 
+/// Asks before bypassing the 25-point path, then opens the same full test.
+Future<bool> offerInstantMaster(
+  BuildContext context, {
+  required int profileId,
+  required String wordId,
+  required String hanzi,
+}) async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: Text('Instant master $hanzi?'),
+      content: const Text(
+        'Already know this word? You can try its Master test now without collecting 25 correct points. You still need to pass the full quiz, and missed questions return at the end.',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(dialogContext, false),
+          child: const Text('Not now'),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(dialogContext, true),
+          child: const Text('Start Master test'),
+        ),
+      ],
+    ),
+  );
+  if (!context.mounted || confirmed != true) return false;
+  final completed = await Navigator.of(context).push<bool>(
+    MaterialPageRoute(
+      builder: (_) => MasterTestScreen(
+        profileId: profileId,
+        wordId: wordId,
+        hanzi: hanzi,
+        instant: true,
+      ),
+    ),
+  );
+  return completed == true;
+}
+
 class MasterTestScreen extends ConsumerStatefulWidget {
   const MasterTestScreen({
     required this.profileId,

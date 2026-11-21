@@ -16,6 +16,7 @@ import 'edit_custom_word_screen.dart';
 import 'learning_priority.dart';
 import 'word_introduction_screen.dart';
 import 'learning_keyboard.dart';
+import '../review/master_test_screen.dart';
 
 class LearningQueueScreen extends ConsumerStatefulWidget {
   const LearningQueueScreen({
@@ -258,6 +259,18 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
     }
   }
 
+  Future<void> _instantMaster() async {
+    final word = _words.where((item) => item.id == _selected).firstOrNull;
+    if (word == null || _busy) return;
+    final completed = await offerInstantMaster(
+      context,
+      profileId: widget.profileId,
+      wordId: word.id,
+      hanzi: word.hanzi,
+    );
+    if (mounted && completed) await _load(page: _page);
+  }
+
   Future<void> _showAddedWord(AddedWordResult? result) async {
     if (!mounted || result == null) return;
     _search.clear();
@@ -333,8 +346,8 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
               ),
               TourStop(
                 _learnTarget,
-                'Start the lesson',
-                'Open the selected word, read its examples, then complete its quiz.',
+                'Learn or master',
+                'Open the selected word to study it. If you already know it, Instant master asks before starting the full Master test.',
               ),
             ]),
             icon: const Icon(Icons.help_outline),
@@ -644,35 +657,51 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
                       SizedBox(
                         key: _learnTarget,
                         width: double.infinity,
-                        child: Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            if (selected != null &&
-                                selected.id.startsWith(
-                                  'custom.p${widget.profileId}.',
-                                )) ...[
-                              TextButton.icon(
-                                key: const ValueKey(
-                                  'edit-selected-custom-word',
+                            if (selected != null)
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Wrap(
+                                  alignment: WrapAlignment.end,
+                                  spacing: 8,
+                                  children: [
+                                    if (selected.id.startsWith(
+                                      'custom.p${widget.profileId}.',
+                                    ))
+                                      TextButton.icon(
+                                        key: const ValueKey(
+                                          'edit-selected-custom-word',
+                                        ),
+                                        onPressed: _busy ? null : _editSelected,
+                                        icon: const Icon(Icons.edit_outlined),
+                                        label: const Text('Edit'),
+                                      ),
+                                    TextButton.icon(
+                                      key: const ValueKey(
+                                        'instant-master-selected',
+                                      ),
+                                      onPressed: _busy ? null : _instantMaster,
+                                      icon: const Icon(
+                                        Icons.emoji_events_outlined,
+                                      ),
+                                      label: const Text('Instant master'),
+                                    ),
+                                  ],
                                 ),
-                                onPressed: _busy ? null : _editSelected,
-                                icon: const Icon(Icons.edit_outlined),
-                                label: const Text('Edit'),
                               ),
-                              const SizedBox(width: 8),
-                            ],
-                            Expanded(
-                              child: FilledButton(
-                                key: const ValueKey('learn-selected'),
-                                onPressed: _busy || selected == null
-                                    ? null
-                                    : _learn,
-                                child: Text(
-                                  selected == null
-                                      ? 'Learn selected word'
-                                      : 'Learn ${selected.hanzi}',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                            FilledButton(
+                              key: const ValueKey('learn-selected'),
+                              onPressed: _busy || selected == null
+                                  ? null
+                                  : _learn,
+                              child: Text(
+                                selected == null
+                                    ? 'Learn selected word'
+                                    : 'Learn ${selected.hanzi}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],

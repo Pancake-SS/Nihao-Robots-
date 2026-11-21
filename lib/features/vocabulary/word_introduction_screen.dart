@@ -15,6 +15,8 @@ import 'sentence_audio.dart';
 import 'word_teaching.dart';
 import 'curriculum_repository.dart';
 import 'edit_custom_word_screen.dart';
+import '../review/master_repository.dart';
+import '../review/master_test_screen.dart';
 
 class WordIntroductionScreen extends ConsumerStatefulWidget {
   const WordIntroductionScreen({
@@ -62,12 +64,29 @@ class _WordIntroductionScreenState
     }
   }
 
+  Future<void> _instantMaster() async {
+    final completed = await offerInstantMaster(
+      context,
+      profileId: widget.profileId,
+      wordId: _word.entry.id,
+      hanzi: _word.entry.hanzi,
+    );
+    if (mounted && completed) Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final word = _word;
     final showPinyin = widget.showPinyin;
     final profileId = widget.profileId;
     final entry = word.entry;
+    final alreadyMastered =
+        ref
+            .watch(masteredIdsProvider(profileId))
+            .asData
+            ?.value
+            .contains(entry.id) ==
+        true;
     final audioSession = ref.watch(sentenceAudioSessionProvider);
     return Scaffold(
       appBar: AppBar(
@@ -310,6 +329,17 @@ class _WordIntroductionScreenState
                     ),
                   ],
                   const SizedBox(height: 24),
+                  if (entry.questions.isNotEmpty && !alreadyMastered) ...[
+                    OutlinedButton.icon(
+                      key: const ValueKey('instant-master-lesson'),
+                      onPressed: _instantMaster,
+                      icon: const Icon(Icons.emoji_events_outlined),
+                      label: const Text(
+                        'Already know this word? Instant master',
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
                   if (entry.questions.isNotEmpty)
                     WordQuizEntry(
                       profileId: profileId,

@@ -103,6 +103,13 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.byKey(const ValueKey('import-custom-words')), findsOneWidget);
+      final instant = find.byKey(const ValueKey('instant-master-selected'));
+      expect(instant.hitTestable(), findsOneWidget);
+      await tester.tap(instant);
+      await tester.pumpAndSettle();
+      expect(find.textContaining('25 correct points'), findsOneWidget);
+      await tester.tap(find.text('Not now'));
+      await tester.pumpAndSettle();
       expect(find.byType(LearningKeyboard), findsOneWidget);
       expect(find.byKey(const ValueKey('queue-search')), findsOneWidget);
       await tester.enterText(
@@ -168,6 +175,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Meet a word'), findsOneWidget);
       expect(find.text(selected.hanzi), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('instant-master-lesson')),
+        findsOneWidget,
+      );
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox.shrink());
       await db.close();
