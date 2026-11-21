@@ -125,6 +125,47 @@ void main() {
     );
     expect(await master.masteredIds(profile), contains(word.entry.id));
     expect(await db.select(db.masterWritings).get(), isEmpty);
+    expect(await db.select(db.vocabularyAttempts).get(), isEmpty);
+    expect(await db.select(db.practiceResponses).get(), isEmpty);
+  });
+
+  test('instant mastered word can return to the front of Learn', () async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final profile = (await SqliteProfileRepository(
+      db,
+    ).create(const ProfileDraft(name: 'Already fluent'))).selected!.id;
+    final word = loadPilot();
+    final id = word.entry.id;
+    await db
+        .into(db.curriculumWords)
+        .insert(
+          CurriculumWordsCompanion.insert(
+            id: id,
+            packId: 'curriculum',
+            revision: 1,
+            contentSchema: 4,
+            hanzi: word.entry.hanzi,
+            pinyin: word.entry.pinyin,
+            meaning: word.entry.meaning,
+            searchText: '${word.entry.hanzi} ${word.entry.meaning}',
+            defaultPosition: 0,
+            metadataJson: '{}',
+          ),
+        );
+    final master = MasterRepository(
+      db,
+      (candidate) async => candidate == id ? word : null,
+    );
+    await master.completeTest(profileId: profile, wordId: id, instant: true);
+    expect(await db.select(db.learningQueue).get(), isEmpty);
+
+    expect(await master.returnToLearn(profile, id), isTrue);
+    expect(await master.masteredIds(profile), isEmpty);
+    final queue = await db.select(db.learningQueue).get();
+    expect(queue, hasLength(1));
+    expect(queue.single.wordId, id);
+    expect(queue.single.position, 0);
   });
 
   test(

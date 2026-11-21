@@ -347,7 +347,7 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
               TourStop(
                 _learnTarget,
                 'Learn or master',
-                'Open the selected word to study it. If you already know it, Instant master asks before starting the full Master test.',
+                'Open the selected word to study it. If you already know it, Instant master asks before moving it straight into Master.',
               ),
             ]),
             icon: const Icon(Icons.help_outline),

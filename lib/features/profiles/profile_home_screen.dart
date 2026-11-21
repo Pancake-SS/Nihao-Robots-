@@ -81,7 +81,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
         TourStop(
           _vocabulary[2],
           'Master words',
-          'After 25 correct points, pass the full Master test to master a word. Instant master offers the same test sooner. Three missed answers during Master practice return the word to Learn while keeping its points.',
+          'After 25 correct points, pass the full Master test to master a word. If you already know one, Instant master skips the quiz after confirmation. Three missed answers during Master practice return the word to Learn while keeping its points.',
         ),
       ],
       2 => [

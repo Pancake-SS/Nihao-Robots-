@@ -72,15 +72,16 @@ class MasterRepository {
     ];
   }
 
-  /// A successful full quiz is a UI prerequisite. Keep legacy writing rows in
-  /// storage for old account saves, but new Master tests require no writing.
+  /// Regular Master requires a passed full quiz in the UI and 25 points here.
+  /// Instant Master is a confirmed direct promotion with neither requirement.
+  /// Legacy writing rows stay in storage for old account saves.
   Future<void> completeTest({
     required int profileId,
     required String wordId,
     required bool instant,
   }) async {
     final word = await lookup(wordId);
-    if (word == null || word.entry.questions.isEmpty) {
+    if (word == null || (!instant && word.entry.questions.isEmpty)) {
       throw const MasterConflict('This lesson is unavailable.');
     }
     await database.transaction(() async {
@@ -188,6 +189,21 @@ class MasterRepository {
           'UPDATE learning_queue SET position = 0 WHERE profile_id = ? AND word_id = ?',
           [profileId, wordId],
         );
+      } else {
+        // Instant Master can happen before this profile has opened Learn.
+        final curriculumWord = await (database.select(
+          database.curriculumWords,
+        )..where((row) => row.id.equals(wordId))).getSingleOrNull();
+        if (curriculumWord != null) {
+          await database.customStatement(
+            'UPDATE learning_queue SET position = position + 1 WHERE profile_id = ?',
+            [profileId],
+          );
+          await database.customStatement(
+            'INSERT INTO learning_queue(profile_id,word_id,position) VALUES(?,?,0)',
+            [profileId, wordId],
+          );
+        }
       }
       return true;
     });

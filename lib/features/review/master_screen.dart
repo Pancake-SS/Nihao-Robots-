@@ -42,7 +42,7 @@ class MasterScreen extends ConsumerWidget {
               TourStop(
                 _targets[1],
                 'Instant master',
-                'Already know a word? Confirm your choice, then take its full test without waiting for points.',
+                'Already know a word? Confirm to move it straight into Master without a quiz.',
               ),
               TourStop(
                 _targets[2],
@@ -96,7 +96,7 @@ class MasterScreen extends ConsumerWidget {
                   _targets[1],
                   Icons.flash_on_outlined,
                   'Instant master',
-                  'Already know a word? Take its Master test now.',
+                  'Already know a word? Move it to Master after confirming.',
                   () => MasterCandidatesScreen(
                     profileId: profileId,
                     instant: true,
@@ -219,7 +219,6 @@ class _MasterCandidatesScreenState
             profileId: widget.profileId,
             wordId: id,
             hanzi: hanzi,
-            instant: false,
           ),
         ),
       );

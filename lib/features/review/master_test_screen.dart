@@ -11,44 +11,115 @@ import 'master_repository.dart';
 import 'practice_deck.dart';
 import 'practice_session_screen.dart';
 
-/// Asks before bypassing the 25-point path, then opens the same full test.
+/// Confirms an immediate Master decision without starting a quiz.
 Future<bool> offerInstantMaster(
   BuildContext context, {
   required int profileId,
   required String wordId,
   required String hanzi,
 }) async {
-  final confirmed = await showDialog<bool>(
+  final completed = await showDialog<bool>(
     context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text('Instant master $hanzi?'),
-      content: const Text(
-        'Already know this word? You can try its Master test now without collecting 25 correct points. You still need to pass the full quiz, and missed questions return at the end.',
+    barrierDismissible: false,
+    builder: (_) => _InstantMasterDialog(
+      profileId: profileId,
+      wordId: wordId,
+      hanzi: hanzi,
+    ),
+  );
+  return completed == true;
+}
+
+class _InstantMasterDialog extends ConsumerStatefulWidget {
+  const _InstantMasterDialog({
+    required this.profileId,
+    required this.wordId,
+    required this.hanzi,
+  });
+
+  final int profileId;
+  final String wordId, hanzi;
+
+  @override
+  ConsumerState<_InstantMasterDialog> createState() =>
+      _InstantMasterDialogState();
+}
+
+class _InstantMasterDialogState extends ConsumerState<_InstantMasterDialog> {
+  bool _saving = false;
+  String? _error;
+
+  Future<void> _confirm() async {
+    if (_saving) return;
+    setState(() {
+      _saving = true;
+      _error = null;
+    });
+    try {
+      await ref
+          .read(masterRepositoryProvider)
+          .completeTest(
+            profileId: widget.profileId,
+            wordId: widget.wordId,
+            instant: true,
+          );
+      if (!mounted) return;
+      ref.invalidate(masteredIdsProvider(widget.profileId));
+      ref.invalidate(dailyStreakProvider(widget.profileId));
+      ref.invalidate(learningProgressProvider(widget.profileId));
+      Navigator.of(context).pop(true);
+    } catch (error) {
+      if (mounted) {
+        setState(
+          () => _error = error is MasterConflict
+              ? error.message
+              : 'Could not master this word. Please retry.',
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => PopScope(
+    canPop: !_saving,
+    child: AlertDialog(
+      scrollable: true,
+      title: Text('Instant master ${widget.hanzi}?'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Already know this word? Confirming moves it straight into Master without a quiz or 25 correct points. You can still practice it later.',
+          ),
+          if (_saving) ...[
+            const SizedBox(height: 16),
+            const LinearProgressIndicator(),
+          ],
+          if (_error != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              _error!,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ],
+        ],
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(dialogContext, false),
+          onPressed: _saving ? null : () => Navigator.pop(context, false),
           child: const Text('Not now'),
         ),
         FilledButton(
-          onPressed: () => Navigator.pop(dialogContext, true),
-          child: const Text('Start Master test'),
+          key: const ValueKey('confirm-instant-master'),
+          onPressed: _saving ? null : _confirm,
+          child: Text(_saving ? 'Mastering…' : 'Master this word'),
         ),
       ],
     ),
   );
-  if (!context.mounted || confirmed != true) return false;
-  final completed = await Navigator.of(context).push<bool>(
-    MaterialPageRoute(
-      builder: (_) => MasterTestScreen(
-        profileId: profileId,
-        wordId: wordId,
-        hanzi: hanzi,
-        instant: true,
-      ),
-    ),
-  );
-  return completed == true;
 }
 
 class MasterTestScreen extends ConsumerStatefulWidget {
@@ -56,12 +127,10 @@ class MasterTestScreen extends ConsumerStatefulWidget {
     required this.profileId,
     required this.wordId,
     required this.hanzi,
-    required this.instant,
     super.key,
   });
   final int profileId;
   final String wordId, hanzi;
-  final bool instant;
 
   @override
   ConsumerState<MasterTestScreen> createState() => _MasterTestScreenState();
@@ -100,7 +169,7 @@ class _MasterTestScreenState extends ConsumerState<MasterTestScreen> {
           .completeTest(
             profileId: widget.profileId,
             wordId: widget.wordId,
-            instant: widget.instant,
+            instant: false,
           );
       if (!mounted) return;
       ref.invalidate(masteredIdsProvider(widget.profileId));

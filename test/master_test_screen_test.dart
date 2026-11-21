@@ -8,12 +8,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: MasterTestScreen(
-          profileId: 1,
-          wordId: 'test.word',
-          hanzi: '你好',
-          instant: false,
-        ),
+        home: MasterTestScreen(profileId: 1, wordId: 'test.word', hanzi: '你好'),
       ),
     );
     expect(find.text('Start full word test'), findsOneWidget);
