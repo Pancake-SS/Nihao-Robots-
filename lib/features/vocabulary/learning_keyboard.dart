@@ -181,6 +181,48 @@ class _LearningKeyboardState extends ConsumerState<LearningKeyboard> {
     _activeFocus.requestFocus();
   }
 
+  void _selectFirstSyllable(PinyinCandidate candidate, PinyinSplit split) {
+    if (!widget.enabled) return;
+    final controller = _active;
+    final value = controller.value;
+    final cursor = value.selection.isValid
+        ? value.selection.extentOffset
+        : value.text.length;
+    final query = _query;
+    if (query.isEmpty || split.rawPrefixLength > query.length) return;
+    final start = cursor - query.length;
+    final replacement = _mode == LearningKeyboardMode.all && widget.singleField
+        ? '${candidate.hanzi} · ${candidate.pinyin} · ${candidate.meaning.split(RegExp(r'[;/]')).first.trim()}'
+        : _mode == LearningKeyboardMode.pinyin
+        ? '${candidate.pinyin} '
+        : candidate.hanzi;
+    final result = value.text.replaceRange(
+      start,
+      start + split.rawPrefixLength,
+      replacement,
+    );
+    if (controller == widget.hanzi &&
+        result.characters.length > widget.hanziMaxLength) {
+      return;
+    }
+    controller.value = TextEditingValue(
+      text: result,
+      selection: TextSelection.collapsed(
+        offset: cursor - split.rawPrefixLength + replacement.length,
+      ),
+    );
+    if (controller == widget.hanzi) widget.onHanziChanged?.call(result);
+    if (_mode == LearningKeyboardMode.all && !widget.singleField) {
+      _append(widget.pinyin!, candidate.pinyin);
+      _append(
+        widget.english!,
+        candidate.meaning.split(RegExp(r'[;/]')).first.trim(),
+      );
+    }
+    setState(() => _page = 0);
+    _activeFocus.requestFocus();
+  }
+
   void _changed(String value) {
     if (!widget.enabled) return;
     // Space accepts the best dictionary match just like a conventional IME.
@@ -383,38 +425,39 @@ class _LearningKeyboardState extends ConsumerState<LearningKeyboard> {
                 offset: _page * _pageSize,
                 limit: _pageSize + 1,
               );
+              final split = candidates.isEmpty && _page == 0
+                  ? input.firstSyllable(query, limit: _pageSize)
+                  : null;
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (candidates.isEmpty)
+                  if (candidates.isEmpty && split == null)
                     const Text(
                       'No match. Try a shorter Pinyin spelling or paste the characters.',
                     ),
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 4,
-                    children: [
-                      for (final candidate in candidates.take(_pageSize))
-                        OutlinedButton(
-                          key: ValueKey('candidate-${candidate.hanzi}'),
-                          onPressed: widget.enabled
-                              ? () => _select(candidate)
-                              : null,
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 350),
+                  if (split != null) ...[
+                    Text(
+                      'No whole-word match. Choose ${split.firstSyllable} first; ${split.remaining} stays ready.',
+                    ),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      children: [
+                        for (final candidate in split.candidates)
+                          OutlinedButton(
+                            key: ValueKey('candidate-${candidate.hanzi}'),
+                            onPressed: widget.enabled
+                                ? () => _selectFirstSyllable(candidate, split)
+                                : null,
                             child: Text(
-                              _mode == LearningKeyboardMode.all
-                                  ? '${candidate.hanzi} · ${candidate.pinyin} · ${candidate.meaning}'
-                                  : _mode == LearningKeyboardMode.pinyin
-                                  ? candidate.pinyin
-                                  : candidate.hanzi,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                              candidate.sourceWord == null
+                                  ? candidate.hanzi
+                                  : '${candidate.hanzi} · ${candidate.sourceWord}',
                             ),
                           ),
-                        ),
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
                   if (_page > 0 || candidates.length > _pageSize)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -437,6 +480,33 @@ class _LearningKeyboardState extends ConsumerState<LearningKeyboard> {
                         ),
                       ],
                     ),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    children: [
+                      for (final candidate in candidates.take(_pageSize))
+                        OutlinedButton(
+                          key: ValueKey('candidate-${candidate.hanzi}'),
+                          onPressed: widget.enabled
+                              ? () => _select(candidate)
+                              : null,
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 350),
+                            child: Text(
+                              _mode == LearningKeyboardMode.all
+                                  ? '${candidate.hanzi} · ${candidate.pinyin} · ${candidate.meaning}'
+                                  : _mode == LearningKeyboardMode.pinyin
+                                  ? candidate.pinyin
+                                  : candidate.sourceWord == null
+                                  ? candidate.hanzi
+                                  : '${candidate.hanzi} · ${candidate.sourceWord}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ],
               );
             },

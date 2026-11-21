@@ -126,6 +126,72 @@ void main() {
     expect(engine.candidates('nihao').first.hanzi, '你好');
   });
 
+  test('character suggestions compose words absent from the dictionary', () {
+    final cupboard = engine
+        .candidates('gui')
+        .firstWhere((candidate) => candidate.hanzi == '柜');
+    expect(cupboard.sourceWord, '柜子');
+    expect(cupboard.pinyin, 'guì');
+    expect(
+      engine.candidates('gui', limit: 8).map((candidate) => candidate.hanzi),
+      contains('柜'),
+    );
+    final split = engine.firstSyllable('binggui')!;
+    expect(split.firstSyllable, 'bing');
+    expect(split.remaining, 'gui');
+    expect(split.candidates.map((candidate) => candidate.hanzi), contains('冰'));
+    expect(engine.firstSyllable('bing1gui4')!.rawPrefixLength, 5);
+  });
+
+  testWidgets('answer keyboard converts binggui one syllable at a time', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(360, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    var answer = '';
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          pinyinInputEngineProvider.overrideWith((ref) async => engine),
+        ],
+        child: MaterialApp(
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: const TextScaler.linear(2)),
+            child: child!,
+          ),
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: ChineseAnswerInput(
+                answerKey: const ValueKey('freezer-answer'),
+                initialValue: '',
+                enabled: true,
+                onChanged: (value) => answer = value,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('freezer-answer')),
+      'binggui',
+    );
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const ValueKey('candidate-冰')));
+    await tester.tap(find.byKey(const ValueKey('candidate-冰')));
+    await tester.pumpAndSettle();
+    expect(answer, '冰gui');
+    await tester.ensureVisible(find.byKey(const ValueKey('candidate-柜')));
+    await tester.tap(find.byKey(const ValueKey('candidate-柜')));
+    await tester.pumpAndSettle();
+    expect(answer, '冰柜');
+    expect(tester.takeException(), isNull);
+  });
+
   test('alternate readings fill only the selected marked Pinyin', () {
     expect(
       engine.candidates('shei').firstWhere((c) => c.hanzi == '谁').pinyin,

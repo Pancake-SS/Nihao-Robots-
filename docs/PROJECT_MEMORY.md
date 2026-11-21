@@ -1,6 +1,6 @@
 # Ni Hao Robot! — Project Memory
 
-_Last updated: 2026-11-22 | State: Practice and Master word pickers browse in pages_
+_Last updated: 2026-11-22 | State: Pinyin keyboard composes missing words from attested characters_
 
 ## Project vision and invariants
 - Science-informed Mandarin learning companion for beginners: Simplified Chinese, tone-marked Pinyin, clear English explanations.
@@ -14,6 +14,7 @@ _Last updated: 2026-11-22 | State: Practice and Master word pickers browse in pa
 - Current Master flow: 25 correct points unlock the regular full quiz; passing it grants Master status. Instant master instead directly promotes a known word after confirmation, with no quiz or point threshold. There is no Master writing step or gallery. Older saved Master writing remains in account archives. Home flags mark 100, 500, and each thousand through 11,000 mastered words.
 - Instant master can be launched from a selected Learn word, its lesson, or Master search. Cancelling the confirmation changes nothing.
 - One-word Practice, relearning, and their Master equivalents open with 20-word browse pages and direct row actions. Search remains optional. Instant Master pages through unmastered words instead of stopping at the first 20.
+- The offline Pinyin keyboard now suggests characters attested inside bundled dictionary words, with the source word visible. An unlisted compound such as `binggui` can be converted one syllable at a time to 冰柜. Candidate page controls sit above the suggestions so additional homophones are easier to find.
 
 ## Sources read and independently verified
 - `reference/Mandarin_Learning_App_Master_Plan(1).md` — full product plan; `reference/CODING_STANDARDS(1).md` — full testing/security/architecture standards.

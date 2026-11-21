@@ -92,6 +92,18 @@ void main() {
       await tester.tap(find.byKey(ValueKey('candidate-${candidate.hanzi}')));
       expect(pinyin.text, candidate.pinyin);
 
+      await tester.enterText(
+        find.byKey(const ValueKey('pinyin-field')),
+        'binggui',
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('candidate-冰')));
+      await tester.pumpAndSettle();
+      expect(pinyin.text, 'bīng gui');
+      await tester.tap(find.byKey(const ValueKey('candidate-柜')));
+      await tester.pumpAndSettle();
+      expect(pinyin.text, 'bīng guì');
+
       await tester.tap(find.byKey(const ValueKey('mode-english')));
       await tester.enterText(
         find.byKey(const ValueKey('english-field')),

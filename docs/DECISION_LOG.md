@@ -116,3 +116,7 @@ Instant master is available from selected words in Learn and from the lesson as 
 ## 2026-11-22: Browse Practice and Master words before searching
 
 One-word Practice and relearning, including their Master variants, now show learned words immediately in 20-word pages. Each row offers a direct Test or Lesson action; selecting a row still highlights it for the bottom action. Hanzi/English search narrows the pages, with Pinyin omitted from relearning search to avoid homophone collisions. Instant Master now pages through all unmastered curriculum words and still supports Hanzi, Pinyin and English search. The data queries return only 20 visible rows and one lookahead row per page.
+
+## 2026-11-22: Compose unlisted words with the offline keyboard
+
+The bundled word dictionary omits some valid compounds and standalone characters. The keyboard may now suggest a character from a dictionary word when its syllables align with its Hanzi characters. It labels the source word rather than presenting the derived character as an independent dictionary entry. If a complete Pinyin string has no word match, offer the first syllable's character candidates and retain the remaining Pinyin for a second selection. Keep whole-word matches first, preserve paging for homophones, and show candidate page controls before the buttons. The reported `binggui` example can be entered as 冰 + 柜, with 柜 attested in 柜子.
