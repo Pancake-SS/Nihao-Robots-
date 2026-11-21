@@ -20,6 +20,10 @@ Push-Location -LiteralPath $stageRoot
 try {
     & powershell -NoProfile -ExecutionPolicy Bypass -File $wrapper pub get
     if ($LASTEXITCODE -ne 0) { throw "Package/plugin setup failed. Snapshot retained at $stageRoot" }
+    # A single compiler process avoids C1060 on PCs with limited commit memory.
+    $env:CL_MPCount = '1'
+    $env:CMAKE_BUILD_PARALLEL_LEVEL = '1'
+    $env:MSBUILDDISABLENODEREUSE = '1'
     & powershell -NoProfile -ExecutionPolicy Bypass -File $wrapper build windows "--$Configuration" --no-pub
     if ($LASTEXITCODE -ne 0) { throw "Windows build failed. Snapshot retained at $stageRoot" }
     $runnerDirectory = Join-Path $stageRoot "build\windows\x64\runner\$Configuration"
