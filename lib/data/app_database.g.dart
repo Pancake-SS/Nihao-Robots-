@@ -7908,6 +7908,394 @@ class CurriculumExamplesCompanion extends UpdateCompanion<CurriculumExample> {
   }
 }
 
+class $ProfileWordExamplesTable extends ProfileWordExamples
+    with TableInfo<$ProfileWordExamplesTable, ProfileWordExample> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProfileWordExamplesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _profileIdMeta = const VerificationMeta(
+    'profileId',
+  );
+  @override
+  late final GeneratedColumn<int> profileId = GeneratedColumn<int>(
+    'profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES profiles (id)',
+    ),
+  );
+  static const VerificationMeta _wordIdMeta = const VerificationMeta('wordId');
+  @override
+  late final GeneratedColumn<String> wordId = GeneratedColumn<String>(
+    'word_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES curriculum_words (id)',
+    ),
+  );
+  static const VerificationMeta _examplesJsonMeta = const VerificationMeta(
+    'examplesJson',
+  );
+  @override
+  late final GeneratedColumn<String> examplesJson = GeneratedColumn<String>(
+    'examples_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _explanationMeta = const VerificationMeta(
+    'explanation',
+  );
+  @override
+  late final GeneratedColumn<String> explanation = GeneratedColumn<String>(
+    'explanation',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMsMeta = const VerificationMeta(
+    'updatedAtMs',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAtMs = GeneratedColumn<int>(
+    'updated_at_ms',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    profileId,
+    wordId,
+    examplesJson,
+    explanation,
+    updatedAtMs,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'profile_word_examples';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProfileWordExample> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('profile_id')) {
+      context.handle(
+        _profileIdMeta,
+        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_profileIdMeta);
+    }
+    if (data.containsKey('word_id')) {
+      context.handle(
+        _wordIdMeta,
+        wordId.isAcceptableOrUnknown(data['word_id']!, _wordIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_wordIdMeta);
+    }
+    if (data.containsKey('examples_json')) {
+      context.handle(
+        _examplesJsonMeta,
+        examplesJson.isAcceptableOrUnknown(
+          data['examples_json']!,
+          _examplesJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_examplesJsonMeta);
+    }
+    if (data.containsKey('explanation')) {
+      context.handle(
+        _explanationMeta,
+        explanation.isAcceptableOrUnknown(
+          data['explanation']!,
+          _explanationMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_explanationMeta);
+    }
+    if (data.containsKey('updated_at_ms')) {
+      context.handle(
+        _updatedAtMsMeta,
+        updatedAtMs.isAcceptableOrUnknown(
+          data['updated_at_ms']!,
+          _updatedAtMsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMsMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {profileId, wordId};
+  @override
+  ProfileWordExample map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProfileWordExample(
+      profileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}profile_id'],
+      )!,
+      wordId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}word_id'],
+      )!,
+      examplesJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}examples_json'],
+      )!,
+      explanation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}explanation'],
+      )!,
+      updatedAtMs: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at_ms'],
+      )!,
+    );
+  }
+
+  @override
+  $ProfileWordExamplesTable createAlias(String alias) {
+    return $ProfileWordExamplesTable(attachedDatabase, alias);
+  }
+}
+
+class ProfileWordExample extends DataClass
+    implements Insertable<ProfileWordExample> {
+  final int profileId;
+  final String wordId;
+  final String examplesJson;
+  final String explanation;
+  final int updatedAtMs;
+  const ProfileWordExample({
+    required this.profileId,
+    required this.wordId,
+    required this.examplesJson,
+    required this.explanation,
+    required this.updatedAtMs,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['profile_id'] = Variable<int>(profileId);
+    map['word_id'] = Variable<String>(wordId);
+    map['examples_json'] = Variable<String>(examplesJson);
+    map['explanation'] = Variable<String>(explanation);
+    map['updated_at_ms'] = Variable<int>(updatedAtMs);
+    return map;
+  }
+
+  ProfileWordExamplesCompanion toCompanion(bool nullToAbsent) {
+    return ProfileWordExamplesCompanion(
+      profileId: Value(profileId),
+      wordId: Value(wordId),
+      examplesJson: Value(examplesJson),
+      explanation: Value(explanation),
+      updatedAtMs: Value(updatedAtMs),
+    );
+  }
+
+  factory ProfileWordExample.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProfileWordExample(
+      profileId: serializer.fromJson<int>(json['profileId']),
+      wordId: serializer.fromJson<String>(json['wordId']),
+      examplesJson: serializer.fromJson<String>(json['examplesJson']),
+      explanation: serializer.fromJson<String>(json['explanation']),
+      updatedAtMs: serializer.fromJson<int>(json['updatedAtMs']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'profileId': serializer.toJson<int>(profileId),
+      'wordId': serializer.toJson<String>(wordId),
+      'examplesJson': serializer.toJson<String>(examplesJson),
+      'explanation': serializer.toJson<String>(explanation),
+      'updatedAtMs': serializer.toJson<int>(updatedAtMs),
+    };
+  }
+
+  ProfileWordExample copyWith({
+    int? profileId,
+    String? wordId,
+    String? examplesJson,
+    String? explanation,
+    int? updatedAtMs,
+  }) => ProfileWordExample(
+    profileId: profileId ?? this.profileId,
+    wordId: wordId ?? this.wordId,
+    examplesJson: examplesJson ?? this.examplesJson,
+    explanation: explanation ?? this.explanation,
+    updatedAtMs: updatedAtMs ?? this.updatedAtMs,
+  );
+  ProfileWordExample copyWithCompanion(ProfileWordExamplesCompanion data) {
+    return ProfileWordExample(
+      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      wordId: data.wordId.present ? data.wordId.value : this.wordId,
+      examplesJson: data.examplesJson.present
+          ? data.examplesJson.value
+          : this.examplesJson,
+      explanation: data.explanation.present
+          ? data.explanation.value
+          : this.explanation,
+      updatedAtMs: data.updatedAtMs.present
+          ? data.updatedAtMs.value
+          : this.updatedAtMs,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProfileWordExample(')
+          ..write('profileId: $profileId, ')
+          ..write('wordId: $wordId, ')
+          ..write('examplesJson: $examplesJson, ')
+          ..write('explanation: $explanation, ')
+          ..write('updatedAtMs: $updatedAtMs')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(profileId, wordId, examplesJson, explanation, updatedAtMs);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProfileWordExample &&
+          other.profileId == this.profileId &&
+          other.wordId == this.wordId &&
+          other.examplesJson == this.examplesJson &&
+          other.explanation == this.explanation &&
+          other.updatedAtMs == this.updatedAtMs);
+}
+
+class ProfileWordExamplesCompanion extends UpdateCompanion<ProfileWordExample> {
+  final Value<int> profileId;
+  final Value<String> wordId;
+  final Value<String> examplesJson;
+  final Value<String> explanation;
+  final Value<int> updatedAtMs;
+  final Value<int> rowid;
+  const ProfileWordExamplesCompanion({
+    this.profileId = const Value.absent(),
+    this.wordId = const Value.absent(),
+    this.examplesJson = const Value.absent(),
+    this.explanation = const Value.absent(),
+    this.updatedAtMs = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProfileWordExamplesCompanion.insert({
+    required int profileId,
+    required String wordId,
+    required String examplesJson,
+    required String explanation,
+    required int updatedAtMs,
+    this.rowid = const Value.absent(),
+  }) : profileId = Value(profileId),
+       wordId = Value(wordId),
+       examplesJson = Value(examplesJson),
+       explanation = Value(explanation),
+       updatedAtMs = Value(updatedAtMs);
+  static Insertable<ProfileWordExample> custom({
+    Expression<int>? profileId,
+    Expression<String>? wordId,
+    Expression<String>? examplesJson,
+    Expression<String>? explanation,
+    Expression<int>? updatedAtMs,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (profileId != null) 'profile_id': profileId,
+      if (wordId != null) 'word_id': wordId,
+      if (examplesJson != null) 'examples_json': examplesJson,
+      if (explanation != null) 'explanation': explanation,
+      if (updatedAtMs != null) 'updated_at_ms': updatedAtMs,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProfileWordExamplesCompanion copyWith({
+    Value<int>? profileId,
+    Value<String>? wordId,
+    Value<String>? examplesJson,
+    Value<String>? explanation,
+    Value<int>? updatedAtMs,
+    Value<int>? rowid,
+  }) {
+    return ProfileWordExamplesCompanion(
+      profileId: profileId ?? this.profileId,
+      wordId: wordId ?? this.wordId,
+      examplesJson: examplesJson ?? this.examplesJson,
+      explanation: explanation ?? this.explanation,
+      updatedAtMs: updatedAtMs ?? this.updatedAtMs,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (profileId.present) {
+      map['profile_id'] = Variable<int>(profileId.value);
+    }
+    if (wordId.present) {
+      map['word_id'] = Variable<String>(wordId.value);
+    }
+    if (examplesJson.present) {
+      map['examples_json'] = Variable<String>(examplesJson.value);
+    }
+    if (explanation.present) {
+      map['explanation'] = Variable<String>(explanation.value);
+    }
+    if (updatedAtMs.present) {
+      map['updated_at_ms'] = Variable<int>(updatedAtMs.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProfileWordExamplesCompanion(')
+          ..write('profileId: $profileId, ')
+          ..write('wordId: $wordId, ')
+          ..write('examplesJson: $examplesJson, ')
+          ..write('explanation: $explanation, ')
+          ..write('updatedAtMs: $updatedAtMs, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $CurriculumAudioTable extends CurriculumAudio
     with TableInfo<$CurriculumAudioTable, CurriculumAudioData> {
   @override
@@ -9119,6 +9507,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $CurriculumSentencesTable(this);
   late final $CurriculumExamplesTable curriculumExamples =
       $CurriculumExamplesTable(this);
+  late final $ProfileWordExamplesTable profileWordExamples =
+      $ProfileWordExamplesTable(this);
   late final $CurriculumAudioTable curriculumAudio = $CurriculumAudioTable(
     this,
   );
@@ -9164,6 +9554,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     curriculumWords,
     curriculumSentences,
     curriculumExamples,
+    profileWordExamples,
     curriculumAudio,
     curriculumQuestions,
     curriculumInstalls,
@@ -9392,6 +9783,30 @@ final class $$ProfilesTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _learningEntriesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $ProfileWordExamplesTable,
+    List<ProfileWordExample>
+  >
+  _profileWordExamplesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.profileWordExamples,
+        aliasName: 'profiles__id__profile_word_examples__profile_id',
+      );
+
+  $$ProfileWordExamplesTableProcessedTableManager get profileWordExamplesRefs {
+    final manager = $$ProfileWordExamplesTableTableManager(
+      $_db,
+      $_db.profileWordExamples,
+    ).filter((f) => f.profileId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _profileWordExamplesRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -9677,6 +10092,31 @@ class $$ProfilesTableFilterComposer
           }) => $$LearningEntriesTableFilterComposer(
             $db: $db,
             $table: $db.learningEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> profileWordExamplesRefs(
+    Expression<bool> Function($$ProfileWordExamplesTableFilterComposer f) f,
+  ) {
+    final $$ProfileWordExamplesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.profileWordExamples,
+      getReferencedColumn: (t) => t.profileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfileWordExamplesTableFilterComposer(
+            $db: $db,
+            $table: $db.profileWordExamples,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -10020,6 +10460,32 @@ class $$ProfilesTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> profileWordExamplesRefs<T extends Object>(
+    Expression<T> Function($$ProfileWordExamplesTableAnnotationComposer a) f,
+  ) {
+    final $$ProfileWordExamplesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.profileWordExamples,
+          getReferencedColumn: (t) => t.profileId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ProfileWordExamplesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.profileWordExamples,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
   Expression<T> learningQueueRefs<T extends Object>(
     Expression<T> Function($$LearningQueueTableAnnotationComposer a) f,
   ) {
@@ -10069,6 +10535,7 @@ class $$ProfilesTableTableManager
             bool masterWritingsRefs,
             bool grammarProgressRefs,
             bool learningEntriesRefs,
+            bool profileWordExamplesRefs,
             bool learningQueueRefs,
           })
         > {
@@ -10138,6 +10605,7 @@ class $$ProfilesTableTableManager
                 masterWritingsRefs = false,
                 grammarProgressRefs = false,
                 learningEntriesRefs = false,
+                profileWordExamplesRefs = false,
                 learningQueueRefs = false,
               }) {
                 return PrefetchHooks(
@@ -10152,6 +10620,7 @@ class $$ProfilesTableTableManager
                     if (masterWritingsRefs) db.masterWritings,
                     if (grammarProgressRefs) db.grammarProgress,
                     if (learningEntriesRefs) db.learningEntries,
+                    if (profileWordExamplesRefs) db.profileWordExamples,
                     if (learningQueueRefs) db.learningQueue,
                   ],
                   addJoins: null,
@@ -10337,6 +10806,26 @@ class $$ProfilesTableTableManager
                           referencedColumn: 'profile_id',
                           typedResults: items,
                         ),
+                      if (profileWordExamplesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          ProfileRow,
+                          $ProfilesTable,
+                          ProfileWordExample,
+                          $ProfileWordExamplesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ProfilesTableReferences
+                              ._profileWordExamplesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProfilesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).profileWordExamplesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'profile_id',
+                          typedResults: items,
+                        ),
                       if (learningQueueRefs)
                         await $_getPrefetchedDataByColumns<
                           ProfileRow,
@@ -10387,6 +10876,7 @@ typedef $$ProfilesTableProcessedTableManager =
         bool masterWritingsRefs,
         bool grammarProgressRefs,
         bool learningEntriesRefs,
+        bool profileWordExamplesRefs,
         bool learningQueueRefs,
       })
     >;
@@ -16068,6 +16558,30 @@ final class $$CurriculumWordsTableReferences
   }
 
   static MultiTypedResultKey<
+    $ProfileWordExamplesTable,
+    List<ProfileWordExample>
+  >
+  _profileWordExamplesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.profileWordExamples,
+        aliasName: 'curriculum_words__id__profile_word_examples__word_id',
+      );
+
+  $$ProfileWordExamplesTableProcessedTableManager get profileWordExamplesRefs {
+    final manager = $$ProfileWordExamplesTableTableManager(
+      $_db,
+      $_db.profileWordExamples,
+    ).filter((f) => f.wordId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _profileWordExamplesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
     $CurriculumQuestionsTable,
     List<CurriculumQuestion>
   >
@@ -16185,6 +16699,31 @@ class $$CurriculumWordsTableFilterComposer
           }) => $$CurriculumExamplesTableFilterComposer(
             $db: $db,
             $table: $db.curriculumExamples,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> profileWordExamplesRefs(
+    Expression<bool> Function($$ProfileWordExamplesTableFilterComposer f) f,
+  ) {
+    final $$ProfileWordExamplesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.profileWordExamples,
+      getReferencedColumn: (t) => t.wordId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfileWordExamplesTableFilterComposer(
+            $db: $db,
+            $table: $db.profileWordExamples,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -16378,6 +16917,32 @@ class $$CurriculumWordsTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> profileWordExamplesRefs<T extends Object>(
+    Expression<T> Function($$ProfileWordExamplesTableAnnotationComposer a) f,
+  ) {
+    final $$ProfileWordExamplesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.profileWordExamples,
+          getReferencedColumn: (t) => t.wordId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ProfileWordExamplesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.profileWordExamples,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
   Expression<T> curriculumQuestionsRefs<T extends Object>(
     Expression<T> Function($$CurriculumQuestionsTableAnnotationComposer a) f,
   ) {
@@ -16445,6 +17010,7 @@ class $$CurriculumWordsTableTableManager
           CurriculumWord,
           PrefetchHooks Function({
             bool curriculumExamplesRefs,
+            bool profileWordExamplesRefs,
             bool curriculumQuestionsRefs,
             bool learningQueueRefs,
           })
@@ -16525,6 +17091,7 @@ class $$CurriculumWordsTableTableManager
           prefetchHooksCallback:
               ({
                 curriculumExamplesRefs = false,
+                profileWordExamplesRefs = false,
                 curriculumQuestionsRefs = false,
                 learningQueueRefs = false,
               }) {
@@ -16532,6 +17099,7 @@ class $$CurriculumWordsTableTableManager
                   db: db,
                   explicitlyWatchedTables: [
                     if (curriculumExamplesRefs) db.curriculumExamples,
+                    if (profileWordExamplesRefs) db.profileWordExamples,
                     if (curriculumQuestionsRefs) db.curriculumQuestions,
                     if (learningQueueRefs) db.learningQueue,
                   ],
@@ -16554,6 +17122,26 @@ class $$CurriculumWordsTableTableManager
                                 table,
                                 p0,
                               ).curriculumExamplesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'word_id',
+                          typedResults: items,
+                        ),
+                      if (profileWordExamplesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          CurriculumWord,
+                          $CurriculumWordsTable,
+                          ProfileWordExample,
+                          $ProfileWordExamplesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CurriculumWordsTableReferences
+                              ._profileWordExamplesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CurriculumWordsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).profileWordExamplesRefs,
                           currentColumn: 'id',
                           referencedColumn: 'word_id',
                           typedResults: items,
@@ -16620,6 +17208,7 @@ typedef $$CurriculumWordsTableProcessedTableManager =
       CurriculumWord,
       PrefetchHooks Function({
         bool curriculumExamplesRefs,
+        bool profileWordExamplesRefs,
         bool curriculumQuestionsRefs,
         bool learningQueueRefs,
       })
@@ -17375,6 +17964,431 @@ typedef $$CurriculumExamplesTableProcessedTableManager =
       (CurriculumExample, $$CurriculumExamplesTableReferences),
       CurriculumExample,
       PrefetchHooks Function({bool wordId, bool sentenceId})
+    >;
+typedef $$ProfileWordExamplesTableCreateCompanionBuilder =
+    ProfileWordExamplesCompanion Function({
+      required int profileId,
+      required String wordId,
+      required String examplesJson,
+      required String explanation,
+      required int updatedAtMs,
+      Value<int> rowid,
+    });
+typedef $$ProfileWordExamplesTableUpdateCompanionBuilder =
+    ProfileWordExamplesCompanion Function({
+      Value<int> profileId,
+      Value<String> wordId,
+      Value<String> examplesJson,
+      Value<String> explanation,
+      Value<int> updatedAtMs,
+      Value<int> rowid,
+    });
+
+final class $$ProfileWordExamplesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $ProfileWordExamplesTable,
+          ProfileWordExample
+        > {
+  $$ProfileWordExamplesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ProfilesTable _profileIdTable(_$AppDatabase db) => db.profiles
+      .createAlias('profile_word_examples__profile_id__profiles__id');
+
+  $$ProfilesTableProcessedTableManager get profileId {
+    final $_column = $_itemColumn<int>('profile_id')!;
+
+    final manager = $$ProfilesTableTableManager(
+      $_db,
+      $_db.profiles,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_profileIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $CurriculumWordsTable _wordIdTable(_$AppDatabase db) => db
+      .curriculumWords
+      .createAlias('profile_word_examples__word_id__curriculum_words__id');
+
+  $$CurriculumWordsTableProcessedTableManager get wordId {
+    final $_column = $_itemColumn<String>('word_id')!;
+
+    final manager = $$CurriculumWordsTableTableManager(
+      $_db,
+      $_db.curriculumWords,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_wordIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ProfileWordExamplesTableFilterComposer
+    extends Composer<_$AppDatabase, $ProfileWordExamplesTable> {
+  $$ProfileWordExamplesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get examplesJson => $composableBuilder(
+    column: $table.examplesJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get explanation => $composableBuilder(
+    column: $table.explanation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAtMs => $composableBuilder(
+    column: $table.updatedAtMs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ProfilesTableFilterComposer get profileId {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CurriculumWordsTableFilterComposer get wordId {
+    final $$CurriculumWordsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.curriculumWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumWordsTableFilterComposer(
+            $db: $db,
+            $table: $db.curriculumWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ProfileWordExamplesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProfileWordExamplesTable> {
+  $$ProfileWordExamplesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get examplesJson => $composableBuilder(
+    column: $table.examplesJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get explanation => $composableBuilder(
+    column: $table.explanation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAtMs => $composableBuilder(
+    column: $table.updatedAtMs,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ProfilesTableOrderingComposer get profileId {
+    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableOrderingComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CurriculumWordsTableOrderingComposer get wordId {
+    final $$CurriculumWordsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.curriculumWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumWordsTableOrderingComposer(
+            $db: $db,
+            $table: $db.curriculumWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ProfileWordExamplesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProfileWordExamplesTable> {
+  $$ProfileWordExamplesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get examplesJson => $composableBuilder(
+    column: $table.examplesJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get explanation => $composableBuilder(
+    column: $table.explanation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get updatedAtMs => $composableBuilder(
+    column: $table.updatedAtMs,
+    builder: (column) => column,
+  );
+
+  $$ProfilesTableAnnotationComposer get profileId {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.profileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CurriculumWordsTableAnnotationComposer get wordId {
+    final $$CurriculumWordsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.wordId,
+      referencedTable: $db.curriculumWords,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurriculumWordsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.curriculumWords,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ProfileWordExamplesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProfileWordExamplesTable,
+          ProfileWordExample,
+          $$ProfileWordExamplesTableFilterComposer,
+          $$ProfileWordExamplesTableOrderingComposer,
+          $$ProfileWordExamplesTableAnnotationComposer,
+          $$ProfileWordExamplesTableCreateCompanionBuilder,
+          $$ProfileWordExamplesTableUpdateCompanionBuilder,
+          (ProfileWordExample, $$ProfileWordExamplesTableReferences),
+          ProfileWordExample,
+          PrefetchHooks Function({bool profileId, bool wordId})
+        > {
+  $$ProfileWordExamplesTableTableManager(
+    _$AppDatabase db,
+    $ProfileWordExamplesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProfileWordExamplesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProfileWordExamplesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ProfileWordExamplesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> profileId = const Value.absent(),
+                Value<String> wordId = const Value.absent(),
+                Value<String> examplesJson = const Value.absent(),
+                Value<String> explanation = const Value.absent(),
+                Value<int> updatedAtMs = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProfileWordExamplesCompanion(
+                profileId: profileId,
+                wordId: wordId,
+                examplesJson: examplesJson,
+                explanation: explanation,
+                updatedAtMs: updatedAtMs,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int profileId,
+                required String wordId,
+                required String examplesJson,
+                required String explanation,
+                required int updatedAtMs,
+                Value<int> rowid = const Value.absent(),
+              }) => ProfileWordExamplesCompanion.insert(
+                profileId: profileId,
+                wordId: wordId,
+                examplesJson: examplesJson,
+                explanation: explanation,
+                updatedAtMs: updatedAtMs,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ProfileWordExamplesTable, ProfileWordExample>(
+                    table,
+                  ),
+                  $$ProfileWordExamplesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({profileId = false, wordId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (profileId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.profileId,
+                        referencedTable: $$ProfileWordExamplesTableReferences
+                            ._profileIdTable(db),
+                        referencedColumn: $$ProfileWordExamplesTableReferences
+                            ._profileIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+                    if (wordId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.wordId,
+                        referencedTable: $$ProfileWordExamplesTableReferences
+                            ._wordIdTable(db),
+                        referencedColumn: $$ProfileWordExamplesTableReferences
+                            ._wordIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ProfileWordExamplesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProfileWordExamplesTable,
+      ProfileWordExample,
+      $$ProfileWordExamplesTableFilterComposer,
+      $$ProfileWordExamplesTableOrderingComposer,
+      $$ProfileWordExamplesTableAnnotationComposer,
+      $$ProfileWordExamplesTableCreateCompanionBuilder,
+      $$ProfileWordExamplesTableUpdateCompanionBuilder,
+      (ProfileWordExample, $$ProfileWordExamplesTableReferences),
+      ProfileWordExample,
+      PrefetchHooks Function({bool profileId, bool wordId})
     >;
 typedef $$CurriculumAudioTableCreateCompanionBuilder =
     CurriculumAudioCompanion Function({
@@ -18601,6 +19615,8 @@ class $AppDatabaseManager {
       $$CurriculumSentencesTableTableManager(_db, _db.curriculumSentences);
   $$CurriculumExamplesTableTableManager get curriculumExamples =>
       $$CurriculumExamplesTableTableManager(_db, _db.curriculumExamples);
+  $$ProfileWordExamplesTableTableManager get profileWordExamples =>
+      $$ProfileWordExamplesTableTableManager(_db, _db.profileWordExamples);
   $$CurriculumAudioTableTableManager get curriculumAudio =>
       $$CurriculumAudioTableTableManager(_db, _db.curriculumAudio);
   $$CurriculumQuestionsTableTableManager get curriculumQuestions =>

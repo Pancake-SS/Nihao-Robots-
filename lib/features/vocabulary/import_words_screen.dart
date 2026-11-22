@@ -11,6 +11,7 @@ import 'add_word_screen.dart';
 import 'curriculum_repository.dart';
 import 'custom_word.dart';
 import 'custom_word_csv.dart';
+import 'pinyin_input.dart';
 
 class ImportWordsScreen extends ConsumerStatefulWidget {
   const ImportWordsScreen({required this.profileId, super.key});
@@ -154,6 +155,7 @@ class _ImportWordsScreenState extends ConsumerState<ImportWordsScreen> {
           AddedWordResult(
             saved.first.id,
             '${saved.length} ${saved.length == 1 ? 'word' : 'words'} imported to the front of your queue.',
+            openLesson: saved.length == 1,
           ),
         );
       }
@@ -177,28 +179,43 @@ class _ImportWordsScreenState extends ConsumerState<ImportWordsScreen> {
     }
   }
 
-  Future<void> _moveMatch() async {
+  bool _sameWord(CustomWordDraft draft, CustomWordClash clash) =>
+      draft.hanzi.trim() == clash.word.hanzi &&
+      PinyinInputEngine.normalize(draft.pinyin) ==
+          PinyinInputEngine.normalize(clash.word.pinyin);
+
+  Future<void> _saveExamplesToMatch() async {
     if (_busy || _clashes?.length != 1) return;
     final clash = _clashes!.single;
-    if (clash == null) return;
+    final draft = _drafts?.single;
+    if (clash == null || draft == null || !_sameWord(draft, clash)) return;
     setState(() => _busy = true);
     try {
-      await ref
-          .read(curriculumRepositoryProvider)
-          .bringToFront(widget.profileId, clash.word.id);
+      final repo = ref.read(curriculumRepositoryProvider);
+      if (clash.word.id.startsWith('custom.p${widget.profileId}.')) {
+        await repo.updateCustomWord(widget.profileId, clash.word.id, draft);
+      } else {
+        await repo.attachExamplesToExistingWord(
+          widget.profileId,
+          clash.word.id,
+          draft,
+        );
+      }
+      await repo.bringToFront(widget.profileId, clash.word.id);
       if (mounted) {
         Navigator.pop(
           context,
           AddedWordResult(
             clash.word.id,
-            '${clash.fields.join(', ')} matches ${clash.word.hanzi}. Moved it to the front of your queue.',
+            'Saved your five examples for ${clash.word.hanzi}. Open its lesson to read them.',
             alreadyStarted: clash.alreadyStarted,
+            openLesson: true,
           ),
         );
       }
     } catch (_) {
       if (mounted)
-        setState(() => _error = 'Could not move this word. Try again.');
+        setState(() => _error = 'Could not save the examples. Try again.');
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -209,6 +226,11 @@ class _ImportWordsScreenState extends ConsumerState<ImportWordsScreen> {
     final drafts = _drafts;
     final clashes = _clashes;
     final hasClash = clashes?.any((clash) => clash != null) ?? false;
+    final matchingWord =
+        drafts?.length == 1 &&
+        clashes?.length == 1 &&
+        clashes!.single != null &&
+        _sameWord(drafts!.single, clashes.single!);
     return Scaffold(
       appBar: AppBar(
         title: const AppScreenTitle('Import words from text'),
@@ -366,8 +388,10 @@ class _ImportWordsScreenState extends ConsumerState<ImportWordsScreen> {
                   ),
                 if (hasClash)
                   Text(
-                    clashes.length == 1
-                        ? 'This word already exists. You can move it to the front of Learn.'
+                    matchingWord
+                        ? 'This word already exists. Save your five examples for this profile, then open its lesson.'
+                        : clashes.length == 1
+                        ? 'A word clashes with this row, but its Hanzi and Pinyin do not both match. Edit the CSV row before importing; no examples have been saved.'
                         : 'Some words already exist. Remove those rows from the CSV, then check again.',
                   ),
                 const SizedBox(height: 12),
@@ -380,10 +404,11 @@ class _ImportWordsScreenState extends ConsumerState<ImportWordsScreen> {
                       'Import ${drafts.length} ${drafts.length == 1 ? 'word' : 'words'}',
                     ),
                   )
-                else if (clashes.length == 1)
+                else if (matchingWord)
                   FilledButton(
-                    onPressed: _busy ? null : _moveMatch,
-                    child: const Text('Move existing word to front'),
+                    key: const ValueKey('save-examples-to-existing-word'),
+                    onPressed: _busy ? null : _saveExamplesToMatch,
+                    child: const Text('Save five examples to this word'),
                   ),
               ],
             ],

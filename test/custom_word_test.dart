@@ -10,8 +10,10 @@ import 'package:ni_hao_robot/data/app_database.dart';
 import 'package:ni_hao_robot/features/vocabulary/add_word_screen.dart';
 import 'package:ni_hao_robot/features/profiles/profile.dart';
 import 'package:ni_hao_robot/features/profiles/sqlite_profile_repository.dart';
+import 'package:ni_hao_robot/features/profiles/profile_archive.dart';
 import 'package:ni_hao_robot/features/vocabulary/curriculum_repository.dart';
 import 'package:ni_hao_robot/features/vocabulary/custom_word.dart';
+import 'package:ni_hao_robot/features/vocabulary/custom_word_csv.dart';
 import 'package:ni_hao_robot/features/vocabulary/edit_custom_word_screen.dart';
 import 'package:ni_hao_robot/features/vocabulary/pinyin_input.dart';
 
@@ -68,6 +70,99 @@ CustomWordDraft importedDraft(String hanzi, String pinyin, String meaning) =>
     );
 
 void main() {
+  test(
+    'schema 9 upgrades to personal examples without changing the profile',
+    () async {
+      final dir = await Directory.systemTemp.createTemp(
+        'nihao-examples-migration-',
+      );
+      final file = File('${dir.path}${Platform.pathSeparator}learner.sqlite');
+      addTearDown(() async {
+        if (await file.exists()) await file.delete();
+        if (await dir.exists()) await dir.delete();
+      });
+      final old = AppDatabase(NativeDatabase(file));
+      final original = (await SqliteProfileRepository(
+        old,
+      ).create(const ProfileDraft(name: 'Existing learner'))).selected!.id;
+      await old.customStatement('DROP TABLE profile_word_examples');
+      await old.customStatement('PRAGMA user_version=9');
+      await old.close();
+
+      final upgraded = AppDatabase(NativeDatabase(file));
+      addTearDown(upgraded.close);
+      expect(
+        (await upgraded.select(upgraded.profiles).get()).single.id,
+        original,
+      );
+      expect(
+        (await upgraded.select(upgraded.profileWordExamples).get()),
+        isEmpty,
+      );
+      expect(
+        await upgraded.customSelect('PRAGMA foreign_key_check').get(),
+        isEmpty,
+      );
+    },
+  );
+
+  test('existing 扫码 keeps five imported examples per profile and in account saves', () async {
+    final csv =
+        '${CustomWordCsv.header}\n'
+        '扫码,sǎomǎ,to scan a QR code or barcode,'
+        '请扫码付款。,Qǐng sǎomǎ fùkuǎn.,Please scan the code to pay.,'
+        '你可以扫码查看菜单。,Nǐ kěyǐ sǎomǎ chákàn càidān.,You can scan the code to view the menu.,'
+        '进门前需要扫码登记。,Jìn mén qián xūyào sǎomǎ dēngjì.,You need to scan the code to register before entering.,'
+        '我的手机没电了所以不能扫码。,Wǒ de shǒujī méi diàn le suǒyǐ bù néng sǎomǎ.,My phone has run out of battery so I cannot scan the code.,'
+        '扫码后会显示订单详情。,Sǎomǎ hòu huì xiǎnshì dìngdān xiángqíng.,After scanning the code the order details will appear.,'
+        '扫码 is a common verb meaning to scan a QR code or barcode using a phone or scanner.';
+    final draft = CustomWordCsv.parse(csv).single;
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final profiles = SqliteProfileRepository(db);
+    final owner = (await profiles.create(const ProfileDraft(name: 'Owner')))
+        .selected!
+        .id;
+    final other = (await profiles.create(const ProfileDraft(name: 'Other')))
+        .selected!
+        .id;
+    final repo = fullCurriculum(db);
+    final clash = await repo.findCustomClash(
+      owner,
+      draft.hanzi,
+      draft.pinyin,
+      draft.meaning,
+    );
+    expect(clash, isNotNull);
+    expect(clash!.fields, containsAll(['Hanzi', 'Pinyin']));
+    expect((await repo.lesson(clash.word.id))!.entry.examples, isEmpty);
+    await repo.attachExamplesToExistingWord(owner, clash.word.id, draft);
+    final lesson = (await repo.lesson(clash.word.id, profile: owner))!;
+    expect(lesson.entry.examples, hasLength(5));
+    expect(lesson.entry.examples.first.hanzi, '请扫码付款。');
+    expect(
+      lesson.entry.examples.last.meaning,
+      'After scanning the code the order details will appear.',
+    );
+    expect(lesson.entry.customExplanation, draft.explanation);
+    expect(
+      (await repo.lesson(clash.word.id, profile: other))!.entry.examples,
+      isEmpty,
+    );
+    expect((await repo.lesson(clash.word.id))!.entry.examples, isEmpty);
+    final exported = await ProfileArchiveRepository(db).exportProfile(owner);
+    final importedProfile = await ProfileArchiveRepository(db)
+        .importProfile(exported);
+    expect(
+      (await repo.lesson(
+        clash.word.id,
+        profile: importedProfile,
+      ))!.entry.examples,
+      hasLength(5),
+    );
+    expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
+  });
+
   test(
     'editing a custom word keeps its identity, progress, and lesson links',
     () async {

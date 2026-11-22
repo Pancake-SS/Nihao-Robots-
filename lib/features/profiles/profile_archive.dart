@@ -71,6 +71,13 @@ class ProfileArchiveRepository {
       'updated_at_ms',
     ],
     'learning_queue': ['profile_id', 'word_id', 'position'],
+    'profile_word_examples': [
+      'profile_id',
+      'word_id',
+      'examples_json',
+      'explanation',
+      'updated_at_ms',
+    ],
   };
   static const _customColumns = <String, List<String>>{
     'curriculum_words': [
@@ -216,6 +223,8 @@ class ProfileArchiveRepository {
     for (final entry in {..._profileColumns, ..._customColumns}.entries) {
       final group = _profileColumns.containsKey(entry.key) ? tables : custom;
       final rows = group[entry.key];
+      // Older version-1 saves predate personal examples for bundled words.
+      if (entry.key == 'profile_word_examples' && rows == null) continue;
       if (rows is! List ||
           rows.any(
             (row) =>
@@ -254,7 +263,8 @@ class ProfileArchiveRepository {
         if (key == 'profile_id' || key == 'ownerProfileId') return newProfileId;
         if (value is String) {
           if (key == 'event_id') return attemptIds.putIfAbsent(value, _newId);
-          if (key == 'answers_json' ||
+          if (key == 'examples_json' ||
+              key == 'answers_json' ||
               key == 'questions_json' ||
               key == 'metadata_json' ||
               key == 'payload_json') {
@@ -311,7 +321,11 @@ class ProfileArchiveRepository {
         await insertRows(entry.key, entry.value, custom[entry.key] as List);
       }
       for (final entry in _profileColumns.entries) {
-        await insertRows(entry.key, entry.value, tables[entry.key] as List);
+        await insertRows(
+          entry.key,
+          entry.value,
+          (tables[entry.key] as List?) ?? const [],
+        );
       }
       return newProfileId;
     });

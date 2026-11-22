@@ -1,5 +1,9 @@
 # Local database migrations and recovery
 
+## Version 1 through 9 to 10 (2026-11-23)
+
+Schema 10 adds `profile_word_examples`, keyed by profile and bundled word. It stores five learner supplied sentence examples and an optional explanation for an existing word. The lesson reads these rows for the active profile, so bundled words, quiz questions, queue positions and learning progress keep their existing IDs. Reimporting the same Hanzi and Pinyin replaces that profile's example set. Account exports include the new table; older account saves without it still import. `test/custom_word_test.dart` covers a schema 9 upgrade, five example attachment for 扫码, profile isolation and account transfer. Close the app and back up the learner database before launching a schema 10 build.
+
 ## Version 1/2/3/4/5/6/7/8 to 9 (2026-11-18)
 
 Schema 9 adds `learning_entries` for Free writing and Notebook. Each entry belongs to a profile and stores its kind, title, writing prompt when applicable, Hanzi/Pinyin/English text and timestamps. Existing profile, vocabulary, grammar, Practice and Master records are preserved. Migration is additive and transactional; from schema 8 it creates only the new table. `test/learning_journal_repository_test.dart` covers a schema-8-shaped file upgrade, profile isolation, reopening, editing and deletion. Back up a closed learner database before opening a schema-9 build. Do not run an older executable against it.

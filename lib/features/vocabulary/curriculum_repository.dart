@@ -187,7 +187,7 @@ class CurriculumRepository {
     }
   }
 
-  Future<CatalogueWord?> lesson(String id) async {
+  Future<CatalogueWord?> lesson(String id, {int? profile}) async {
     await ready();
     final row = await (database.select(
       database.curriculumWords,
@@ -211,6 +211,14 @@ class CurriculumRepository {
             .get();
     final word = jsonDecode(row.metadataJson) as Map<String, dynamic>;
     word.remove('ownerProfileId');
+    final personalExamples = profile == null
+        ? null
+        : await database
+              .customSelect(
+                'SELECT examples_json, explanation FROM profile_word_examples WHERE profile_id=? AND word_id=?',
+                variables: [Variable(profile), Variable(id)],
+              )
+              .getSingleOrNull();
     final teaching = (word.remove('teaching') as List? ?? [])
         .map((sense) => TeachingSense(sense as Map<String, dynamic>))
         .toList();
@@ -235,12 +243,26 @@ class CurriculumRepository {
         'words': [word],
       }),
     );
-    return CatalogueWord(
-      pack.id,
-      pack.revision,
-      pack.entries.single,
-      teaching: teaching,
-    );
+    var entry = pack.entries.single;
+    if (personalExamples != null) {
+      final raw = jsonDecode(personalExamples.read<String>('examples_json'));
+      if (raw is! List || raw.length != 5) {
+        throw const FormatException('Invalid saved personal examples.');
+      }
+      final personal = [
+        for (final item in raw)
+          VocabularyExample.personal(item as Map<String, dynamic>),
+      ];
+      if (personal.any((example) => !example.hanzi.contains(entry.hanzi)) ||
+          personal.map((example) => example.hanzi).toSet().length != 5) {
+        throw const FormatException('Invalid saved personal examples.');
+      }
+      entry = entry.withPersonalExamples(
+        personal,
+        explanation: personalExamples.read<String>('explanation'),
+      );
+    }
+    return CatalogueWord(pack.id, pack.revision, entry, teaching: teaching);
   }
 
   Future<void> _queue(int profile) async {
@@ -338,6 +360,62 @@ class CurriculumRepository {
 
   Future<void> bringToFront(int profile, String id) =>
       move(profile, id, 'front');
+
+  /// Keeps a bundled word and its progress, but gives this profile its own
+  /// five examples. Importing the same word again replaces the personal set.
+  Future<void> attachExamplesToExistingWord(
+    int profile,
+    String id,
+    CustomWordDraft draft,
+  ) async {
+    draft.validate();
+    await _queue(profile);
+    await database.transaction(() async {
+      final row = await database
+          .customSelect(
+            'SELECT hanzi,pinyin,pack_id FROM curriculum_words WHERE id=?',
+            variables: [Variable(id)],
+          )
+          .getSingleOrNull();
+      if (row == null ||
+          row.read<String>('pack_id').startsWith('custom.') ||
+          row.read<String>('hanzi') != draft.hanzi.trim() ||
+          PinyinInputEngine.normalize(row.read<String>('pinyin')) !=
+              PinyinInputEngine.normalize(draft.pinyin)) {
+        throw const FormatException(
+          'The existing word must match both Hanzi and Pinyin to add its examples.',
+        );
+      }
+      final personalExamples = [
+        for (var i = 0; i < 5; i++)
+          {
+            'hanzi': draft.examples[i].hanzi.trim(),
+            'pinyin': draft.examples[i].pinyin.trim(),
+            'meaning': draft.examples[i].meaning.trim(),
+            'traditional': null,
+            'sourceId': '$id.user.example.$i',
+            'sourceUrl': null,
+            'grammarTags': <String>[],
+            'credit': 'Imported from learner-provided text',
+          },
+      ];
+      await database.customStatement(
+        '''INSERT INTO profile_word_examples(profile_id,word_id,examples_json,explanation,updated_at_ms)
+           VALUES(?,?,?,?,?)
+           ON CONFLICT(profile_id,word_id) DO UPDATE SET
+             examples_json=excluded.examples_json,
+             explanation=excluded.explanation,
+             updated_at_ms=excluded.updated_at_ms''',
+        [
+          profile,
+          id,
+          jsonEncode(personalExamples),
+          draft.explanation.trim(),
+          DateTime.now().millisecondsSinceEpoch,
+        ],
+      );
+    });
+  }
 
   Future<QueueWord> addCustomWord(int profile, CustomWordDraft draft) async {
     draft.validate();

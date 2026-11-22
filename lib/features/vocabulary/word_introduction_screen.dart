@@ -42,6 +42,14 @@ class _WordIntroductionScreenState
   void initState() {
     super.initState();
     _word = widget.word;
+    _refreshWord();
+  }
+
+  Future<void> _refreshWord() async {
+    final updated = await ref
+        .read(curriculumRepositoryProvider)
+        .lesson(_word.entry.id, profile: widget.profileId);
+    if (mounted && updated != null) setState(() => _word = updated);
   }
 
   Future<void> _edit() async {
@@ -54,11 +62,8 @@ class _WordIntroductionScreenState
       ),
     );
     if (!mounted || changed != true) return;
-    final updated = await ref
-        .read(curriculumRepositoryProvider)
-        .lesson(_word.entry.id);
-    if (mounted && updated != null) {
-      setState(() => _word = updated);
+    await _refreshWord();
+    if (mounted) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('Custom word updated.')));
     }

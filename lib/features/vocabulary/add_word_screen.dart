@@ -7,9 +7,15 @@ import 'custom_word.dart';
 import 'learning_keyboard.dart';
 
 class AddedWordResult {
-  const AddedWordResult(this.id, this.message, {this.alreadyStarted = false});
+  const AddedWordResult(
+    this.id,
+    this.message, {
+    this.alreadyStarted = false,
+    this.openLesson = false,
+  });
   final String id, message;
   final bool alreadyStarted;
+  final bool openLesson;
 }
 
 class AddWordScreen extends ConsumerStatefulWidget {

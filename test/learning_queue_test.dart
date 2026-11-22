@@ -51,7 +51,7 @@ class _QueueViewFixture extends CurriculumRepository {
   }
 
   @override
-  Future<CatalogueWord?> lesson(String id) async =>
+  Future<CatalogueWord?> lesson(String id, {int? profile}) async =>
       id == word.entry.id ? word : null;
 }
 

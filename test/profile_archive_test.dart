@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:crypto/crypto.dart';
 import 'package:drift/drift.dart' show Variable;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,6 +10,26 @@ import 'package:ni_hao_robot/features/profiles/profile_archive.dart';
 import 'package:ni_hao_robot/features/profiles/sqlite_profile_repository.dart';
 
 void main() {
+  test('account saves made before personal examples still import', () async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final original = (await SqliteProfileRepository(
+      db,
+    ).create(const ProfileDraft(name: 'Earlier save'))).selected!.id;
+    final archive = ProfileArchiveRepository(db);
+    final oldSave = jsonDecode(
+      await archive.exportProfile(original),
+    ) as Map<String, dynamic>;
+    final payload = oldSave['payload'] as Map<String, dynamic>;
+    (payload['tables'] as Map<String, dynamic>).remove('profile_word_examples');
+    oldSave['checksum'] = sha256
+        .convert(utf8.encode(jsonEncode(payload)))
+        .toString();
+    final restored = await archive.importProfile(jsonEncode(oldSave));
+    expect(restored, isNot(original));
+    expect((await db.select(db.profiles).get()), hasLength(2));
+  });
+
   test('account save restores private progress and custom content twice', () async {
     final db = AppDatabase(NativeDatabase.memory());
     final profiles = SqliteProfileRepository(db);

@@ -308,6 +308,19 @@ class CurriculumExamples extends Table {
   ];
 }
 
+/// Learner-supplied examples for a bundled word, visible only to one profile.
+class ProfileWordExamples extends Table {
+  IntColumn get profileId => integer().references(Profiles, #id)();
+  TextColumn get wordId => text().references(CurriculumWords, #id)();
+  TextColumn get examplesJson => text()();
+  TextColumn get explanation => text()();
+  IntColumn get updatedAtMs => integer()();
+  @override
+  Set<Column> get primaryKey => {profileId, wordId};
+  @override
+  List<String> get customConstraints => ['CHECK(updated_at_ms >= 0)'];
+}
+
 @TableIndex.sql(
   'CREATE INDEX curriculum_audio_sentence ON curriculum_audio(sentence_id)',
 )
@@ -380,6 +393,7 @@ class LearningQueue extends Table {
     CurriculumWords,
     CurriculumSentences,
     CurriculumExamples,
+    ProfileWordExamples,
     CurriculumAudio,
     CurriculumQuestions,
     CurriculumInstalls,
@@ -390,13 +404,13 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (migrator) => migrator.createAll(),
     onUpgrade: (migrator, from, to) async {
-      if (from < 1 || from > 8 || to != 9) {
+      if (from < 1 || from > 9 || to != 10) {
         throw StateError('No migration from schema $from to $to.');
       }
       // Additive migration: existing profiles and selection are never rewritten.
@@ -476,7 +490,8 @@ class AppDatabase extends _$AppDatabase {
           await migrator.createTable(grammarProgress);
           await migrator.createTable(grammarInstalls);
         }
-        await migrator.createTable(learningEntries);
+        if (from < 9) await migrator.createTable(learningEntries);
+        await migrator.createTable(profileWordExamples);
       });
     },
     beforeOpen: (_) async {

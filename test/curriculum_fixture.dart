@@ -50,6 +50,6 @@ class StarterQueueFixture extends CurriculumRepository {
   }
 
   @override
-  Future<CatalogueWord?> lesson(String id) async =>
+  Future<CatalogueWord?> lesson(String id, {int? profile}) async =>
       (await starter.load()).where((w) => w.entry.id == id).firstOrNull;
 }

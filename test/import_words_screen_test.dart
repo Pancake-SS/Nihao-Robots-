@@ -43,6 +43,36 @@ class _ImportFixture extends CurriculumRepository {
   }
 }
 
+class _ExistingWordFixture extends _ImportFixture {
+  _ExistingWordFixture(super.database);
+
+  CustomWordDraft? attached;
+
+  @override
+  Future<CustomWordClash?> findCustomClash(
+    int profile,
+    String hanzi,
+    String pinyin,
+    String meaning,
+  ) async => CustomWordClash(
+    QueueWord('bundled.existing', hanzi, pinyin, meaning),
+    const ['Hanzi', 'Pinyin', 'English meaning'],
+    true,
+  );
+
+  @override
+  Future<void> attachExamplesToExistingWord(
+    int profile,
+    String id,
+    CustomWordDraft draft,
+  ) async {
+    attached = draft;
+  }
+
+  @override
+  Future<void> bringToFront(int profile, String id) async {}
+}
+
 String _csv() {
   final values = [
     '机器人咖啡馆',
@@ -59,6 +89,64 @@ String _csv() {
 }
 
 void main() {
+  testWidgets('existing word import saves its five examples', (tester) async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final repository = _ExistingWordFixture(db);
+    AddedWordResult? result;
+    tester.view.physicalSize = const Size(360, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [curriculumRepositoryProvider.overrideWithValue(repository)],
+        child: MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => FilledButton(
+                onPressed: () async {
+                  result = await Navigator.of(context).push<AddedWordResult>(
+                    MaterialPageRoute(
+                      builder: (_) => const ImportWordsScreen(profileId: 1),
+                    ),
+                  );
+                },
+                child: const Text('Open import'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Open import'));
+    await tester.pumpAndSettle();
+    final csvField = find.byKey(const ValueKey('import-csv-text'));
+    await tester.scrollUntilVisible(
+      csvField,
+      280,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.enterText(csvField, _csv());
+    final check = find.byKey(const ValueKey('import-check-csv'));
+    await Scrollable.ensureVisible(tester.element(check), alignment: 0.5);
+    await tester.pumpAndSettle();
+    final outerScroll = Scrollable.of(tester.element(check));
+    outerScroll.position.jumpTo(outerScroll.position.maxScrollExtent);
+    await tester.pumpAndSettle();
+    await tester.tap(check);
+    await tester.pumpAndSettle();
+    final save = find.byKey(const ValueKey('save-examples-to-existing-word'));
+    outerScroll.position.jumpTo(outerScroll.position.maxScrollExtent);
+    await tester.pumpAndSettle();
+    await tester.tap(save);
+    await tester.pumpAndSettle();
+    expect(repository.attached?.examples, hasLength(5));
+    expect(result?.id, 'bundled.existing');
+    expect(result?.openLesson, isTrue);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('previews five examples and imports the word', (tester) async {
     final db = AppDatabase(NativeDatabase.memory());
     addTearDown(db.close);

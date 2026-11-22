@@ -206,6 +206,25 @@ class VocabularyEntry {
   final WordDetails? details;
   final String? customExplanation;
 
+  VocabularyEntry withPersonalExamples(
+    List<VocabularyExample> personal, {
+    String? explanation,
+  }) => VocabularyEntry._(
+    id,
+    hanzi,
+    pinyin,
+    meaning,
+    personal,
+    source,
+    license,
+    reviewedBy,
+    reviewedOn,
+    reviewStatus,
+    questions,
+    details,
+    explanation?.isNotEmpty == true ? explanation : customExplanation,
+  );
+
   Map<String, Object?> toJson(int schema) => {
     'id': id,
     'hanzi': hanzi,
@@ -307,6 +326,32 @@ class VocabularyExample {
   final List<String> grammarTags;
   final SentenceAudio? audio;
   final String? credit, translationSourceUrl, annotation;
+
+  factory VocabularyExample.personal(Map<String, dynamic> value) {
+    final example = _record(value, {
+      'hanzi',
+      'pinyin',
+      'meaning',
+      'traditional',
+      'sourceId',
+      'sourceUrl',
+      'grammarTags',
+      'credit',
+    });
+    if (example['traditional'] != null ||
+        example['sourceUrl'] != null ||
+        example['grammarTags'] is! List ||
+        (example['grammarTags'] as List).isNotEmpty) {
+      throw const FormatException('Invalid personal example metadata.');
+    }
+    return VocabularyExample._(
+      _text(example, 'hanzi', 500),
+      _text(example, 'pinyin', 1000),
+      _text(example, 'meaning', 1000),
+      sourceId: _id(example['sourceId']),
+      credit: _text(example, 'credit', 1000),
+    );
+  }
   Map<String, Object?> toJson(int schema) => {
     'hanzi': hanzi,
     'pinyin': pinyin,

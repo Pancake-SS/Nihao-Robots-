@@ -278,6 +278,6 @@ class _PreviewQueue extends CurriculumRepository {
   }
 
   @override
-  Future<CatalogueWord?> lesson(String id) async =>
+  Future<CatalogueWord?> lesson(String id, {int? profile}) async =>
       id == book.entry.id ? book : null;
 }

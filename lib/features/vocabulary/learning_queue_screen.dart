@@ -200,7 +200,7 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
       _error = null;
     });
     try {
-      final word = await repository.lesson(id);
+      final word = await repository.lesson(id, profile: widget.profileId);
       if (word == null) throw StateError('Missing lesson');
       if (!mounted) return;
       await Navigator.of(context).push(
@@ -286,7 +286,7 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
     }
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(result.message)));
-    if (result.alreadyStarted) {
+    if (result.alreadyStarted || result.openLesson) {
       _selected = result.id;
       await _learn();
     }
