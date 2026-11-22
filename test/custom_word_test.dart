@@ -258,6 +258,72 @@ void main() {
     },
   );
 
+  test('deleting a custom word removes its lesson and study data only', () async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final profiles = SqliteProfileRepository(db);
+    final owner = (await profiles.create(const ProfileDraft(name: 'Owner')))
+        .selected!
+        .id;
+    final other = (await profiles.create(const ProfileDraft(name: 'Other')))
+        .selected!
+        .id;
+    final repo = fullCurriculum(db);
+    final saved = await repo.addCustomWord(owner, draft);
+    final otherWord = await repo.addCustomWord(other, draft);
+    await db.customStatement(
+      "INSERT INTO vocabulary_progress(profile_id,word_id,stage,due_at_ms,version,successful_reviews) VALUES(?,?,'learning',1,1,0)",
+      [owner, saved.id],
+    );
+    await db.customStatement(
+      'INSERT INTO mastered_words(profile_id,word_id,mastered_at_ms) VALUES(?,?,1)',
+      [owner, saved.id],
+    );
+    await db.customStatement(
+      'INSERT INTO practice_responses(id,profile_id,word_id,question_id,correct,answered_at_ms) VALUES(?,?,?,?,1,1)',
+      ['answer-1', owner, saved.id, 'question-1'],
+    );
+    await db.customStatement(
+      "INSERT INTO vocabulary_attempts(event_id,profile_id,word_id,pack_id,content_revision,version_before,is_review,answers_json,questions_json,passed,answered_at_ms,next_due_at_ms,next_stage) VALUES(?,?,?,?,1,0,0,'[]','[]',1,1,1,'learning')",
+      [List.filled(32, 'a').join(), owner, saved.id, 'custom.p$owner'],
+    );
+    await expectLater(repo.deleteCustomWord(other, saved.id), throwsStateError);
+    expect(await repo.lesson(saved.id), isNotNull);
+    await repo.deleteCustomWord(owner, saved.id);
+    expect(await repo.lesson(saved.id), isNull);
+    expect(await repo.editableCustomWord(owner, saved.id), isNull);
+    expect(await repo.lesson(otherWord.id), isNotNull);
+    for (final table in [
+      'curriculum_words',
+      'curriculum_examples',
+      'curriculum_questions',
+      'learning_queue',
+      'vocabulary_progress',
+      'vocabulary_attempts',
+      'practice_responses',
+      'mastered_words',
+    ]) {
+      final rows = await db
+          .customSelect(
+            'SELECT * FROM $table WHERE ${table == 'curriculum_words' ? 'id' : 'word_id'}=?',
+            variables: [Variable(saved.id)],
+          )
+          .get();
+      expect(rows, isEmpty, reason: table);
+    }
+    expect(
+      await db
+          .customSelect(
+            "SELECT * FROM curriculum_sentences WHERE id LIKE ?",
+            variables: [Variable('${saved.id}.sentence.%')],
+          )
+          .get(),
+      isEmpty,
+    );
+    expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
+    expect((await repo.addCustomWord(owner, draft)).id, isNot(saved.id));
+  });
+
   test(
     'CSV batches keep row order and roll back if one word clashes',
     () async {
@@ -486,6 +552,7 @@ void main() {
     final saved = (await tester.runAsync(
       () => repo.addCustomWord(profile, draft),
     ))!;
+    bool? editResult;
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -498,15 +565,17 @@ void main() {
           home: Scaffold(
             body: Builder(
               builder: (context) => FilledButton(
-                onPressed: () => Navigator.push<bool>(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => EditCustomWordScreen(
-                      profileId: profile,
-                      wordId: saved.id,
+                onPressed: () async {
+                  editResult = await Navigator.push<bool>(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => EditCustomWordScreen(
+                        profileId: profile,
+                        wordId: saved.id,
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
                 child: const Text('Open edit'),
               ),
             ),
@@ -547,6 +616,27 @@ void main() {
           .text,
       'robot coffee house',
     );
+    final delete = find.byKey(const ValueKey('delete-custom-word'));
+    await tester.scrollUntilVisible(
+      delete,
+      250,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(delete);
+    await tester.pumpAndSettle();
+    expect(find.textContaining('This permanently removes'), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(await tester.runAsync(() => repo.lesson(saved.id)), isNotNull);
+    await tester.tap(delete);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('confirm-delete-custom-word')));
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 500)),
+    );
+    await tester.pumpAndSettle();
+    expect(editResult, isFalse);
+    expect(await tester.runAsync(() => repo.lesson(saved.id)), isNull);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox.shrink());
   }, timeout: const Timeout(Duration(minutes: 2)));

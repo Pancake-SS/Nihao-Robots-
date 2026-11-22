@@ -61,7 +61,11 @@ class _WordIntroductionScreenState
         ),
       ),
     );
-    if (!mounted || changed != true) return;
+    if (!mounted || changed == null) return;
+    if (!changed) {
+      Navigator.of(context).pop();
+      return;
+    }
     await _refreshWord();
     if (mounted) {
       ScaffoldMessenger.of(context)
@@ -100,7 +104,7 @@ class _WordIntroductionScreenState
           if (entry.id.startsWith('custom.p$profileId.'))
             IconButton(
               key: const ValueKey('edit-custom-lesson'),
-              tooltip: 'Edit custom word',
+              tooltip: 'Edit or delete custom word',
               icon: const Icon(Icons.edit_outlined),
               onPressed: _edit,
             ),

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/context_tour.dart';
+import '../review/learning_providers.dart';
+import '../review/master_repository.dart';
 import 'curriculum_repository.dart';
 import 'custom_word.dart';
 import 'learning_keyboard.dart';
+import 'vocabulary_repository.dart';
 
 class EditCustomWordScreen extends ConsumerStatefulWidget {
   const EditCustomWordScreen({
@@ -136,6 +139,50 @@ class _EditCustomWordScreenState extends ConsumerState<EditCustomWordScreen> {
     }
   }
 
+  Future<void> _delete() async {
+    if (_saving || !_available) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Delete ${_hanzi.text}?'),
+        content: const Text(
+          'This permanently removes the custom word, its five examples, quiz history, correctness points, and mastery progress. This cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            key: const ValueKey('confirm-delete-custom-word'),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Delete word'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    setState(() {
+      _saving = true;
+      _error = null;
+    });
+    try {
+      await ref
+          .read(curriculumRepositoryProvider)
+          .deleteCustomWord(widget.profileId, widget.wordId);
+      ref.invalidate(learningProgressProvider(widget.profileId));
+      ref.invalidate(masteredIdsProvider(widget.profileId));
+      ref.invalidate(vocabularyLessonProvider(widget.wordId));
+      if (mounted) Navigator.pop(context, false);
+    } catch (_) {
+      if (mounted) {
+        setState(() => _error = 'Could not delete this word. Please retry.');
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
@@ -250,6 +297,13 @@ class _EditCustomWordScreenState extends ConsumerState<EditCustomWordScreen> {
                     onPressed: _saving || !_available ? null : _save,
                     icon: const Icon(Icons.save_outlined),
                     label: const Text('Save changes'),
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    key: const ValueKey('delete-custom-word'),
+                    onPressed: _saving || !_available ? null : _delete,
+                    icon: const Icon(Icons.delete_outline),
+                    label: const Text('Delete word'),
                   ),
                 ],
               ),

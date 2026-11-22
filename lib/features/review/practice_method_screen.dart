@@ -173,6 +173,11 @@ class _PracticeMethodScreenState extends ConsumerState<PracticeMethodScreen> {
         ),
       ),
     );
+    if (mounted &&
+        (widget.route == PracticeRoute.oneWord ||
+            widget.route == PracticeRoute.relearn)) {
+      await _loadPage(_page, _query);
+    }
   }
 
   @override

@@ -615,6 +615,62 @@ class CurriculumRepository {
     });
   }
 
+  /// Permanently removes a word created by this profile and its study data.
+  /// Bundled words and another profile's custom words cannot be deleted here.
+  Future<void> deleteCustomWord(int profile, String id) async {
+    await ready();
+    await database.transaction(() async {
+      if (await _ownedCustomMetadata(profile, id) == null) {
+        throw StateError('Only your custom words can be deleted.');
+      }
+      final sentenceRows = await database
+          .customSelect(
+            'SELECT sentence_id FROM curriculum_examples WHERE word_id=?',
+            variables: [Variable(id)],
+          )
+          .get();
+      final sentenceIds = [
+        for (final row in sentenceRows) row.read<String>('sentence_id'),
+      ];
+      for (final table in [
+        'vocabulary_attempts',
+        'vocabulary_progress',
+        'practice_responses',
+        'mastered_words',
+        'master_writings',
+        'learning_queue',
+        'profile_word_examples',
+      ]) {
+        await database.customStatement(
+          'DELETE FROM $table WHERE profile_id=? AND word_id=?',
+          [profile, id],
+        );
+      }
+      await database.customStatement(
+        'DELETE FROM curriculum_questions WHERE word_id=?',
+        [id],
+      );
+      await database.customStatement(
+        'DELETE FROM curriculum_examples WHERE word_id=?',
+        [id],
+      );
+      for (final sentenceId in sentenceIds) {
+        await database.customStatement(
+          'DELETE FROM curriculum_audio WHERE sentence_id=?',
+          [sentenceId],
+        );
+        await database.customStatement(
+          'DELETE FROM curriculum_sentences WHERE id=?',
+          [sentenceId],
+        );
+      }
+      await database.customStatement(
+        'DELETE FROM curriculum_words WHERE id=?',
+        [id],
+      );
+    });
+  }
+
   Future<QueueWord> _insertCustomWord(
     int profile,
     CustomWordDraft draft,

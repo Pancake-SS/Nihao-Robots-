@@ -251,11 +251,16 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
             EditCustomWordScreen(profileId: widget.profileId, wordId: id),
       ),
     );
-    if (!mounted || changed != true) return;
+    if (!mounted || changed == null) return;
     await _load(page: _page);
     if (mounted) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Custom word updated.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            changed ? 'Custom word updated.' : 'Custom word deleted.',
+          ),
+        ),
+      );
     }
   }
 
@@ -676,7 +681,7 @@ class _LearningQueueScreenState extends ConsumerState<LearningQueueScreen> {
                                         ),
                                         onPressed: _busy ? null : _editSelected,
                                         icon: const Icon(Icons.edit_outlined),
-                                        label: const Text('Edit'),
+                                        label: const Text('Edit / delete'),
                                       ),
                                     TextButton.icon(
                                       key: const ValueKey(
