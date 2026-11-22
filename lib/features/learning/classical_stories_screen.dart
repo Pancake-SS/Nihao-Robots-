@@ -7,6 +7,24 @@ import '../../shared/context_tour.dart';
 import '../../shared/robot_art.dart';
 import 'classical_stories.dart';
 import 'learning_resources_screen.dart';
+import 'resource_catalogue.dart';
+
+Future<void> _openDiZiGui(BuildContext context, WidgetRef ref) async {
+  try {
+    if (await ref.read(resourceOpenerProvider)(
+      Uri.parse(diZiGuiResource.url),
+    )) {
+      return;
+    }
+  } catch (_) {
+    // The browser may be unavailable or the device may be offline.
+  }
+  if (context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Could not open Di Zi Gui. Try again.')),
+    );
+  }
+}
 
 class ClassicalStoriesScreen extends ConsumerWidget {
   const ClassicalStoriesScreen({super.key});
@@ -66,6 +84,23 @@ class ClassicalStoriesScreen extends ConsumerWidget {
                         ),
                       ),
                     ),
+                  const SizedBox(height: 18),
+                  Text(
+                    'More classical reading online',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  Card(
+                    child: ListTile(
+                      key: const ValueKey('classic-online-di-zi-gui'),
+                      contentPadding: const EdgeInsets.all(16),
+                      title: const Text('Di Zi Gui · 弟子规'),
+                      subtitle: const Text(
+                        'Original verses with modern Chinese and English translations. Opens the Tsoidug website.',
+                      ),
+                      trailing: const Icon(Icons.open_in_new),
+                      onTap: () => _openDiZiGui(context, ref),
+                    ),
+                  ),
                 ],
               ),
             ),

@@ -29,6 +29,16 @@ class LearningResource {
 }
 
 /// Links only. Third-party text, audio and video are opened at their source.
+const diZiGuiResource = LearningResource(
+  id: 'tsoidug_di_zi_gui',
+  title: 'Di Zi Gui · 弟子规 (Students’ Rules)',
+  description: 'Original verses paired with modern Chinese and English translations by Feng Xinming.',
+  url: 'https://www.tsoidug.org/dizigui_trans_simp.php',
+  type: ResourceType.read,
+  levels: [ResourceLevel.intermediate, ResourceLevel.advanced],
+  access: 'Free online reading · Tsoidug',
+);
+
 const learningResources = <LearningResource>[
   LearningResource(
     id: 'mandarin_bean',
@@ -94,6 +104,7 @@ const learningResources = <LearningResource>[
     levels: [ResourceLevel.advanced],
     access: 'Free public-domain text; also in Classical stories',
   ),
+  diZiGuiResource,
   LearningResource(
     id: 'mandarin_click',
     title: 'Mandarin Click',

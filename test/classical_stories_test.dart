@@ -90,4 +90,38 @@ void main() {
     expect(find.text('愚人集牛乳喻'), findsWidgets);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('Di Zi Gui opens as an online classical companion', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(360, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    Uri? opened;
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          classicalStoriesProvider.overrideWith(
+            (ref) async => const <ClassicCollection>[],
+          ),
+          resourceOpenerProvider.overrideWithValue((uri) async {
+            opened = uri;
+            return true;
+          }),
+        ],
+        child: MaterialApp(
+          theme: buildTheme(),
+          home: const ClassicalStoriesScreen(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final link = find.byKey(const ValueKey('classic-online-di-zi-gui'));
+    await tester.ensureVisible(link);
+    await tester.tap(link);
+    await tester.pump();
+    expect(opened.toString(), 'https://www.tsoidug.org/dizigui_trans_simp.php');
+    expect(tester.takeException(), isNull);
+  });
 }

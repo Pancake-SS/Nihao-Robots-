@@ -1,6 +1,6 @@
 # Ni Hao Robot! — Project Memory
 
-_Last updated: 2026-11-22 | State: Pinyin keyboard composes missing words from attested characters_
+_Last updated: 2026-11-22 | State: Di Zi Gui added to online reading resources_
 
 ## Project vision and invariants
 - Science-informed Mandarin learning companion for beginners: Simplified Chinese, tone-marked Pinyin, clear English explanations.
@@ -15,6 +15,7 @@ _Last updated: 2026-11-22 | State: Pinyin keyboard composes missing words from a
 - Instant master can be launched from a selected Learn word, its lesson, or Master search. Cancelling the confirmation changes nothing.
 - One-word Practice, relearning, and their Master equivalents open with 20-word browse pages and direct row actions. Search remains optional. Instant Master pages through unmastered words instead of stopping at the first 20.
 - The offline Pinyin keyboard now suggests characters attested inside bundled dictionary words, with the source word visible. An unlisted compound such as `binggui` can be converted one syllable at a time to 冰柜. Candidate page controls sit above the suggestions so additional homophones are easier to find.
+- Di Zi Gui appears as a Tsoidug online link in Explore online and Classical stories. The source page pairs original verses with modern Chinese and English translations by Feng Xinming. The offline classical pack remains 139 readings.
 
 ## Sources read and independently verified
 - `reference/Mandarin_Learning_App_Master_Plan(1).md` — full product plan; `reference/CODING_STANDARDS(1).md` — full testing/security/architecture standards.

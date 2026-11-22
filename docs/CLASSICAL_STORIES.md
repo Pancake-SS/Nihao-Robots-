@@ -2,6 +2,8 @@
 
 **Learning → Classical stories** contains three offline works in simplified Classical Chinese, with an English translation for every reading. Classical Chinese differs substantially from modern spoken Mandarin. The reader has a Chinese/English switch, searchable chapter lists, adjustable text size, selectable text, Previous/Next controls, and a source link for each version.
 
+An additional **Di Zi Gui · 弟子规** card opens [Tsoidug's simplified page](https://www.tsoidug.org/dizigui_trans_simp.php) in the browser. It pairs the original verses with modern Chinese and English translations by Feng Xinming. This is an online companion, separate from the 139 bundled offline readings, and also appears in Explore online.
+
 | Work | Readings | Wikisource index revision | Source |
 |---|---:|---:|---|
 | 百句譬喻经, Buddhist parables | 98 | 2601002 | [Wikisource index](https://zh.wikisource.org/zh-hans/%E7%99%BE%E5%8F%A5%E8%AD%AC%E5%96%BB%E7%B6%93) |

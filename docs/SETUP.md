@@ -123,7 +123,7 @@ Open **Grammar** in the sidebar, then **Pending lessons**. The 428 offline HSK g
 
 Open **Learning** in the sidebar. **Explore online** filters a curated set of free-access external resources and opens the original site in your browser. **Free writing** gives a random topic; **Another topic** changes it before saving. **Notebook** holds your own titled notes. Both editors have the inline English/Hanzi/Pinyin/All keyboard and a visible Save button. Entries belong only to the current local profile. Back up a closed learner database before opening this schema-9 build. The resource list and access notes are documented in [LEARNING_RESOURCES.md](LEARNING_RESOURCES.md).
 
-**Classical stories** opens 139 offline readings from 百句譬喻经, 庄子 and 列子. Choose a work and chapter, search its chapter list, resize the text and use Previous/Next. These works use Classical Chinese; a source button opens the exact Wikisource revision when online. See [CLASSICAL_STORIES.md](CLASSICAL_STORIES.md) for attribution and refresh steps.
+**Classical stories** opens 139 offline readings from 百句譬喻经, 庄子 and 列子. Choose a work and chapter, search its chapter list, resize the text and use Previous/Next. These works use Classical Chinese; a source button opens the exact Wikisource revision when online. A separate Di Zi Gui card opens its original, modern Chinese and English text on Tsoidug's website; it is also searchable in Explore online. See [CLASSICAL_STORIES.md](CLASSICAL_STORIES.md) for attribution and refresh steps.
 
 Latest TTS/corpus build verified 2026-11-07 (176.1 seconds):
 `%TEMP%\nihao-windows-88a776f0c1894fa385ff402db2cba783\build\windows\x64\runner\Debug\ni_hao_robot.exe`.
