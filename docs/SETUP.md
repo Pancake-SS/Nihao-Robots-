@@ -21,6 +21,20 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\flutter.ps1 test --n
 
 `--no-pub` uses the already-resolved dependencies and avoids repeating native plugin symlink setup. On a fresh machine run `flutter pub get` after enabling Windows Developer Mode. For a different SDK, adjust the Dart executable path. Do not rerun `bootstrap_windows.ps1` on the current project: its runner and metadata already exist, and the script correctly refuses to overwrite them.
 
+## Android APK
+
+The Android target was added on 2026-11-22. On this PC, Flutter uses Android SDK 36 and Temurin JDK 21 under `%LOCALAPPDATA%\NihaoRobotTools`; on another PC, follow the [Flutter Android setup](https://docs.flutter.dev/platform-integration/android/setup) and configure an Android SDK and supported JDK. The generated Android project includes the shared robot logo as its launcher icon.
+
+From the project root:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build_android.ps1
+```
+
+The helper restores the pinned Flutter packages, generates the Android launcher icons, and creates `build\app\outputs\flutter-apk\app-release.apk`. The verified first build was 173.4 MB, supports Android 7.0+ on ARM32, ARM64 and x86_64, and uses the local debug signing key for direct installation. Keep that key if you want future APKs to update an existing installation; this is not Play Store signing. To move progress from Windows, export an account save there and import it on the phone. This APK has not yet been run on a physical phone.
+
+The project limits Gradle workers and disables release code/resource shrinking and Android's release lint gate to keep builds within this PC's memory limits and to avoid the `!` in the workspace path confusing Android lint. Flutter static analysis and APK signature verification still run separately.
+
 ## Native Windows launch
 
 ### Recover a missing temporary Dart runtime

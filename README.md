@@ -1,6 +1,6 @@
 # Ni Hao Robot!
 
-A Windows-first, local-first Mandarin learning companion built toward Flutter + Dart, Riverpod and Drift/SQLite. Simplified Chinese, tone-marked Pinyin, English guidance, and the user's original robots.
+A local-first Mandarin learning companion for Windows and Android, built with Flutter, Dart, Riverpod and Drift/SQLite. Simplified Chinese, tone-marked Pinyin, English guidance, and the user's original robots.
 
 **Current status:** offline profiles, introduction, Vocabulary, Master, Grammar and Learning are implemented. Browse **11,147 words and 85,118 questions** in pages of 20 with search and priority/category filters. Add a custom word with five examples to the front of the queue. **10,810 words** have FMLD meaning/usage enrichment; **7,099 words have sourced examples and 4,600 have recordings**, using 4,118 offline recordings. Words and unrecorded examples use installed device Mandarin TTS. Questions favor related wrong answers, check each answer and return missed questions at the end. Regular Master tests unlock at 25 correct points and require the full quiz; Instant master directly moves a known word into Master after confirmation. Learning includes online resources, 139 offline classical readings with English companions, free writing and a single-page notebook. The Home page shows a green mastery bar with milestone flags from 100 through 11,000 words, plus daily streak goals: ten new words, twenty quiz words, ten Master reviews and one saved writing piece. Profiles can be exported to and imported from a local JSON save. See [content/database design](docs/CONTENT_DATABASE.md), [classical story sources](docs/CLASSICAL_STORIES.md) and [setup](docs/SETUP.md).
 
@@ -33,6 +33,8 @@ If you already know a word in **Learn**, select **Instant master** beside its Le
 ## Try the redesigned interface
 
 Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build_windows.ps1` from the project root, then launch the executable path printed by the helper. Keep its nearby DLLs and data folder together. In VS Code, **Terminal > Run Build Task** runs the same safe-path build. The patch's separate `lib/preview_main.dart` is sample-data-only source; this project has no web scaffold, so the actual Windows build is the supported way to try the design.
+
+For Android, run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build_android.ps1` after setting up the Android SDK and JDK. The installable APK is `build/app/outputs/flutter-apk/app-release.apk`. This local-install build uses the machine's debug signing key; it is not a Play Store release. See [Android setup](docs/SETUP.md#android-apk).
 
 ## Source reconciliation
 
