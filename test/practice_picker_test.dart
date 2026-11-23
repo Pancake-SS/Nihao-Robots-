@@ -11,7 +11,11 @@ import 'package:ni_hao_robot/features/review/master_repository.dart';
 import 'package:ni_hao_robot/features/review/master_screen.dart';
 import 'package:ni_hao_robot/features/review/practice_method_screen.dart';
 import 'package:ni_hao_robot/features/review/practice_repository.dart';
+import 'package:ni_hao_robot/features/vocabulary/curriculum_repository.dart';
+import 'package:ni_hao_robot/features/vocabulary/custom_word.dart';
 import 'package:ni_hao_robot/features/vocabulary/pinyin_input.dart';
+
+import 'curriculum_fixture.dart';
 
 Future<(AppDatabase, int)> makeWords() async {
   final db = AppDatabase(NativeDatabase.memory());
@@ -52,6 +56,76 @@ Future<(AppDatabase, int)> makeWords() async {
 }
 
 void main() {
+  testWidgets('Practice opens a custom word editor directly from its row', (
+    tester,
+  ) async {
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final profile = (await SqliteProfileRepository(
+      db,
+    ).create(const ProfileDraft(name: 'Editor'))).selected!.id;
+    final repo = fullCurriculum(db);
+    final word = (await tester.runAsync(
+      () => repo.addCustomWord(
+        profile,
+        CustomWordDraft(
+          hanzi: '测试咖啡馆',
+          pinyin: 'cèshì kāfēiguǎn',
+          meaning: 'test cafe',
+          examples: [
+            for (var i = 1; i <= 5; i++)
+              CustomSentence(
+                '我喜欢测试咖啡馆$i。',
+                'Wǒ xǐhuan cèshì kāfēiguǎn $i.',
+                'I like test cafe $i.',
+              ),
+          ],
+        ),
+      ),
+    ))!;
+    await tester.runAsync(
+      () => db.customStatement(
+        "INSERT INTO vocabulary_progress(profile_id,word_id,stage,due_at_ms,version,successful_reviews) VALUES(?,?,'learning',1,1,0)",
+        [profile, word.id],
+      ),
+    );
+    tester.view.physicalSize = const Size(390, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          appDatabaseProvider.overrideWithValue(db),
+          curriculumRepositoryProvider.overrideWithValue(repo),
+          pinyinInputEngineProvider.overrideWith(
+            (ref) async => PinyinInputEngine(const []),
+          ),
+        ],
+        child: MaterialApp(
+          theme: buildTheme(),
+          home: PracticeMethodScreen(
+            profileId: profile,
+            route: PracticeRoute.oneWord,
+            showPinyin: true,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final edit = find.byKey(ValueKey('practice-edit-custom-${word.id}'));
+    expect(edit, findsOneWidget);
+    await tester.tap(edit);
+    await tester.pump();
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 400)),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Edit custom word'), findsOneWidget);
+    expect(find.byKey(const ValueKey('edit-custom-hanzi')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  }, timeout: const Timeout(Duration(minutes: 2)));
+
   test(
     'Practice and Master browse 20 at a time with optional search',
     () async {

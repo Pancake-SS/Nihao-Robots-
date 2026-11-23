@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../shared/app_brand.dart';
 import '../../shared/cozy_ui.dart';
 import '../vocabulary/learning_keyboard.dart';
+import '../vocabulary/edit_custom_word_screen.dart';
 import '../vocabulary/vocabulary_repository.dart';
 import '../vocabulary/word_introduction_screen.dart';
 import 'learning.dart';
@@ -177,6 +178,28 @@ class _PracticeMethodScreenState extends ConsumerState<PracticeMethodScreen> {
         (widget.route == PracticeRoute.oneWord ||
             widget.route == PracticeRoute.relearn)) {
       await _loadPage(_page, _query);
+    }
+  }
+
+  Future<void> _editCustomWord(String id) async {
+    if (!id.startsWith('custom.p${widget.profileId}.')) return;
+    final result = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) =>
+            EditCustomWordScreen(profileId: widget.profileId, wordId: id),
+      ),
+    );
+    if (!mounted || result == null) return;
+    ref.invalidate(vocabularyLessonProvider(id));
+    await _loadPage(_page, _query);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            result ? 'Custom word updated.' : 'Custom word deleted.',
+          ),
+        ),
+      );
     }
   }
 
@@ -370,12 +393,26 @@ class _PracticeMethodScreenState extends ConsumerState<PracticeMethodScreen> {
             word.meaning,
           ].where((part) => part.isNotEmpty).join(' · '),
         ),
-        trailing: IconButton(
-          tooltip: relearn ? 'Open ${word.hanzi} lesson' : 'Test ${word.hanzi}',
-          icon: Icon(relearn ? Icons.menu_book_outlined : Icons.play_arrow),
-          onPressed: () => relearn
-              ? _relearnWord(id)
-              : _start(PracticeMode.singleWord, words, selectedId: id),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (id.startsWith('custom.p${widget.profileId}.'))
+              TextButton.icon(
+                key: ValueKey('practice-edit-custom-$id'),
+                onPressed: () => _editCustomWord(id),
+                icon: const Icon(Icons.edit_outlined),
+                label: const Text('Edit'),
+              ),
+            IconButton(
+              tooltip: relearn
+                  ? 'Open ${word.hanzi} lesson'
+                  : 'Test ${word.hanzi}',
+              icon: Icon(relearn ? Icons.menu_book_outlined : Icons.play_arrow),
+              onPressed: () => relearn
+                  ? _relearnWord(id)
+                  : _start(PracticeMode.singleWord, words, selectedId: id),
+            ),
+          ],
         ),
         onTap: () => setState(() => _selected = id),
       ),
