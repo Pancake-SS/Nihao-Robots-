@@ -25,7 +25,11 @@ class MasterScreen extends ConsumerWidget {
     final mastered = ref.watch(masteredIdsProvider(profileId));
     final ids = mastered.asData?.value ?? <String>{};
     final eligible = progress.asData?.value
-        .where((word) => word.correctCount >= 25 && !ids.contains(word.wordId))
+        .where(
+          (word) =>
+              word.correctCount >= masterPointGoal &&
+              !ids.contains(word.wordId),
+        )
         .length;
     return Scaffold(
       appBar: AppBar(
@@ -37,7 +41,7 @@ class MasterScreen extends ConsumerWidget {
               TourStop(
                 _targets[0],
                 'Ready words',
-                'Words with 25 correct quiz answers can take the Master test.',
+                'Words with $masterPointGoal correct quiz answers can take the Master test.',
               ),
               TourStop(
                 _targets[1],
@@ -74,7 +78,7 @@ class MasterScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  'A word is ready after 25 correct answers. Pass its full quiz to move it into Master.',
+                  'A word is ready after $masterPointGoal correct answers. Pass its full quiz to move it into Master.',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const SizedBox(height: 12),
@@ -85,7 +89,7 @@ class MasterScreen extends ConsumerWidget {
                   'Ready for Master test',
                   eligible == null
                       ? 'Loading…'
-                      : '$eligible words with 25 or more points',
+                      : '$eligible words with $masterPointGoal or more points',
                   () => MasterCandidatesScreen(
                     profileId: profileId,
                     instant: false,
@@ -256,7 +260,9 @@ class _MasterCandidatesScreenState
     final eligible =
         progress.asData?.value
             .where(
-              (word) => word.correctCount >= 25 && !ids.contains(word.wordId),
+              (word) =>
+                  word.correctCount >= masterPointGoal &&
+                  !ids.contains(word.wordId),
             )
             .toList() ??
         [];
@@ -277,7 +283,7 @@ class _MasterCandidatesScreenState
                 Text(
                   widget.instant
                       ? 'Browse words you already know, or search to find one quickly.'
-                      : 'These words have earned 25 correct points. Choose one for its Master test.',
+                      : 'These words have earned $masterPointGoal correct points. Choose one for its Master test.',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 if (widget.instant) ...[

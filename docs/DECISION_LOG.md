@@ -1,5 +1,9 @@
 # Ni Hao Robot! — Decision log
 
+## 2026-11-23: lower regular Master threshold
+
+The user lowered regular Master eligibility from 25 to 10 cumulative correct first responses. The full Master quiz remains required, and Instant master still skips the threshold and quiz after confirmation. The change uses existing correctness points immediately and needs no learner database migration. Earlier 25-point entries below describe the historical implementation.
+
 ## 2026-11-15: user-directed Practice redesign
 
 The user's latest request supersedes the earlier plan to gate vocabulary reviews by time and defer the main Practice area. Practice is now available from both the sidebar and Vocabulary. A word's score is the number of questions answered correctly on the first try across saved attempts. Full-word replay, a user-chosen number of distinct random words, and an endless question deck use learned words from the selected profile. A missed question returns at the end of its round. Relearning uses Hanzi or English meaning to open a lesson; Pinyin is not a lookup key. Existing schedule columns and attempt snapshots are retained for database compatibility and migration, while new attempts create no delayed schedule.

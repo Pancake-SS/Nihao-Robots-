@@ -6,6 +6,8 @@ import '../../data/database_provider.dart';
 import '../vocabulary/curriculum_repository.dart';
 import '../vocabulary/vocabulary_repository.dart';
 
+const int masterPointGoal = 10;
+
 class MasterConflict implements Exception {
   const MasterConflict(this.message);
   final String message;
@@ -97,7 +99,7 @@ class MasterRepository {
     ], rows.length > 20);
   }
 
-  /// Regular Master requires a passed full quiz in the UI and 25 points here.
+  /// Regular Master requires a passed full quiz in the UI and ten points here.
   /// Instant Master is a confirmed direct promotion with neither requirement.
   /// Legacy writing rows stay in storage for old account saves.
   Future<void> completeTest({
@@ -134,9 +136,9 @@ class MasterRepository {
               ],
             )
             .getSingle();
-        if (score.read<int>('points') < 25) {
+        if (score.read<int>('points') < masterPointGoal) {
           throw const MasterConflict(
-            'This word needs 25 correct answers first.',
+            'This word needs $masterPointGoal correct answers first.',
           );
         }
       }

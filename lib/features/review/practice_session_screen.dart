@@ -204,7 +204,7 @@ class _PracticeSessionScreenState extends ConsumerState<PracticeSessionScreen> {
             .any(
               (word) =>
                   widget.wordIds.contains(word.wordId) &&
-                  word.correctCount >= 25,
+                  word.correctCount >= masterPointGoal,
             ) ??
         false;
     return PopScope(

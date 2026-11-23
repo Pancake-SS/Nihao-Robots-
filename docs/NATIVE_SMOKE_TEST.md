@@ -85,7 +85,7 @@ Use clearly named disposable profiles, keeping any existing profiles intact. The
 | Search by Hanzi or English and relearn, then close and relaunch offline | The matching lesson opens; correctness points and profile selection persist | NOT RUN |
 | Switch to B and open Practice | A's learned word and correctness points do not appear in B's list | NOT RUN |
 | Open Practice and choose each of its four methods | Each method opens its own page; one word, counted random, endless and relearn controls are clear | NOT RUN |
-| Reach 25 correct points for a word, then open Vocabulary > Master | The word appears in Ready for Master test; passing the full quiz moves it straight into Master | NOT RUN |
+| Reach 10 correct points for a word, then open Vocabulary > Master | The word appears in Ready for Master test; passing the full quiz moves it straight into Master | NOT RUN |
 | Select an unlearned word in Vocabulary > Learn and choose Instant master | A confirmation explains direct Master; Not now leaves the word untouched, while Master this word moves it to Master without a quiz | NOT RUN |
 | Search a known word under Instant master | Confirming moves the word directly into Master without a quiz or writing prompt | NOT RUN |
 | Practise a mastered word and miss three answers | It returns to Learn; correctness points remain available | NOT RUN |

@@ -107,7 +107,7 @@ void main() {
       expect(instant.hitTestable(), findsOneWidget);
       await tester.tap(instant);
       await tester.pumpAndSettle();
-      expect(find.textContaining('25 correct points'), findsOneWidget);
+      expect(find.textContaining('10 correct points'), findsOneWidget);
       await tester.tap(find.text('Not now'));
       await tester.pumpAndSettle();
       expect(find.byType(LearningKeyboard), findsOneWidget);

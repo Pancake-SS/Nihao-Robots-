@@ -1,6 +1,6 @@
 # Ni Hao Robot! — Project Memory
 
-_Last updated: 2026-11-22 | State: Android release APK built and verified_
+_Last updated: 2026-11-23 | State: Windows build with 10-point Master threshold verified_
 
 ## Project vision and invariants
 - Science-informed Mandarin learning companion for beginners: Simplified Chinese, tone-marked Pinyin, clear English explanations.
@@ -11,7 +11,7 @@ _Last updated: 2026-11-22 | State: Android release APK built and verified_
 - Top-level Practice and Vocabulary Practice share the question flow. Learning now holds immersion resources, Classical stories, Free writing and Notebook; Speaking remains pending.
 - Slide visuals set mood/structure, not pixel-perfect implementation. Speaker notes and any comments matter for actual behavior.
 - Maintain verified educational content, deterministic grading and correctness points, durable learner progress, and tested migrations.
-- Current Master flow: 25 correct points unlock the regular full quiz; passing it grants Master status. Instant master instead directly promotes a known word after confirmation, with no quiz or point threshold. There is no Master writing step or gallery. Older saved Master writing remains in account archives. Home flags mark 100, 500, and each thousand through 11,000 mastered words.
+- Current Master flow: 10 correct points unlock the regular full quiz; passing it grants Master status. Instant master instead directly promotes a known word after confirmation, with no quiz or point threshold. There is no Master writing step or gallery. Older saved Master writing remains in account archives. Home flags mark 100, 500, and each thousand through 11,000 mastered words.
 - Instant master can be launched from a selected Learn word, its lesson, or Master search. Cancelling the confirmation changes nothing.
 - One-word Practice, relearning, and their Master equivalents open with 20-word browse pages and direct row actions. Search remains optional. Instant Master pages through unmastered words instead of stopping at the first 20.
 - The offline Pinyin keyboard now suggests characters attested inside bundled dictionary words, with the source word visible. An unlisted compound such as `binggui` can be converted one syllable at a time to 冰柜. Candidate page controls sit above the suggestions so additional homophones are easier to find.

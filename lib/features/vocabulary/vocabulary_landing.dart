@@ -6,6 +6,7 @@ import '../../shared/vocabulary_card.dart';
 import '../../shared/robot_art.dart';
 import '../review/review_screen.dart';
 import '../review/master_screen.dart';
+import '../review/master_repository.dart';
 import 'learning_queue_screen.dart';
 
 class VocabularyLanding extends StatelessWidget {
@@ -85,7 +86,7 @@ class VocabularyLanding extends StatelessWidget {
               icon: Icons.star_outline_rounded,
               artwork: RobotArtwork.gogglesOnPaper,
               description: 'Pass a Master test, then keep your words sharp with reviews.',
-              status: 'Ready at 25 correct points',
+              status: 'Ready at $masterPointGoal correct points',
               actionLabel: 'Open Master',
               action: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(

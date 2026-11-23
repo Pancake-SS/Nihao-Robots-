@@ -1,5 +1,7 @@
 # Local database migrations and recovery
 
+The regular Master threshold changed from 25 to 10 correct points on 2026-11-23. This changes eligibility only; saved points and schema version 10 are unchanged. Earlier migration notes below describe the rules in force when those versions were introduced.
+
 ## Version 1 through 9 to 10 (2026-11-23)
 
 Schema 10 adds `profile_word_examples`, keyed by profile and bundled word. It stores five learner supplied sentence examples and an optional explanation for an existing word. The lesson reads these rows for the active profile, so bundled words, quiz questions, queue positions and learning progress keep their existing IDs. Reimporting the same Hanzi and Pinyin replaces that profile's example set. Account exports include the new table; older account saves without it still import. `test/custom_word_test.dart` covers a schema 9 upgrade, five example attachment for 扫码, profile isolation and account transfer. Close the app and back up the learner database before launching a schema 10 build.

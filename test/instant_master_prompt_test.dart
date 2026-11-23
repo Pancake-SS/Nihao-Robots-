@@ -60,7 +60,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Instant master 你好?'), findsOneWidget);
     expect(
-      find.textContaining('without a quiz or 25 correct points'),
+      find.textContaining('without a quiz or 10 correct points'),
       findsOneWidget,
     );
     expect(find.text('Start full word test'), findsNothing);

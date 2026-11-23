@@ -81,7 +81,7 @@ class _MasteredWordsScreenState extends ConsumerState<MasteredWordsScreen> {
                     if (ids.isEmpty)
                       const LearningCard(
                         child: Text(
-                          'No mastered words yet. Take a Master test when a word reaches 25 points, or choose Instant master.',
+                          'No mastered words yet. Take a Master test when a word reaches $masterPointGoal points, or choose Instant master.',
                         ),
                       ),
                     for (final id in page)

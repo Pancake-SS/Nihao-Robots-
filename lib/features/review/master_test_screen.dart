@@ -92,7 +92,7 @@ class _InstantMasterDialogState extends ConsumerState<_InstantMasterDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Already know this word? Confirming moves it straight into Master without a quiz or 25 correct points. You can still practice it later.',
+            'Already know this word? Confirming moves it straight into Master without a quiz or $masterPointGoal correct points. You can still practice it later.',
           ),
           if (_saving) ...[
             const SizedBox(height: 16),

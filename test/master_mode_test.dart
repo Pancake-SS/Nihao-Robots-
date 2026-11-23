@@ -42,7 +42,7 @@ class _VersionSixDatabase extends AppDatabase {
 }
 
 void main() {
-  test('25 correct points unlock mastery without writing', () async {
+  test('10 correct points unlock mastery without writing', () async {
     final db = AppDatabase(NativeDatabase.memory());
     addTearDown(db.close);
     final profile = (await SqliteProfileRepository(
@@ -68,8 +68,16 @@ void main() {
         master.completeTest(profileId: profile, wordId: id, instant: instant);
     expect(() => complete(), throwsA(isA<MasterConflict>()));
     final current = await learning.progress(profile);
-    final needed = 25 - current.single.correctCount;
+    final needed = masterPointGoal - current.single.correctCount;
+    expect(needed, greaterThan(0));
     for (var i = 0; i < needed; i++) {
+      if (i == needed - 1) {
+        expect(
+          (await learning.progress(profile)).single.correctCount,
+          masterPointGoal - 1,
+        );
+        await expectLater(complete(), throwsA(isA<MasterConflict>()));
+      }
       await db
           .into(db.practiceResponses)
           .insert(
@@ -83,7 +91,10 @@ void main() {
             ),
           );
     }
-    expect((await learning.progress(profile)).single.correctCount, 25);
+    expect(
+      (await learning.progress(profile)).single.correctCount,
+      masterPointGoal,
+    );
     await complete();
     await complete();
     expect(await master.masteredIds(profile), contains(id));
@@ -103,11 +114,11 @@ void main() {
     );
     expect(
       (await learning.progress(profile)).single.correctCount,
-      greaterThanOrEqualTo(25),
+      greaterThanOrEqualTo(masterPointGoal),
     );
   });
 
-  test('instant master works before 25 points', () async {
+  test('instant master works before 10 points', () async {
     final db = AppDatabase(NativeDatabase.memory());
     addTearDown(db.close);
     final profile = (await SqliteProfileRepository(
@@ -390,7 +401,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(
         find.text(
-          'No mastered words yet. Take a Master test when a word reaches 25 points, or choose Instant master.',
+          'No mastered words yet. Take a Master test when a word reaches 10 points, or choose Instant master.',
         ),
         findsOneWidget,
       );

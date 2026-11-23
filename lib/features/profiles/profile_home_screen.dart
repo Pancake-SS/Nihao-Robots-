@@ -12,6 +12,7 @@ import '../dashboard/home_content.dart';
 import '../grammar/grammar_screen.dart';
 import '../learning/learning_home.dart';
 import '../vocabulary/vocabulary_landing.dart';
+import '../review/master_repository.dart';
 import 'profile.dart';
 
 class ProfileHomeScreen extends StatefulWidget {
@@ -81,7 +82,7 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
         TourStop(
           _vocabulary[2],
           'Master words',
-          'After 25 correct points, pass the full Master test to master a word. If you already know one, Instant master skips the quiz after confirmation. Three missed answers during Master practice return the word to Learn while keeping its points.',
+          'After $masterPointGoal correct points, pass the full Master test to master a word. If you already know one, Instant master skips the quiz after confirmation. Three missed answers during Master practice return the word to Learn while keeping its points.',
         ),
       ],
       2 => [
